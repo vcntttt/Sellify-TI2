@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import useStore from "@/store/useAuthStore";
 
 export default function AdminLayout({
   children,
@@ -20,15 +21,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [location] = useLocation();
+  const { user } = useStore();
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
+      <div className="hidden border-r bg-slate-800 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
+          <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold text-white">
               <Package2 className="h-6 w-6" />
-              <span className="">Sellify</span>
+              <span>Sellify</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -38,10 +40,10 @@ export default function AdminLayout({
                   key={section.name}
                   href={section.href}
                   className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
+                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white",
                     {
-                      "bg-muted text-primary": location === section.href,
-                      "text-muted-foreground": location !== section.href,
+                      "bg-slate-700 text-white": location === section.href,
+                      "text-white/50": location !== section.href,
                     }
                   )}
                 >
@@ -51,8 +53,8 @@ export default function AdminLayout({
               ))}
             </nav>
           </div>
-          <div className="mt-auto mb-4 mx-2">
-            <Button className="w-full" asChild>
+          <div className="mt-auto mb-4 mx-4">
+            <Button className="w-full bg-white text-slate-800 hover:bg-slate-700 hover:text-white" asChild>
               <Link href="/cashier">Entrar como Cajero</Link>
             </Button>
           </div>
@@ -118,12 +120,10 @@ export default function AdminLayout({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+              <DropdownMenuSeparator/>
+              {/* // TODO: Link to logout */}
+              <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem> 
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

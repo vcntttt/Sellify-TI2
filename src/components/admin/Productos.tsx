@@ -1,3 +1,9 @@
+import AdminSection from "@/components/admin/Section";
+
 export default function Products() {
-  return <h1>Productos</h1>;
+  return (
+    <AdminSection title="Productos">
+      <h1>Contenido</h1>
+    </AdminSection>
+  );
 }
