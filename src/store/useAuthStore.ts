@@ -1,19 +1,19 @@
-import { create } from "zustand";
+// src/store/useAuthStore.ts
+import create from 'zustand';
 
 interface User {
-  name: string;
   role: string;
+  name: string;
 }
 
-interface Store {
-  user: User;
+interface AuthState {
+  user: User | null;
+  setUser: (user: User) => void;
 }
 
-const useStore = create<Store>(() => ({
-  user: {
-    name: "John Doe",
-    role: "admin",
-  },
+const useStore = create<AuthState>((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
 }));
 
 export default useStore;
