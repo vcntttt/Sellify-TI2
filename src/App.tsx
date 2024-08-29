@@ -51,7 +51,7 @@ function DashboardLayout() {
 
 export default function App() {
   return (
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">        
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">        
       <Route path="/" component={LogIn} />
       <Route path="/non-authorized" component={NonAuthorized} />
       <AdminRoute path="/dashboard" component={DashboardLayout} />

@@ -1,14 +1,14 @@
 import { Route, Redirect } from 'wouter';
-import useStore from '@/store/useStore'
+import useStore from '@/store/useAuthStore'
 
 export default function AdminRoute({ component: Component,...rest }: any ) {
-  const { role } = useStore()
+  const { user } = useStore()
 
   return (
     <Route
       {...rest}
       component={(props) =>
-        role === "admin" ? (
+        user.role === "admin" ? (
           <Component {...props} />
         ) : (
           <Redirect to="/non-authorized" />
