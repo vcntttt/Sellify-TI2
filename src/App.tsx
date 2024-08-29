@@ -1,9 +1,64 @@
-import { ThemeProvider } from "@/components/theme-provider";
+import { Route, Link } from "wouter";
+import AdminLayout from "./components/layouts/AdminLayout";
+import AdminRoute from "./components/routes/AdminRoute";
+import CashierRoute from "./components/routes/CashierRoute";
+import { Button } from "./components/ui/button";
+import DashboardHome from "@/components/admin/Dashboard";
+import { sections } from "@/data/sections";
+import { ThemeProvider } from "./components/theme-provider";
+
+function Cajero() {
+  return <h2>Cajero Page</h2>;
+}
+
+function LogIn() {
+  return (
+    <>
+      <h2>Log In</h2>
+      <div className="flex gap-4">
+      <Button asChild>
+        <Link href="/dashboard">Dashboard</Link>
+      </Button>
+      <Button asChild>
+        <Link href="/cashier">Cashier</Link>
+      </Button>
+      </div>
+    </>
+  );
+}
+
+function NonAuthorized() {
+  return (
+    <>
+      <h2>Non Authorized</h2>
+      <Button asChild>
+        <Link href="/">Volver</Link>
+      </Button>
+    </>
+  );
+}
+
+function DashboardLayout() {
+  return (
+    <AdminLayout>
+      <Route path="/dashboard" component={DashboardHome} />
+      {sections.slice(1).map((section : any) => (
+        <Route key={section.href} path={section.href} component={section.component} />
+      ))}
+    </AdminLayout>
+  );
+}
 
 export default function App() {
   return (
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">        
-        <h1>Hello World</h1>
+      <Route path="/" component={LogIn} />
+      <Route path="/non-authorized" component={NonAuthorized} />
+      <AdminRoute path="/dashboard" component={DashboardLayout} />
+      {sections.slice(1).map((section : any) => (
+        <AdminRoute key={section.href} path={section.href} component={DashboardLayout} />
+      ))}
+      <CashierRoute path="/cashier" component={Cajero} />
       </ThemeProvider>
   );
 }
