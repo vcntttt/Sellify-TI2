@@ -8,7 +8,13 @@ const actionsMap: Record<string, React.FC> = {
   "Ventas": VentasActions,
 };
 
-export default function AdminSection({ title, children }: any) {
+interface Props {
+  title: string;
+  children: React.ReactNode;
+  border?: boolean;
+}
+
+export default function AdminSection({ title, children, border = true }: Props) {
 
   const ActionComponent = actionsMap[title] || null;
 
@@ -18,7 +24,7 @@ export default function AdminSection({ title, children }: any) {
         <h1 className="text-2xl font-semibold">{title}</h1>
         {ActionComponent && <ActionComponent />}
       </div>
-      <div className="border-slate-700/20 p-4 border-[1px] h-full rounded-lg">
+      <div className= {border ? "border-slate-700/20 p-4 border-[1px] h-full rounded-lg" : "h-full"}>
         {children}
       </div>
     </>
