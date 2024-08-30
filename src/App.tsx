@@ -6,26 +6,12 @@ import { Button } from "./components/ui/button";
 import DashboardHome from "@/components/admin/Dashboard";
 import { sections } from "@/data/sections";
 import { ThemeProvider } from "./components/theme-provider";
+import LogInPage from "./components/LogInPage"
 
 function Cajero() {
   return <h2>Cajero Page</h2>;
 }
 
-function LogIn() {
-  return (
-    <>
-      <h2>Log In</h2>
-      <div className="flex gap-4">
-      <Button asChild>
-        <Link href="/dashboard">Dashboard</Link>
-      </Button>
-      <Button asChild>
-        <Link href="/cashier">Cashier</Link>
-      </Button>
-      </div>
-    </>
-  );
-}
 
 function NonAuthorized() {
   return (
@@ -52,7 +38,7 @@ function DashboardLayout() {
 export default function App() {
   return (
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">        
-      <Route path="/" component={LogIn} />
+      <Route path="/" component={LogInPage} />
       <Route path="/non-authorized" component={NonAuthorized} />
       <AdminRoute path="/dashboard" component={DashboardLayout} />
       {sections.slice(1).map((section : any) => (
