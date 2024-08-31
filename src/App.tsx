@@ -6,7 +6,7 @@ import { Button } from "./components/ui/button";
 import DashboardHome from "@/components/admin/Dashboard";
 import { sections } from "@/data/sections";
 import { ThemeProvider } from "./components/theme-provider";
-import LogInPage from "./components/LogInPage"
+import LogInPage from "@/components/auth/LogInPage"
 
 function Cajero() {
   return <h2>Cajero Page</h2>;

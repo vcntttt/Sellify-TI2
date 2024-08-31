@@ -42,14 +42,14 @@ export default function Login() {
                 <div className="flex flex-col gap-y-2">
                     <Button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
+                        className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300"
                     >
                         Ingresar
                     </Button>
-                    <Button asChild className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
                         <Link href="/dashboard">Dashboard</Link>
                     </Button>
-                    <Button asChild className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
                         <Link href="/cashier">Cajero</Link>
                     </Button>
                 </div>
