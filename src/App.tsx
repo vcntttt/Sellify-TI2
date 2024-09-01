@@ -7,9 +7,35 @@ import DashboardHome from "@/components/admin/Dashboard";
 import { sections } from "@/data/sections";
 import { ThemeProvider } from "./components/theme-provider";
 import LogInPage from "./components/LogInPage"
+import PopUp from "./components/cashier/PopUp";
 
 function Cajero() {
-  return <h2>Cajero Page</h2>;
+  return (<div className="p-4">
+
+    <PopUp>
+      <h2 className="text-xl font-semibold mb-4">Detalles de la Boleta</h2>
+      <p>Aquí puedes mostrar la información de la boleta, como el número, fecha, items, etc.</p>
+    </PopUp>
+    <PopUp>
+        <p className="text-justify font-normal text-slate-50">Ingrese el RUT</p>
+        <input type="text"></input>
+        <p className="text-justify font-normal text-slate-50">Ingrese el nombre del cliente</p>
+        <input type="text" />
+        <p className="text-justify font-normal text-slate-50">Ingrese el apellido del cliente</p>
+        <input type="text" />
+        <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800 relative left-20">
+        Confirmar Registro</button>
+    </PopUp>
+    <PopUp>
+      <div className="relative">
+        <input placeholder="Nombre Cliente"></input><input placeholder="fecha"></input>
+        <input placeholder="Dirección Cliente"></input>
+        <input></input>
+      </div>
+      <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800 relative left-72">
+      Confirmar factura</button>
+    </PopUp>
+  </div>)
 }
 
 
