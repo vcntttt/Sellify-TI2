@@ -1,5 +1,5 @@
 import { Route, Link } from "wouter";
-import AdminLayout from "./components/layouts/AdminLayout";
+import AdminLayout from "./components/layouts/admin-layout";
 import AdminRoute from "./components/routes/AdminRoute";
 import CashierRoute from "./components/routes/CashierRoute";
 import { Button } from "./components/ui/button";
@@ -11,7 +11,6 @@ import LogInPage from "@/components/auth/LogInPage"
 function Cajero() {
   return <h2>Cajero Page</h2>;
 }
-
 
 function NonAuthorized() {
   return (

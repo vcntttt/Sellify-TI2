@@ -11,8 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Botonera from "@/components/admin/actions/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import useStore from "@/store/useAuthStore";
+
 
 export default function AdminLayout({
   children,
@@ -27,24 +29,31 @@ export default function AdminLayout({
       <div className="hidden border-r bg-slate-800 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 justify-between items-center px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-white">
+            <Link
+              href="/"
+              className="flex items-center gap-2 font-semibold text-white"
+            >
               <Package2 className="h-6 w-6" />
               <span>Sellify</span>
             </Link>
             <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full bg-slate-800 hover:bg-slate-700">
-                <CircleUser className="h-5 w-5 text-white" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-              <DropdownMenuSeparator/>
-              {/* // TODO: Link to logout */}
-              <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem> 
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full bg-slate-800 hover:bg-slate-700"
+                >
+                  <CircleUser className="h-5 w-5 text-white" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {/* // TODO: Link to logout */}
+                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -67,9 +76,7 @@ export default function AdminLayout({
             </nav>
           </div>
           <div className="mt-auto mb-4 mx-4">
-            <Button className="w-full bg-white text-slate-800 hover:bg-slate-700 hover:text-white" asChild>
-              <Link href="/cashier">Entrar como Cajero</Link>
-            </Button>
+            <Botonera variant="dark" />
           </div>
         </div>
       </div>
@@ -107,12 +114,7 @@ export default function AdminLayout({
                 ))}
               </nav>
               <div className="mt-auto flex flex-col gap-y-4">
-              <Button className="w-full">
-                  Cerrar Sesion
-                </Button>
-                <Button className="w-full" asChild>
-                  <Link href="/cashier">Entrar como cajero</Link>
-                </Button>
+                <Botonera variant="light" />
               </div>
             </SheetContent>
           </Sheet>
