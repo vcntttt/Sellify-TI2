@@ -7,7 +7,7 @@ import {
 import DashboardHome from "@/components/admin/Dashboard";
 import Ventas from "@/components/admin/Ventas";
 import Analiticas from "@/components/admin/Analiticas";
-import Productos from "@/components/admin/Productos";
+import Productos from "@/components/admin/products/products-page";
 
 interface Section {
   name : string;
