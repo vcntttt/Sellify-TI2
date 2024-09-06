@@ -1,9 +1,10 @@
 import { Link } from 'wouter';
 import { Button } from '../ui/button';
-import useStore from '@/store/useAuthStore'
+import useStore from '@/store/useAuthStore';
 
 const CajeroLayout = () => {
   const { user } = useStore();
+  
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
@@ -17,9 +18,9 @@ const CajeroLayout = () => {
 
       <div className="flex flex-1 pt-20">
         {/* Sidebar Section */}
-        <aside className="bg-white shadow-md rounded-lg p-4 w-64 h-full fixed top-20 left-0 border-r border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Opciones</h3>
-          <div className="flex flex-col gap-4">
+        <aside className="bg-white shadow-md rounded-lg p-4 w-64 fixed top-20 left-0 border-r border-gray-200 flex flex-col h-[654px]">
+          <div className="flex flex-col gap-4 mb-auto">
+            <h3 className="text-lg font-semibold mb-4">Opciones</h3>
             <Button 
               size="lg"
               className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200"
@@ -32,6 +33,8 @@ const CajeroLayout = () => {
             >
               Ingresar Cliente
             </Button>
+          </div>
+          <div className="mt-auto">
             <Button 
               asChild
               variant="secondary" 
@@ -52,9 +55,27 @@ const CajeroLayout = () => {
 
           <section className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col" style={{ minHeight: '120px' }}>
             <h3 className="text-lg font-semibold mb-4">Código de Producto y Cantidad</h3>
-            <div className="text-gray-700 flex-grow">
-              <p className="mb-2">Código del Producto: <span className="font-semibold">123456</span></p>
-              <p>Cantidad: <span className="font-semibold">10</span></p>
+            <div className="flex gap-4">
+              {/* Campo de Código de Producto */}
+              <div className="flex items-center">
+                <label htmlFor="productCode" className="text-gray-700 w-1/3 text-right pr-4">Código del Producto:</label>
+                <input 
+                  id="productCode"
+                  type="text"
+                  className="border border-gray-300 rounded-lg p-2 flex-1"
+                  placeholder="Ingrese el código del producto"
+                />
+              </div>
+              {/* Campo de Cantidad */}
+              <div className="flex items-center">
+                <label htmlFor="quantity" className="text-gray-700 w-1/3 text-right pr-4">Cantidad:</label>
+                <input 
+                  id="quantity"
+                  type="number"
+                  className="border border-gray-300 rounded-lg p-2 flex-1"
+                  placeholder="Ingrese la cantidad"
+                />
+              </div>
             </div>
             <div className="flex justify-end gap-4 mt-4">
               <Button 
