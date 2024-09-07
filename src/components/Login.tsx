@@ -1,13 +1,25 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter'; // Importar useLocation para manejar la redirección
+import useAuthStore from '@/store/useAuthStore'; // Importar el estado global
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [, setLocation] = useLocation(); // Hook para cambiar la ubicación
+    const login = useAuthStore((state) => state.login); // Obtener la función de login
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Username:', username);
-        console.log('Password:', password);
+
+        // Validar el login
+        const success = login(username, 'admin', password);
+
+        // Comprobar si el login fue exitoso y redirigir
+        if (success) {
+            setLocation('/dashboard'); // Redirigir al dashboard si el rol es admin
+        } else {
+            alert('Invalid username or password'); // Mostrar un mensaje si la autenticación falla
+        }
     };
 
     return (
@@ -37,10 +49,10 @@ export default function Login() {
             </div>
             <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
             >
                 Ingresar
-            </button>   
+            </button>
         </form>
     );
 }
