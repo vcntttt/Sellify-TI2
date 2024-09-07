@@ -1,7 +1,7 @@
 import AdminSection from "@/components/admin/Section";
 import {  useEffect, useState } from "react";
 import { products as productsData } from "@/data/products";
-import { Products as ProductType } from "@/types";
+import { Productos as ProductType } from "@/types";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 

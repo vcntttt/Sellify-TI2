@@ -92,7 +92,7 @@ export function RegisterNewClientForm() {
           )}
         />
         <div className="flex justify-end gap-x-2 pt-4">
-          <Button type="submit">Guardar cambios</Button>
+          <Button type="submit">Registrar</Button>
         </div>
       </form>
     </Form>

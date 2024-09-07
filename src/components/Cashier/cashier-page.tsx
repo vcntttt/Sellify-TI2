@@ -1,29 +1,36 @@
-import { Link } from 'wouter';
-import { Button } from '../ui/button';
-import useStore from '@/store/useAuthStore';
-import { Label } from '../ui/label'; 
-import {Input} from '../ui/input';
-import { Dialog,
+import { Link } from "wouter";
+import { Button } from "../ui/button";
+import useStore from "@/store/useAuthStore";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import {
+  Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
- } from '@radix-ui/react-dialog'; 
-import { DialogHeader } from '../ui/dialog';
-import ProductSearch from './buttons/product-search';
-import { RegisterNewClientForm } from './buttons/client-form';
+} from "@/components/ui/dialog";
+import { DialogHeader } from "../ui/dialog";
+import ProductSearch from "./buttons/product-search";
+import { RegisterNewClientForm } from "./buttons/client-form";
 
 const CajeroLayout = () => {
   const { user } = useStore();
-  
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
       <header className="bg-white shadow-md p-4 fixed top-0 left-0 w-full flex justify-between items-center z-10">
-        <h2 className="text-2xl font-semibold text-gray-800">Panel de Cajero</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Panel de Cajero
+        </h2>
         <div className="text-gray-600 flex flex-col items-end">
-          <p className="text-sm">Cajero: <span className="font-medium">{user.name}</span></p>
-          <p className="text-xl font-semibold mt-1">Total: <span className="font-bold text-blue-600">$200</span></p>
+          <p className="text-sm">
+            Cajero: <span className="font-medium">{user.name}</span>
+          </p>
+          <p className="text-xl font-semibold mt-1">
+            Total: <span className="font-bold text-blue-600">$200</span>
+          </p>
         </div>
       </header>
 
@@ -92,16 +99,15 @@ const CajeroLayout = () => {
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
             style={{ minHeight: "120px" }}
           >
-            <h3 className="text-lg font-semibold mb-4">
-              Ingresar Producto
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Ingresar Producto</h3>
             <div className="flex gap-4">
               <div className="flex-col items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Código
                 </Label>
                 <Input
-                  id="name"
+                  id="code"
+                  type="number"
                   placeholder="001"
                   className="col-span-3"
                   required
@@ -112,7 +118,8 @@ const CajeroLayout = () => {
                   Cantidad
                 </Label>
                 <Input
-                  id="number"
+                  id="quantity"
+                  type="number"
                   defaultValue={1}
                   className="col-span-3"
                 />

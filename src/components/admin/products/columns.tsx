@@ -1,5 +1,5 @@
 import { ColumnDef, SortDirection } from "@tanstack/react-table";
-import { Products } from "@/types";
+import { Productos } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,7 +26,7 @@ const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
   return null;
 };
 
-export const columns: ColumnDef<Products>[] = [
+export const columns: ColumnDef<Productos>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => {
@@ -122,7 +122,7 @@ export const columns: ColumnDef<Products>[] = [
             <DialogHeader>
               <DialogTitle>Editar</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Cambia el precio, nombre, categoría, etc.
               </DialogDescription>
             </DialogHeader>
             {/* // TODO: Cuando aprenda a usar formularios */}

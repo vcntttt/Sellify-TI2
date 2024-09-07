@@ -1,14 +1,14 @@
-import { productosSchema } from "./schemas/schemas";
-import { formaPagoSchema } from "./schemas/schemas";
-import { descuentosSchema } from "./schemas/schemas";
-import { categoriaSchema } from "./schemas/schemas";
-import { usuarioSchema } from "./schemas/schemas";
-import { historialPuntosSchema } from "./schemas/schemas";
-import { tipoRegistroSchema } from "./schemas/schemas";
-import { detalleRegistroSchema } from "./schemas/schemas";
-import { registroSchema } from "./schemas/schemas";
-import { puntosSchema } from "./schemas/schemas";
-import { detallePagoSchema } from "./schemas/schemas";
+import { productosSchema } from "./schemas";
+import { formaPagoSchema } from "./schemas";
+import { descuentosSchema } from "./schemas";
+import { categoriaSchema } from "./schemas";
+import { usuarioSchema } from "./schemas";
+import { historialPuntosSchema } from "./schemas";
+import { tipoRegistroSchema } from "./schemas";
+import { detalleRegistroSchema } from "./schemas";
+import { registroSchema } from "./schemas";
+import { puntosSchema } from "./schemas";
+import { detallePagoSchema } from "./schemas";
 
 export type Productos = z.infer<typeof productosSchema>
 export type Usuario = z.infer<typeof usuarioSchema>
