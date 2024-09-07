@@ -115,7 +115,7 @@ export const columns: ColumnDef<Products>[] = [
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="">
-              Edit Profile
+              Editar Producto
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">

@@ -6,7 +6,7 @@ import { Button } from "./components/ui/button";
 import DashboardHome from "@/components/admin/Dashboard";
 import { sections } from "@/data/sections";
 import { ThemeProvider } from "./components/theme-provider";
-import LogInPage from "@/components/auth/LogInPage";
+import LogInPage from "@/components/auth/login-page";
 import CashierPage from "@/components/Cashier/cashier-page";
 
 function NonAuthorized() {
@@ -30,7 +30,6 @@ function DashboardLayout() {
     </AdminLayout>
   );
 }
-
 
 export default function App() {
   return (

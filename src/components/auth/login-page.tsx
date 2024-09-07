@@ -25,7 +25,7 @@ import useAuthStore from "@/store/useAuthStore";
 const roles = ["admin", "cashier", "customer"] as const
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
+  name: z.string().min(0).max(50),
   role: z.enum(roles),
 });
 
