@@ -1,59 +1,108 @@
-import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import useAuthStore from "@/store/useAuthStore";
+
+const roles = ["admin", "cashier", "customer"] as const
+
+const formSchema = z.object({
+  name: z.string().min(2).max(50),
+  role: z.enum(roles),
+});
 
 export default function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [, setLocation] = useLocation();
+    const { setUser } = useAuthStore();
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      role: "customer",
+    },
+  });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Username:', username);
-        console.log('Password:', password);
-    };
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setUser(values);
+    if (values.role === "admin") {
+      setLocation("/dashboard");
+    }
+    else if (values.role === "cashier") {
+      setLocation("/cashier");
+    }
+    else {
+      setLocation("/non-authorized");
+    }
+    // console.log(values);
+  }
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="w-96 max-w-md bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-                <div className="mb-4">
-                    <label htmlFor="username" className="block text-gray-700 font-medium mb-2">Usuario</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-gray-700 font-medium mb-2">Contraseña</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                
-                <div className="flex flex-col gap-y-2">
-                    <Button
-                        type="submit"
-                        className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300"
-                    >
-                        Ingresar
-                    </Button>
-                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
-                        <Link href="/dashboard">Dashboard</Link>
-                    </Button>
-                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
-                        <Link href="/cashier">Cajero</Link>
-                    </Button>
-                </div>
-            </form>
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-white p-6 shadow-md rounded-md">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input placeholder="Jhon Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Categoria</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {roles.map((role) => (
+                    <SelectItem value={role} key={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+          <Button type="submit">Entrar</Button>
+        </form>
+      </Form>
         </div>
-    );
+    </div>
+  );
 }
+
