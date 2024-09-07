@@ -1,20 +1,23 @@
-import { Route, Redirect } from 'wouter';
-import useStore from '@/store/useAuthStore'
+import { Route, useLocation } from 'wouter'; 
+import useAuthStore from '@/store/useAuthStore'; 
 
-export default function AdminRoute({ component: Component,...rest }: any ) {
-  const { user } = useStore()
-
-  return (
-    <Route
-      {...rest}
-      component={(props) =>
-        user.role === "admin" ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/non-authorized" />
-        )
-      }
-    />
-  );
+interface AdminRouteProps {
+  path: string; 
 }
 
+export default function AdminRoute({ path }: AdminRouteProps) {
+  const { user } = useAuthStore(); 
+  const [, setLocation] = useLocation(); 
+
+  // Función de renderizado condicional
+  const renderComponent = () => {
+    if (user?.role === 'admin') {
+      setLocation('/dashboard'); 
+      return null; 
+    } else {
+      setLocation('/non-authorized'); 
+    }
+  };
+
+  return <Route path={path} component={renderComponent} />; 
+}
