@@ -2,7 +2,16 @@ import { Link } from 'wouter';
 import { Button } from '../ui/button';
 import useStore from '@/store/useAuthStore';
 import { Label } from '../ui/label'; 
-import {Input} from '../ui/input' 
+import {Input} from '../ui/input';
+import { Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+ } from '@radix-ui/react-dialog'; 
+import { DialogHeader } from '../ui/dialog';
+import ProductSearch from './buttons/product-search';
+import { RegisterNewClientForm } from './buttons/client-form';
 
 const CajeroLayout = () => {
   const { user } = useStore();
@@ -23,24 +32,44 @@ const CajeroLayout = () => {
         <aside className="bg-white shadow-md rounded-lg p-4 w-64 fixed top-20 left-0 border-r border-gray-200 flex flex-col h-auto min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="flex flex-col gap-4 mb-auto">
             <h3 className="text-lg font-semibold mb-4">Opciones</h3>
-            <Button 
-              size="lg"
-              className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200"
-            >
-              Ver Productos
-            </Button>
-            <Button 
-              size="lg"
-              className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200"
-            >
-              Ingresar Cliente
-            </Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Ver Productos
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Productos</DialogTitle>
+                  <DialogDescription>
+                    Buscador de productos por código.
+                  </DialogDescription>
+                  <ProductSearch />
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger>
+                <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Registrar Cliente
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Registrar Cliente</DialogTitle>
+                  <DialogDescription>
+                    Registrar nuevo cliente.
+                  </DialogDescription>
+                </DialogHeader>
+                <RegisterNewClientForm />
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="mt-auto">
-            <Button 
+            <Button
               asChild
-              variant="secondary" 
-              size="lg" 
+              variant="secondary"
               className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200 w-full"
             >
               <Link href="/">Salir del Panel</Link>
