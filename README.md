@@ -94,4 +94,5 @@ Volver a develop
 ```bash
 git checkout develop
 git merge <nombre-tarea>
+git push origin develop
 ```
