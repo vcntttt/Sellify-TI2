@@ -1,19 +1,33 @@
-// src/store/useAuthStore.ts
-import create from 'zustand';
+import { create } from 'zustand';
 
+
+type UserRole = 'admin' | 'cashier' | 'customer';
+
+// Definir la interfaz para el usuario
 interface User {
-  role: string;
-  name: string;
+  name: string; 
+  role: UserRole; 
 }
 
-interface AuthState {
-  user: User | null;
+// Definir la interfaz del estado de la tienda
+interface Store {
+  user: User; 
   setUser: (user: User) => void;
 }
 
-const useStore = create<AuthState>((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
+// Crear el estado global con Zustand
+const useAuthStore = create<Store>((set) => ({
+  user: {
+    name: 'Jhon Doe',
+    role: 'admin',
+  },
+
+  setUser: (user: User) =>
+    set((state) => ({
+      ...state, 
+      user,
+    })),
+
 }));
 
-export default useStore;
+export default useAuthStore;
