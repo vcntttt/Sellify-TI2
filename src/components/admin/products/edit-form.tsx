@@ -25,12 +25,12 @@ import {
 } from "@/components/ui/accordion";
 
 import { Input } from "@/components/ui/input";
-import { Products } from "@/types";
+import { Productos } from "@/types";
 import { productSchema as formSchema } from "./productSchema";
 import { categories } from "@/data/categories";
 import CustomSlider from "./custom-slider";
 
-export function EditProductForm({ product }: { product: Products }) {
+export function EditProductForm({ product }: { product: Productos }) {
   // 1. Define your form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -119,7 +119,7 @@ export function EditProductForm({ product }: { product: Products }) {
         />
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
-            <AccordionTrigger>Agregar descuento</AccordionTrigger>
+            <AccordionTrigger>Descuento</AccordionTrigger>
             <AccordionContent>
               <FormField
                 control={form.control}
