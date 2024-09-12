@@ -1,7 +1,3 @@
-export interface Products {
-  id: number;
-  name: string;
-  stock: number;
-  price: number;
-  category: "Frutas" | "Lácteos" | "Panadería" | "Carnes" | "Granos" | "Condimentos" | "Salsas";
-}
+import productSchema from "@/components/admin/products/productSchema"
+
+export type Products = z.infer<typeof productSchema>

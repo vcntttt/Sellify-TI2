@@ -5,14 +5,15 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
+  // DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { EditProductForm } from "./edit-form";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
@@ -40,6 +41,7 @@ export const columns: ColumnDef<Products>[] = [
         </Button>
       );
     },
+    enableHiding: false
   },
   {
     accessorKey: "name",
@@ -54,6 +56,7 @@ export const columns: ColumnDef<Products>[] = [
         </Button>
       );
     },
+    enableHiding: false
   },
   {
     accessorKey: "stock",
@@ -68,6 +71,7 @@ export const columns: ColumnDef<Products>[] = [
         </Button>
       );
     },
+    enableHiding: false
   },
   {
     accessorKey: "price",
@@ -84,12 +88,50 @@ export const columns: ColumnDef<Products>[] = [
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("es-CL", {
+      const discount = row.getValue("discount") as number;
+      const discountedPrice = price - (price * discount) / 100;
+
+      const formattedPrice = new Intl.NumberFormat("es-CL", {
         style: "currency",
         currency: "CLP",
       }).format(price);
 
-      return <div className="text-left font-medium">{formatted}</div>;
+      const formattedDiscount = new Intl.NumberFormat("es-CL", {
+        style: "currency",
+        currency: "CLP",
+      }).format(discountedPrice);
+
+      return (
+        <div className="text-left font-medium">
+          {discount > 0 ? (
+            <div className="flex items-center gap-2">
+              <span className="line-through">{formattedPrice}</span>
+              <span className="text-red-500">{formattedDiscount}</span>
+            </div>
+          ) : (
+            <span>{formattedPrice}</span>
+          )}
+        </div>
+      );
+    },
+    enableHiding: false
+  },
+  {
+    accessorKey: "discount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Descuento
+          <SortedIcon isSorted={column.getIsSorted()} />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const discount = row.getValue("discount") as number;
+      return <div className="text-left font-medium">{discount}%</div>;
     },
   },
   {
@@ -105,40 +147,45 @@ export const columns: ColumnDef<Products>[] = [
         </Button>
       );
     },
+    enableHiding: false
   },
   {
     accessorKey: "action",
     header: "Editar",
     cell: ({ row }) => {
-      const name = row.getValue("name");
+      const id = row.getValue("id") as number;
+      const name = row.getValue("name") as string;
+      const stock = row.getValue("stock") as number;
+      const price = row.getValue("price") as number;
+      const category = row.getValue("category") as string;
+      const discount = row.getValue("discount") as number;
+      const product = {
+        id,
+        name,
+        stock,
+        price,
+        category,
+        discount,
+      };
       return (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="">
-              Edit Profile
+              Editar Producto
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Editar</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Edita la información de tu producto.
               </DialogDescription>
             </DialogHeader>
-            {/* // TODO: Cuando aprenda a usar formularios */}
-            <div className="flex flex-col gap-4 py-4">
-              <Label>Nombre</Label>
-              <Input defaultValue={name as string} className="w-full" />
-            </div>
-            <DialogFooter>
-              <Button type="submit" variant="destructive">
-                Eliminar Producto
-              </Button>
-              <Button type="submit">Guardar Cambios</Button>
-            </DialogFooter>
+            <EditProductForm product={product} />
           </DialogContent>
         </Dialog>
       );
     },
+    enableHiding: false
   },
 ];

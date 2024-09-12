@@ -33,11 +33,11 @@ export default function AdminLayoutButtons({ variant }: { variant: "light" | "da
               Registra a tus nuevos empleados.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            TODO: Poner formulario
+          <div className="flex flex-col py-4">
+            TODO: Poner formulario {"->"} Pato
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Guardar cambios</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
