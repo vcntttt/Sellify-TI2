@@ -26,11 +26,21 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Productos } from "@/types";
-import { productSchema as formSchema } from "./productSchema";
+// import { productSchema as formSchema } from "./productSchema";
 import { categories } from "@/data/categories";
 import CustomSlider from "./custom-slider";
 
 export function EditProductForm({ product }: { product: Productos }) {
+  const formSchema = z.object({
+    name: z.string().min(2).max(50),
+    stock: z.preprocess((val) => (typeof val === 'string' ? parseInt(val, 10) : val), z.number().min(0)),
+    price: z.preprocess((val) => (typeof val === 'string' ? parseInt(val, 10) : val), z.number().min(0)),
+    category: z.enum(categories),
+    // createdAt: z.date(),
+    // dueDate: z.date(),
+    discount: z.number().min(0).max(100),
+  });
+
   // 1. Define your form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +49,7 @@ export function EditProductForm({ product }: { product: Productos }) {
       stock: product.stock,
       price: product.price,
       category: product.category,
-      dueDate: product.dueDate,
+      // dueDate: product.dueDate,
       discount: product.discount,
     },
   });
@@ -74,7 +84,7 @@ export function EditProductForm({ product }: { product: Productos }) {
             <FormItem>
               <FormLabel>Stock</FormLabel>
               <FormControl>
-                <Input {...field} type="number" />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,7 +97,7 @@ export function EditProductForm({ product }: { product: Productos }) {
             <FormItem>
               <FormLabel>Precio</FormLabel>
               <FormControl>
-                <Input {...field} type="number" />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
