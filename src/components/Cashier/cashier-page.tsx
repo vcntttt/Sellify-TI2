@@ -15,6 +15,7 @@ import { DialogHeader } from "../ui/dialog";
 import ProductSearch from "./buttons/product-search";
 import { RegisterNewClientForm } from "./buttons/client-form";
 import { products as productList } from "@/data/products";
+import ProductSummary from "./buttons/productSummary";
 
 const CajeroLayout = () => {
   const { user } = useStore();
@@ -94,7 +95,6 @@ const CajeroLayout = () => {
       <div className="flex flex-1 pt-20">
         {/* Sidebar Section */}
         <aside className="bg-white shadow-md rounded-lg p-4 w-64 fixed top-20 left-0 border-r border-gray-200 flex flex-col h-auto min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-80px)] overflow-y-auto">
-          {/* Sidebar options */}
           <div className="flex flex-col gap-4 mb-auto">
             <h3 className="text-lg font-semibold mb-4">Opciones</h3>
             <Dialog>
@@ -128,6 +128,23 @@ const CajeroLayout = () => {
                   </DialogDescription>
                 </DialogHeader>
                 <RegisterNewClientForm />
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger>
+                <Button className="bg-green-700 text-white hover:bg-green-800 active:bg-green-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Finalizar Compra
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Resumen de Compra</DialogTitle>
+                  <DialogDescription>
+                    Detalles de los productos
+                  </DialogDescription>
+                  <ProductSummary products={addedProducts} />
+                </DialogHeader>
               </DialogContent>
             </Dialog>
           </div>
