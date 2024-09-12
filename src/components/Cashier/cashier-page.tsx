@@ -72,23 +72,6 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
-
-            <Dialog>
-              <DialogTrigger>
-                <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
-                  Boleta
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Detalles de Bolelta</DialogTitle>
-                  <DialogDescription>
-                    Registrar nuevo cliente.
-                  </DialogDescription>
-                </DialogHeader>
-                <RegisterNewClientForm />
-              </DialogContent>
-            </Dialog>
           </div>
           <div className="mt-auto">
             <Button
