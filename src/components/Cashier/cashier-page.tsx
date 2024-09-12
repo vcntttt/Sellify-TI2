@@ -130,23 +130,6 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
-
-            <Dialog>
-              <DialogTrigger>
-                <Button className="bg-green-700 text-white hover:bg-green-800 active:bg-green-900 rounded-lg shadow-md transition duration-200 w-full">
-                  Finalizar Compra
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Resumen de Compra</DialogTitle>
-                  <DialogDescription>
-                    Detalles de los productos
-                  </DialogDescription>
-                  <ProductSummary products={addedProducts} total={total} />
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
           </div>
           <div className="mt-auto">
             <Button
