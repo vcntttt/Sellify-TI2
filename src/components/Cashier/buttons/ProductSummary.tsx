@@ -4,7 +4,6 @@ interface Product {
     id: number;
     name: string;
     quantity: number;
-    price: number;
     totalPrice: number;
 }
 
@@ -15,29 +14,25 @@ interface Props {
 
 const ProductSummary: React.FC<Props> = ({ products, total }) => {
     return (
-        <div className="max-w-md mx-auto p-4">
+        <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
             <div className="max-h-96 overflow-y-auto">
-                <div className="space-y-4">
-                    {products.map((product, index) => (
-                        <div
-                            key={index}
-                            className={`flex justify-between py-2 px-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'} border-b border-gray-200`}
-                        >
-                            <div className="flex-1 text-gray-600">
-                                <div className="font-semibold">Código: {product.id}</div>
-                                <div>Nombre: {product.name}</div>
-                                <div>Cantidad: {product.quantity}</div>
-                            </div>
-                            <div className="flex-shrink-0 text-right text-gray-600">
-                                <div className="font-semibold">Precio Unitario:</div>
-                                <div>${product.price.toFixed(2)}</div>
-                                <div className="font-semibold">Precio Total:</div>
-                                <div>${product.totalPrice.toFixed(2)}</div>
-                            </div>
+                {products.map((product, index) => (
+                    <div
+                        key={index}
+                        className={`flex justify-between items-center py-3 px-4 rounded-md transition-colors 
+                        ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'} hover:bg-gray-200`}
+                    >
+                        <div className="text-gray-700 font-medium">
+                            {product.id} - {product.name} <span className="text-gray-500">x{product.quantity}</span>
                         </div>
-                    ))}
-                    <h4>Total: ${total}</h4>
-                </div>
+                        <div className="ml-8 text-right text-gray-700 font-semibold">
+                            ${product.totalPrice}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="text-right font-bold text-lg mt-4 text-gray-800 border-t pt-4 border-gray-200">
+                Total: ${total}
             </div>
         </div>
     );
