@@ -8,14 +8,14 @@ interface Product {
     totalPrice: number;
 }
 
-interface ProductSummaryProps {
+interface Props {
     products: Product[];
+    total: number;
 }
 
-const ProductSummary: React.FC<ProductSummaryProps> = ({ products }) => {
+const ProductSummary: React.FC<Props> = ({ products, total }) => {
     return (
-        <div className="max-w-md mx-auto p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Resumen de Productos</h2>
+        <div className="max-w-md mx-auto p-4">
             <div className="max-h-96 overflow-y-auto">
                 <div className="space-y-4">
                     {products.map((product, index) => (
@@ -36,6 +36,7 @@ const ProductSummary: React.FC<ProductSummaryProps> = ({ products }) => {
                             </div>
                         </div>
                     ))}
+                    <h4>Total: ${total}</h4>
                 </div>
             </div>
         </div>

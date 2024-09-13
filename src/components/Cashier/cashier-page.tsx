@@ -15,7 +15,7 @@ import { DialogHeader } from "../ui/dialog";
 import ProductSearch from "./buttons/product-search";
 import { RegisterNewClientForm } from "./buttons/client-form";
 import { products as productList } from "@/data/products";
-import ProductSummary from "./buttons/productSummary";
+import ProductSummary from "./buttons/ProductSummary";
 
 const CajeroLayout = () => {
   const { user } = useStore();
@@ -143,7 +143,7 @@ const CajeroLayout = () => {
                   <DialogDescription>
                     Detalles de los productos
                   </DialogDescription>
-                  <ProductSummary products={addedProducts} />
+                  <ProductSummary products={addedProducts} total={total} />
                 </DialogHeader>
               </DialogContent>
             </Dialog>
@@ -206,7 +206,7 @@ const CajeroLayout = () => {
                   id="code"
                   type="number"
                   value={code ?? ""}
-                  onChange={(e) => setCode(Number(e.target.value))}
+                  onChange={(e) => setCode(parseInt(e.target.value))}
                   placeholder="001"
                   className="col-span-3"
                   required
@@ -221,7 +221,7 @@ const CajeroLayout = () => {
                   id="quantity"
                   type="number"
                   value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  onChange={(e) => setQuantity(parseInt(e.target.value))}
                   className="col-span-3"
                   onKeyPress={handleKeyPress}
                 />
