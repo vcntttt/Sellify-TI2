@@ -4,6 +4,9 @@ export const categories = [
   "Panadería",
   "Carnes",
   "Granos",
+  "Verduras",
+  "Tubérculos",
+  "Aceites",
   "Condimentos",
-  "Salsas",
+  "Salsas"
 ] as const

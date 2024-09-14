@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import AddUserForm from "@/components/admin/actions/AddUserForm";
 
 export default function AdminLayoutButtons({ variant }: { variant: "light" | "dark" }) {
   const setLocation = useLocation()[1];
@@ -34,7 +35,7 @@ export default function AdminLayoutButtons({ variant }: { variant: "light" | "da
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col py-4">
-            TODO: Poner formulario {"->"} Pato
+            <AddUserForm/>
           </div>
           <DialogFooter>
             <Button type="submit">Guardar cambios</Button>
