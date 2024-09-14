@@ -20,9 +20,8 @@ import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import useAuthStore from "@/store/use-auth";
-import AdminDialog from "@/components/auth/buttons/admin-dialog"; // Importa el AdminDialog
+import AdminDialog from "@/components/auth/buttons/admin-dialog";
 
 const roles = ["admin", "cashier", "customer"] as const;
 
@@ -32,7 +31,7 @@ const formSchema = z.object({
 });
 
 export default function Login() {
-  const [, setLocation] = useLocation();
+  const setLocation = useLocation()[1];
   const { setUser } = useAuthStore();
   const [isAdminDialogOpen, setAdminDialogOpen] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
