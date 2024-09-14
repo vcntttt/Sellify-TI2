@@ -14,6 +14,7 @@ import {
 import Botonera from "@/components/admin/actions/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import useStore from "@/store/useAuthStore";
+import Logo from "../logo";
 
 export default function AdminLayout({
   children,
@@ -32,7 +33,8 @@ export default function AdminLayout({
               href="/"
               className="flex items-center gap-2 font-semibold text-white"
             >
-              <Package2 className="h-6 w-6" />
+              {/* <Package2 className="h-6 w-6" /> */}
+              <Logo className="h-8 w-8" />
               <span>Sellify</span>
             </Link>
             <DropdownMenu>
