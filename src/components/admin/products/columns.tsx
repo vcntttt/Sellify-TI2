@@ -129,7 +129,25 @@ export const columns: ColumnDef<Producto>[] = [
     },
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
-      return <div className="text-left font-medium">{discount.value}%</div>;
+      const dueDate = discount.dueDate
+      let daysDiscount: string | null = null;
+      if (dueDate) {
+        const currentDate = new Date();
+        const timeDiff = dueDate.getTime() - currentDate.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        if (daysDiff >= 0) {
+          daysDiscount = `Se acaba en ${daysDiff} días!`;
+        } else {
+          daysDiscount = "El descuento ha expirado";
+        }
+      }
+
+      return (
+      <div className="text-left font-medium flex flex-col gap-y-2">
+        {discount.value}%
+        {daysDiscount && <span className="text-red-500 text-xs">{daysDiscount}</span>}
+      </div>);
     },
   },
   {
