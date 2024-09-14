@@ -1,4 +1,4 @@
-import AdminSection from "@/components/admin/Section";
+import AdminSection from "@/components/admin/section-template";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { useProductStore } from "@/store/use-products-store";

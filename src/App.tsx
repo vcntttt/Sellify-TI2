@@ -1,14 +1,13 @@
 import { Route, Link } from "wouter";
 import AdminLayout from "./components/layouts/admin-layout";
-import AdminRoute from "./components/routes/AdminRoute";
-import CashierRoute from "./components/routes/CashierRoute";
+import AdminRoute from "./components/routes/admin-route";
+import CashierRoute from "./components/routes/cashier-route";
 import { Button } from "./components/ui/button";
-import DashboardHome from "@/components/admin/Dashboard";
+import DashboardHome from "@/components/admin/dashboard";
 import { sections } from "@/data/sections";
 import { ThemeProvider } from "./components/theme-provider";
 import LogInPage from "@/components/auth/login-page";
-import CashierPage from "@/components/Cashier/cashier-page";
-
+import CashierPage from "@/components/cashier/cashier-page";
 
 function NotFound() {
   return (

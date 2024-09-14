@@ -4,9 +4,9 @@ import {
   Package,
   ShoppingCart,
 } from "lucide-react";
-import DashboardHome from "@/components/admin/Dashboard";
-import Ventas from "@/components/admin/Ventas";
-import Analiticas from "@/components/admin/Analiticas";
+import DashboardHome from "@/components/admin/dashboard";
+import Ventas from "@/components/admin/ventas-page";
+import Analiticas from "@/components/admin/analitics-page";
 import Productos from "@/components/admin/products/products-page";
 
 interface Section {

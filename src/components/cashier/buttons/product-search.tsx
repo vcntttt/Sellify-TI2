@@ -19,7 +19,7 @@ export default function ProductSearch() {
 
   const finalProducts = filteredProducts.map((product) => ({
     ...product,
-    discountedPrice: product.price - (product.price * product.discount) / 100,
+    discountedPrice: product.price - (product.price * product.discount.value) / 100,
   }));
 
   return (
@@ -55,7 +55,7 @@ export default function ProductSearch() {
                 <TableRow key={index}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  {product.discount > 0 ? (
+                  {product.discount.value > 0 ? (
                     <TableCell>
                       <span className="line-through">{formattedPrice}</span>{" "}
                       <span className="text-red-500">{formattedDiscount}</span>
@@ -63,7 +63,7 @@ export default function ProductSearch() {
                   ) : (
                     <TableCell>{formattedPrice}</TableCell>
                   )}
-                  <TableCell>{product.discount ?? 0}%</TableCell>
+                  <TableCell>{product.discount.value ?? 0}%</TableCell>
                 </TableRow>
               );
             })}

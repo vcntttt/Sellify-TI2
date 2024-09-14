@@ -1,6 +1,6 @@
-import AnaliticActions from "@/components/admin/actions/AnaliticActions";
-import ProductActions from "@/components/admin/actions/ProductActions";
-import VentasActions from "@/components/admin/actions/VentasActions";
+import AnaliticActions from "@/components/admin/analiticas/AnaliticActions";
+import ProductActions from "@/components/admin/products/menu-action";
+import VentasActions from "@/components/admin/ventas/VentasActions";
 
 const actionsMap: Record<string, React.FC> = {
   "Productos": ProductActions,

@@ -55,7 +55,9 @@ export default function AddUserForm() {
         {errors.role && <p className="text-red-500">{errors.role?.message}</p>}
       </div>
 
-      <Button type="submit">Agregar Usuario</Button>
+      <div className="flex gap-x-2 *:w-1/2 pt-4 justify-end">
+          <Button type="submit">Agregar Usuario</Button>
+        </div>
     </form>
   );
 }

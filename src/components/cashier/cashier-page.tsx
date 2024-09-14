@@ -12,10 +12,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { DialogHeader } from "../ui/dialog";
-import ProductSearch from "./buttons/product-search";
-import { RegisterNewClientForm } from "./buttons/client-form";
+import ProductSearch from "@/components/cashier/buttons/product-search";
+import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import { products as productList } from "@/data/products";
-import ProductSummary from "./buttons/ProductSummary";
+import ProductSummary from "@/components/cashier/buttons/summary";
 
 const CajeroLayout = () => {
   const { user } = useStore();
@@ -23,16 +23,18 @@ const CajeroLayout = () => {
   const [code, setCode] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
+  const [isOpenBoleta, setIsOpenBoleta] = useState(false);
 
   const handleAddProduct = () => {
     const foundProduct = productList.find((product) => product.id === code);
     if (foundProduct) {
       const currentDate = new Date();
-      const isDiscountValid =
-        currentDate >= foundProduct.createdAt && currentDate <= foundProduct.dueDate;
+      const isDiscountValid = foundProduct.discount.dueDate 
+      ? currentDate <= foundProduct.discount.dueDate
+      : false;
 
       const price = isDiscountValid
-        ? foundProduct.price * (1 - foundProduct.discount / 100) 
+        ? foundProduct.price * (1 - foundProduct.discount.value / 100) 
         : foundProduct.price; 
 
       setAddedProducts((prev) => {
@@ -73,6 +75,14 @@ const CajeroLayout = () => {
     if (e.key === "Enter") {
       handleAddProduct();
     }
+  };
+
+  const endSale = () => {
+    setIsOpenBoleta(false);
+    setAddedProducts([]);
+    setCode(null);
+    setQuantity(1);
+    setTotal(0);
   };
 
   return (
@@ -130,6 +140,23 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
+
+            <Dialog open={isOpenBoleta} onOpenChange={setIsOpenBoleta}>
+              <DialogTrigger>
+                <Button className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Finalizar Compra
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Boleta</DialogTitle>
+                  <DialogDescription>
+                    Detalle de productos y total.
+                  </DialogDescription>
+                </DialogHeader>
+                <ProductSummary products={addedProducts} total={total} onClose={endSale} />
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="mt-auto">
             <Button
@@ -152,12 +179,12 @@ const CajeroLayout = () => {
             <div className="max-h-64 overflow-y-auto">
               <table className="min-w-full bg-white border border-gray-200">
                 <thead className="bg-gray-300 border-b border-gray-300 sticky top-0">
-                  <tr>
-                    <th className="py-2 px-4 text-left text-gray-600">Código</th>
-                    <th className="py-2 px-4 text-left text-gray-600">Nombre</th>
-                    <th className="py-2 px-4 text-left text-gray-600">Cantidad</th>
-                    <th className="py-2 px-4 text-left text-gray-600">Precio Unitario</th>
-                    <th className="py-2 px-4 text-left text-gray-600">Precio Total</th>
+                  <tr className="*:text-black *:text-left *:py-2 *:px-4">
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Precio Total</th>
                   </tr>
                 </thead>
                 <tbody>

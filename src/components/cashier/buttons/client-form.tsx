@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { usuarioSchema as formSchema } from "@/schemas";
+import { userSchema as formSchema } from "@/schemas";
 
 export function RegisterNewClientForm() {
   // 1. Define your form

@@ -22,7 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import useAuthStore from "@/store/useAuthStore";
-import AdminDialog from "@/components/auth/buttonsAuth/AdminDialog"; // Importa el AdminDialog
+import AdminDialog from "@/components/auth/buttons/admin-dialog"; // Importa el AdminDialog
 
 const roles = ["admin", "cashier", "customer"] as const;
 

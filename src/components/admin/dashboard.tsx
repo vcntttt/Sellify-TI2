@@ -1,4 +1,4 @@
-import AdminSection from "@/components/admin/Section";
+import AdminSection from "@/components/admin/section-template";
 
 export default function Dashboard() {
   return (
