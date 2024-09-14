@@ -26,32 +26,21 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Productos } from "@/types";
-// import { productSchema as formSchema } from "./productSchema";
+import { productSchema as formSchema } from "@/schemas";
 import { categories } from "@/data/categories";
 import CustomSlider from "./custom-slider";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import {es} from "date-fns/locale"
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { es } from "date-fns/locale";
 
 export function EditProductForm({ product }: { product: Productos }) {
-  const formSchema = z.object({
-    name: z.string().min(2).max(50),
-    stock: z.preprocess((val) => (typeof val === 'string' ? parseInt(val, 10) : val), z.number().min(0)),
-    price: z.preprocess((val) => (typeof val === 'string' ? parseInt(val, 10) : val), z.number().min(0)),
-    category: z.enum(categories),
-    // createdAt: z.date(),
-    // dueDate: z.date(),
-    discount: z.number().min(0).max(100),
-    discountDueDate: z.date({ required_error: "Debe ingresar una fecha de vencimiento de descuento" })
-  });
-
   // 1. Define your form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,15 +50,15 @@ export function EditProductForm({ product }: { product: Productos }) {
       price: product.price,
       category: product.category,
       // dueDate: product.dueDate,
-      discount: product.discount,
-      discountDueDate: product.discountDueDate ?? new Date()
+      discount: {
+        value: product.discount.value,
+        dueDate: product.discount.dueDate ?? new Date(),
+      },
     },
   });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
 
@@ -124,7 +113,7 @@ export function EditProductForm({ product }: { product: Productos }) {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -148,60 +137,61 @@ export function EditProductForm({ product }: { product: Productos }) {
                 name="discount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descuento: {field.value}%</FormLabel>
+                    <FormLabel>Descuento: {field.value.value}%</FormLabel>
                     <FormControl>
                       <CustomSlider
-                        value={field.value}
+                        value={field.value.value}
                         onChange={(value) => {
-                          form.setValue("discount", value);
+                          form.setValue("discount", {
+                            value,
+                            dueDate: field.value.dueDate,
+                          });
                         }}
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-                      <FormField
-          control={form.control}
-          name="discountDueDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Fecha de vencimiento de descuento</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", { locale: es })
-                      ) : (
-                        <span>Seleccione una fecha</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date()
-                    }
-                    locale={es}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="discount.dueDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de vencimiento de descuento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: es })
+                            ) : (
+                              <span>Seleccione una fecha</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) => date < new Date()}
+                          locale={es}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
