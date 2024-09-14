@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "../ui/button";
-import useStore from "@/store/useAuthStore";
+import useStore from "@/store/use-auth";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {

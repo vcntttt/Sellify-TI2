@@ -136,9 +136,12 @@ export const columns: ColumnDef<Producto>[] = [
         const timeDiff = dueDate.getTime() - currentDate.getTime();
         const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-        if (daysDiff >= 0) {
-          daysDiscount = `Se acaba en ${daysDiff} días!`;
-        } else {
+        if (daysDiff > 0) {
+          daysDiscount = `Se acaba en ${daysDiff} día${daysDiff > 1 ? "s" : ""}!`;
+        }else if (daysDiff === 0) {
+          daysDiscount = "Se acaba hoy!";
+        }
+        else {
           daysDiscount = "El descuento ha expirado";
         }
       }

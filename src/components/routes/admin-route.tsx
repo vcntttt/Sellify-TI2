@@ -1,5 +1,5 @@
 import { Route, Redirect } from 'wouter';
-import useStore from '@/store/useAuthStore'
+import useStore from '@/store/use-auth'
 
 export default function AdminRoute({ component: Component,...rest }: any ) {
   const { user } = useStore()

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Botonera from "@/components/admin/actions/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import useStore from "@/store/useAuthStore";
+import useStore from "@/store/use-auth";
 import Logo from "../logo";
 
 export default function AdminLayout({
