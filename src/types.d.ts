@@ -1,15 +1,19 @@
 import { categories } from "@/data/categories";
 
-export interface Productos {
+export type Category = typeof categories[number];
+
+export interface ProductDiscount {
+  value: number;
+  dueDate: Date | null;
+}
+
+export interface Producto {
   id: number;
   name: string;
   stock: number;
   price: number;
-  category: typeof categories[number];
-  createdAt: Date;
-  dueDate: Date;
-  discount: {
-    value: number;
-    dueDate: Date | null;
-  }
+  category: Category;
+  createdAt?: Date;
+  dueDate?: Date;
+  discount: ProductDiscount;
 }

@@ -1,19 +1,17 @@
 import { ColumnDef, SortDirection } from "@tanstack/react-table";
-import { Productos } from "@/types";
+import { Category, ProductDiscount, Producto } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  // DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { EditProductForm } from "./edit-form";
+import { useState } from "react";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
@@ -27,7 +25,7 @@ const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
   return null;
 };
 
-export const columns: ColumnDef<Productos>[] = [
+export const columns: ColumnDef<Producto>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => {
@@ -88,8 +86,8 @@ export const columns: ColumnDef<Productos>[] = [
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const discount = row.getValue("discount") as number;
-      const discountedPrice = price - (price * discount) / 100;
+      const discount = row.getValue("discount") as ProductDiscount;
+      const discountedPrice = price - (price * discount.value) / 100;
 
       const formattedPrice = new Intl.NumberFormat("es-CL", {
         style: "currency",
@@ -103,7 +101,7 @@ export const columns: ColumnDef<Productos>[] = [
 
       return (
         <div className="text-left font-medium">
-          {discount > 0 ? (
+          {discount.value > 0 ? (
             <div className="flex items-center gap-2">
               <span className="line-through">{formattedPrice}</span>
               <span className="text-red-500">{formattedDiscount}</span>
@@ -130,8 +128,8 @@ export const columns: ColumnDef<Productos>[] = [
       );
     },
     cell: ({ row }) => {
-      const discount = row.getValue("discount") as number;
-      return <div className="text-left font-medium">{discount}%</div>;
+      const discount = row.getValue("discount") as ProductDiscount;
+      return <div className="text-left font-medium">{discount.value}%</div>;
     },
   },
   {
@@ -153,12 +151,16 @@ export const columns: ColumnDef<Productos>[] = [
     accessorKey: "action",
     header: "Editar",
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [isOpen, setIsOpen] = useState(false);
       const id = row.getValue("id") as number;
       const name = row.getValue("name") as string;
       const stock = row.getValue("stock") as number;
       const price = row.getValue("price") as number;
-      const category = row.getValue("category") as string;
-      const discount = row.getValue("discount") as number;
+      const category = row.getValue("category") as Category
+      const discount = row.getValue("discount") as ProductDiscount;
+      // const dueDate = row.getValue("dueDate") as Date;
+      // const createdAt = row.getValue("createdAt") as Date;
       const product = {
         id,
         name,
@@ -166,9 +168,11 @@ export const columns: ColumnDef<Productos>[] = [
         price,
         category,
         discount,
+        // dueDate,
+        // createdAt,
       };
       return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="">
               Editar Producto
@@ -181,7 +185,7 @@ export const columns: ColumnDef<Productos>[] = [
                 Edita la información de tu producto.
               </DialogDescription>
             </DialogHeader>
-            <EditProductForm product={product} />
+            <EditProductForm product={product} onClose={() => setIsOpen(false)} />
           </DialogContent>
         </Dialog>
       );

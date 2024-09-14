@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/accordion";
 
 import { Input } from "@/components/ui/input";
-import { Productos } from "@/types";
+import { Producto } from "@/types";
 import { productSchema as formSchema } from "@/schemas";
 import { categories } from "@/data/categories";
 import CustomSlider from "./custom-slider";
@@ -39,12 +39,20 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
+import { useProductStore } from "@/store/use-products-store";
 
-export function EditProductForm({ product }: { product: Productos }) {
+interface Props {
+  product: Producto;
+  onClose: () => void;
+}
+
+export function EditProductForm({ product, onClose }: Props) {
+  const { editProduct } = useProductStore();
   // 1. Define your form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: product.id,
       name: product.name,
       stock: product.stock,
       price: product.price,
@@ -59,7 +67,8 @@ export function EditProductForm({ product }: { product: Productos }) {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    editProduct(values);
+    onClose();
   }
 
   return (
