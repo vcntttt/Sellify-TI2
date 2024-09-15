@@ -5,7 +5,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import DashboardHome from "@/components/admin/dashboard";
-import Ventas from "@/components/admin/ventas-page";
+import Ventas from "@/components/admin/ventas/ventas-page";
 import Analiticas from "@/components/admin/analitics-page";
 import Productos from "@/components/admin/products/products-page";
 
