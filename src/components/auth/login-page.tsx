@@ -20,7 +20,7 @@ import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import useAuthStore from "@/store/use-auth";
+import { useAuthStore } from "@/store/use-auth";
 import AdminDialog from "@/components/auth/buttons/admin-dialog";
 
 const roles = ["admin", "cashier", "customer"] as const;
@@ -40,7 +40,7 @@ export default function Login() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      role: "customer",
+      role: "admin",
     },
   });
 

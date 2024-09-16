@@ -200,7 +200,7 @@ export const columns: ColumnDef<Producto>[] = [
         return (
           <div className="text-left font-medium flex flex-col gap-y-2">
             {formattedDate}
-            <span className={clsx("text-sm", daysDiff < 7 ? "text-red-500" : "text-black/30")}>
+            <span className={clsx("text-xs", daysDiff < 7 ? "text-red-500" : "text-black/30")}>
               Se vence en {daysDiff} día{daysDiff > 1 ? "s" : ""}!
             </span>
           </div>

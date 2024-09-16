@@ -1,8 +1,8 @@
-import { Route, Redirect } from 'wouter';
-import useStore from '@/store/use-auth'
+import { Route, Redirect } from "wouter";
+import { useAuthStore } from "@/store/use-auth";
 
-export default function CashierRoute({ component: Component,...rest }: any ) {
-  const { user } = useStore()
+export default function CashierRoute({ component: Component, ...rest }: any) {
+  const { user } = useAuthStore();
 
   return (
     <Route
@@ -17,4 +17,3 @@ export default function CashierRoute({ component: Component,...rest }: any ) {
     />
   );
 }
-

@@ -60,7 +60,7 @@ export function EditProductForm({ product, onClose }: Props) {
       dueDate: product.dueDate,
       discount: {
         value: product.discount?.value ?? 0,
-        dueDate: product.discount?.dueDate ?? new Date(),
+        dueDate: product.discount?.dueDate ?? undefined,
       },
     },
   });
@@ -142,6 +142,46 @@ export function EditProductForm({ product, onClose }: Props) {
             </FormItem>
           )}
         />
+        <FormField
+                control={form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de vencimiento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: es })
+                            ) : (
+                              <span>Seleccione una fecha</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) => date < new Date()}
+                          locale={es}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>Descuento</AccordionTrigger>
