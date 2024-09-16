@@ -14,8 +14,8 @@ import {
 import { DialogHeader } from "../ui/dialog";
 import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
-import { products as productList } from "@/data/products";
 import ProductSummary from "@/components/cashier/buttons/summary";
+import { useProductStore } from "@/store/use-products";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -24,18 +24,19 @@ const CajeroLayout = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [isOpenBoleta, setIsOpenBoleta] = useState(false);
+  const { products: productList } = useProductStore();
 
   const handleAddProduct = () => {
     const foundProduct = productList.find((product) => product.id === code);
     if (foundProduct) {
       const currentDate = new Date();
-      const isDiscountValid = foundProduct.discount?.dueDate 
-      ? currentDate <= foundProduct.discount?.dueDate
-      : false;
+      const isDiscountValid = foundProduct.discount?.dueDate
+        ? currentDate <= foundProduct.discount?.dueDate
+        : false;
       const discount = foundProduct.discount?.value ?? 0;
       const price = isDiscountValid
         ? foundProduct.price * (1 - discount / 100)
-        : foundProduct.price; 
+        : foundProduct.price;
 
       setAddedProducts((prev) => {
         const existingProductIndex = prev.findIndex(
@@ -154,17 +155,28 @@ const CajeroLayout = () => {
                     Detalle de productos y total.
                   </DialogDescription>
                 </DialogHeader>
-                <ProductSummary products={addedProducts} total={total} onClose={endSale} />
+                <ProductSummary
+                  products={addedProducts}
+                  total={total}
+                  onClose={endSale}
+                />
               </DialogContent>
             </Dialog>
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto space-y-2">
+            {user.role === "admin" && (
+              <Button
+                asChild
+                className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full whitespace-normal text-center"
+              >
+                <Link href="/dashboard">Volver al panel de administración</Link>
+              </Button>
+            )}
             <Button
               asChild
-              variant="secondary"
-              className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200 w-full"
+              className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full"
             >
-              <Link href="/">Salir del Panel</Link>
+              <Link href="/">Cerrar Sesión</Link>
             </Button>
           </div>
         </aside>
@@ -189,7 +201,10 @@ const CajeroLayout = () => {
                 </thead>
                 <tbody>
                   {addedProducts.map((product, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <tr
+                      key={index}
+                      className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                    >
                       <td className="py-2 px-4">{product.id}</td>
                       <td className="py-2 px-4">{product.name}</td>
                       <td className="py-2 px-4">{product.quantity}</td>

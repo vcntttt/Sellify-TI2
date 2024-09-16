@@ -32,15 +32,15 @@ const formSchema = z.object({
 
 export default function Login() {
   const setLocation = useLocation()[1];
-  const { setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [isAdminDialogOpen, setAdminDialogOpen] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      role: "admin",
+      name: user.name,
+      role: user.role,
     },
   });
 
@@ -88,7 +88,7 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>Nombre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Jhon Doe" {...field} />
+                      <Input placeholder="Nelsiño" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
