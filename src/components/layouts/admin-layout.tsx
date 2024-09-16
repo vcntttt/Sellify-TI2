@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import clsx from "clsx";
 import { sections } from "@/data/sections";
-import { CircleUser, Menu, Package2 } from "lucide-react";
+import { CircleUser, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Botonera from "@/components/admin/actions/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import useStore from "@/store/use-auth";
+import {useAuthStore} from "@/store/use-auth";
 import Logo from "../logo";
 
 export default function AdminLayout({
@@ -22,7 +22,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [location] = useLocation();
-  const { user } = useStore();
+  const { user } = useAuthStore();
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -100,7 +100,7 @@ export default function AdminLayout({
                   href="/"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
-                  <Package2 className="h-6 w-6" />
+                  <Logo className="h-6 w-6" />
                   <span className="sr-only text-red-">Sellify</span>
                 </Link>
                 {sections.map((section) => (

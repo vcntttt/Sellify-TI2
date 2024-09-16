@@ -16,10 +16,10 @@ interface Store {
 }
 
 // Crear el estado global con Zustand
-const useAuthStore = create<Store>((set) => ({
+export const useAuthStore = create<Store>((set) => ({
   user: {
     name: 'Jhon Doe',
-    role: 'admin',
+    role: 'customer',
   },
 
   setUser: (user: User) =>
@@ -29,5 +29,3 @@ const useAuthStore = create<Store>((set) => ({
     })),
 
 }));
-
-export default useAuthStore;

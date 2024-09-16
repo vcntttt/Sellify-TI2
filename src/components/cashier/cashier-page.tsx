@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "../ui/button";
-import useStore from "@/store/use-auth";
+import { useAuthStore } from "@/store/use-auth";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
@@ -18,7 +18,7 @@ import { products as productList } from "@/data/products";
 import ProductSummary from "@/components/cashier/buttons/summary";
 
 const CajeroLayout = () => {
-  const { user } = useStore();
+  const { user } = useAuthStore();
   const [addedProducts, setAddedProducts] = useState<any[]>([]);
   const [code, setCode] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
@@ -29,12 +29,12 @@ const CajeroLayout = () => {
     const foundProduct = productList.find((product) => product.id === code);
     if (foundProduct) {
       const currentDate = new Date();
-      const isDiscountValid = foundProduct.discount.dueDate 
-      ? currentDate <= foundProduct.discount.dueDate
+      const isDiscountValid = foundProduct.discount?.dueDate 
+      ? currentDate <= foundProduct.discount?.dueDate
       : false;
-
+      const discount = foundProduct.discount?.value ?? 0;
       const price = isDiscountValid
-        ? foundProduct.price * (1 - foundProduct.discount.value / 100) 
+        ? foundProduct.price * (1 - discount / 100)
         : foundProduct.price; 
 
       setAddedProducts((prev) => {

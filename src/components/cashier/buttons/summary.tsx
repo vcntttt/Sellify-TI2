@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
 
 interface Product {
   id: number;
@@ -40,7 +39,7 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
         Total: ${total}
       </div>
 
-      <div className="w-full">
+      <div className="w-full flex justify-end pt-4">
         <Button onClick={onClose}>Finalizar compra</Button>
       </div>
     </div>
