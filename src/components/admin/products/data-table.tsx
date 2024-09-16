@@ -40,7 +40,9 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    createdAt: false
+  });
 
   // useEffect(() => {
   //   console.log("data changed:", data);
@@ -64,7 +66,7 @@ export function DataTable<TData, TValue>({
   });
 
   useEffect(() => {
-    table.setPageSize(9);
+    table.setPageSize(8);
   }, [table]);
 
   return (

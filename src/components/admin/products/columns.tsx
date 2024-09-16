@@ -10,8 +10,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { EditProductForm } from "./edit-form";
+import { EditProductForm } from "./edit-product";
 import { useState } from "react";
+import { differenceInCalendarDays } from "date-fns";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import clsx from "clsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
@@ -39,7 +43,7 @@ export const columns: ColumnDef<Producto>[] = [
         </Button>
       );
     },
-    enableHiding: false
+    enableHiding: false,
   },
   {
     accessorKey: "name",
@@ -54,7 +58,7 @@ export const columns: ColumnDef<Producto>[] = [
         </Button>
       );
     },
-    enableHiding: false
+    enableHiding: false,
   },
   {
     accessorKey: "stock",
@@ -69,7 +73,7 @@ export const columns: ColumnDef<Producto>[] = [
         </Button>
       );
     },
-    enableHiding: false
+    enableHiding: false,
   },
   {
     accessorKey: "price",
@@ -112,7 +116,7 @@ export const columns: ColumnDef<Producto>[] = [
         </div>
       );
     },
-    enableHiding: false
+    enableHiding: false,
   },
   {
     accessorKey: "discount",
@@ -129,28 +133,32 @@ export const columns: ColumnDef<Producto>[] = [
     },
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
-      const dueDate = discount.dueDate
+      const dueDate = discount.dueDate;
       let daysDiscount: string | null = null;
+
       if (dueDate) {
         const currentDate = new Date();
-        const timeDiff = dueDate.getTime() - currentDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        const daysDiff = differenceInCalendarDays(dueDate, currentDate);
 
         if (daysDiff > 0) {
-          daysDiscount = `Se acaba en ${daysDiff} día${daysDiff > 1 ? "s" : ""}!`;
-        }else if (daysDiff === 0) {
+          daysDiscount = `Se acaba en ${daysDiff} día${
+            daysDiff > 1 ? "s" : ""
+          }!`;
+        } else if (daysDiff === 0) {
           daysDiscount = "Se acaba hoy!";
-        }
-        else {
+        } else {
           daysDiscount = "El descuento ha expirado";
         }
       }
 
       return (
-      <div className="text-left font-medium flex flex-col gap-y-2">
-        {discount.value}%
-        {daysDiscount && <span className="text-red-500 text-xs">{daysDiscount}</span>}
-      </div>);
+        <div className="text-left font-medium flex flex-col gap-y-2">
+          {discount.value}%
+          {daysDiscount && (
+            <span className="text-red-500 text-xs">{daysDiscount}</span>
+          )}
+        </div>
+      );
     },
   },
   {
@@ -166,7 +174,75 @@ export const columns: ColumnDef<Producto>[] = [
         </Button>
       );
     },
-    enableHiding: false
+    enableHiding: false,
+  },
+  {
+    accessorKey: "dueDate",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Fecha de vencimiento
+          <SortedIcon isSorted={column.getIsSorted()} />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const currentDate = new Date();
+      const dueDate = row.getValue("dueDate") as Date;
+
+      const formattedDate = format(dueDate, "dd-MM-yyyy", { locale: es });
+      const daysDiff = differenceInCalendarDays(dueDate, currentDate);
+
+      if (daysDiff > 0) {
+        return (
+          <div className="text-left font-medium flex flex-col gap-y-2">
+            {formattedDate}
+            <span className={clsx("text-sm", daysDiff < 7 ? "text-red-500" : "text-black/30")}>
+              Se vence en {daysDiff} día{daysDiff > 1 ? "s" : ""}!
+            </span>
+          </div>
+        );
+      } else if (daysDiff === 0) {
+        return (
+          <div className="text-left font-medium flex flex-col gap-y-2">
+            {formattedDate}
+            <span className="text-red-500 text-xs">Se vence hoy!</span>
+          </div>
+        );
+      } else {
+        return (
+          <div className="text-left font-medium flex flex-col gap-y-2">
+            {formattedDate}
+            <span className="text-red-500 text-xs">Producto vencido</span>
+          </div>
+        );
+      }
+    },
+    enableHiding: true,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Fecha de creación
+          <SortedIcon isSorted={column.getIsSorted()} />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt") as Date;
+      const formattedDate = new Intl.DateTimeFormat("es-CL").format(createdAt);
+
+      return <div className="text-left font-medium">{formattedDate}</div>;
+    },
+    enableHiding: true,
   },
   {
     accessorKey: "action",
@@ -178,10 +254,10 @@ export const columns: ColumnDef<Producto>[] = [
       const name = row.getValue("name") as string;
       const stock = row.getValue("stock") as number;
       const price = row.getValue("price") as number;
-      const category = row.getValue("category") as Category
+      const category = row.getValue("category") as Category;
       const discount = row.getValue("discount") as ProductDiscount;
-      // const dueDate = row.getValue("dueDate") as Date;
-      // const createdAt = row.getValue("createdAt") as Date;
+      const dueDate = row.getValue("dueDate") as Date;
+      const createdAt = row.getValue("createdAt") as Date;
       const product = {
         id,
         name,
@@ -189,8 +265,8 @@ export const columns: ColumnDef<Producto>[] = [
         price,
         category,
         discount,
-        // dueDate,
-        // createdAt,
+        dueDate,
+        createdAt,
       };
       return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -206,11 +282,14 @@ export const columns: ColumnDef<Producto>[] = [
                 Edita la información de tu producto.
               </DialogDescription>
             </DialogHeader>
-            <EditProductForm product={product} onClose={() => setIsOpen(false)} />
+            <EditProductForm
+              product={product}
+              onClose={() => setIsOpen(false)}
+            />
           </DialogContent>
         </Dialog>
       );
     },
-    enableHiding: false
+    enableHiding: false,
   },
 ];

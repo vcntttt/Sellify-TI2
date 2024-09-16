@@ -27,7 +27,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Producto } from "@/types";
 import { productSchema as formSchema } from "@/schemas";
-import { categories } from "@/data/categories";
 import CustomSlider from "./custom-slider";
 import {
   Popover,
@@ -47,7 +46,7 @@ interface Props {
 }
 
 export function EditProductForm({ product, onClose }: Props) {
-  const { editProduct } = useProductStore();
+  const { categories, editProduct, deleteProduct } = useProductStore();
   // 1. Define your form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,10 +56,11 @@ export function EditProductForm({ product, onClose }: Props) {
       stock: product.stock,
       price: product.price,
       category: product.category,
-      // dueDate: product.dueDate,
+      createdAt: product.createdAt,
+      dueDate: product.dueDate,
       discount: {
-        value: product.discount.value,
-        dueDate: product.discount.dueDate ?? new Date(),
+        value: product.discount?.value ?? 0,
+        dueDate: product.discount?.dueDate ?? new Date(),
       },
     },
   });
@@ -68,6 +68,11 @@ export function EditProductForm({ product, onClose }: Props) {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     editProduct(values);
+    onClose();
+  }
+
+  function handleDelete() {
+    deleteProduct(product);
     onClose();
   }
 
@@ -146,14 +151,14 @@ export function EditProductForm({ product, onClose }: Props) {
                 name="discount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descuento: {field.value.value}%</FormLabel>
+                    <FormLabel>Descuento: {field.value?.value ?? 0}%</FormLabel>
                     <FormControl>
                       <CustomSlider
-                        value={field.value.value}
+                        value={field.value?.value ?? 0}
                         onChange={(value) => {
                           form.setValue("discount", {
                             value,
-                            dueDate: field.value.dueDate,
+                            dueDate: field.value?.dueDate ?? undefined,
                           });
                         }}
                       />
@@ -189,7 +194,7 @@ export function EditProductForm({ product, onClose }: Props) {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value}
+                          selected={field.value ?? undefined}
                           onSelect={field.onChange}
                           disabled={(date) => date < new Date()}
                           locale={es}
@@ -206,7 +211,7 @@ export function EditProductForm({ product, onClose }: Props) {
         </Accordion>
 
         <div className="flex gap-x-2 *:w-1/2 pt-4">
-          <Button variant="destructive">Retirar producto</Button>
+          <Button onClick={handleDelete} variant="destructive">Retirar producto</Button>
           <Button type="submit">Guardar cambios</Button>
         </div>
       </form>

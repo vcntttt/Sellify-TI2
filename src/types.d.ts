@@ -4,7 +4,7 @@ export type Category = typeof categories[number];
 
 export interface ProductDiscount {
   value: number;
-  dueDate: Date | null;
+  dueDate?: Date | null;
 }
 
 export interface Producto {
@@ -13,7 +13,7 @@ export interface Producto {
   stock: number;
   price: number;
   category: Category;
-  createdAt?: Date;
-  dueDate?: Date;
-  discount: ProductDiscount;
+  createdAt: Date;
+  dueDate: Date;
+  discount?: ProductDiscount;
 }
