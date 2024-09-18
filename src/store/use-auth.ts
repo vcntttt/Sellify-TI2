@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User } from "@/types";
+import { User } from "@/types/users";
 
 // Definir la interfaz del estado de la tienda
 interface Store {

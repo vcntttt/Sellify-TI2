@@ -3,8 +3,6 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { ventas } from "@/data/ventas";
 
-
-
 export default function DemoPage() {
 
     return (

@@ -7,9 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AddCategory } from "./add-category";
+import { AddCategory } from "@/components/admin/products/add-category";
 import { useState } from "react";
-import { AddProductForm } from "./add-product";
+import { AddProductForm } from "@/components/admin/products/add-product";
 
 export default function ProductActions() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);

@@ -8,12 +8,13 @@ import DashboardHome from "@/components/admin/dashboard";
 import Ventas from "@/components/admin/ventas/ventas-page";
 import Analiticas from "@/components/admin/analiticas/analitics-page";
 import Productos from "@/components/admin/products/products-page";
+import { FC } from "react" // Funcional Component
 
 interface Section {
   name : string;
   href : string;
   icon : any;
-  component : any;
+  component : FC;
 }
 
 export const sections: Section[] = [

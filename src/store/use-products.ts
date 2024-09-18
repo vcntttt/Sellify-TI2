@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Category, Producto } from "@/types";
+import { Category, Producto } from "@/types/products";
 import { products as data } from "@/data/products";
 import { categories } from "@/data/categories";
 

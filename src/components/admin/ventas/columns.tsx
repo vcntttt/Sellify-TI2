@@ -2,14 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-
 export type Venta = {
   numeroBoleta: number;
   monto: number;
   fecha: Date;
   boleta: string;
 };
-
 
 export const columns: ColumnDef<Venta>[] = [
   {

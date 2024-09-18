@@ -1,16 +1,16 @@
 import { Link } from "wouter";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/use-auth";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { DialogHeader } from "../ui/dialog";
 import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import ProductSummary from "@/components/cashier/buttons/summary";

@@ -25,8 +25,8 @@ import {
 } from "@/components/ui/accordion";
 
 import { Input } from "@/components/ui/input";
-import { productSchema as formSchema } from "@/schemas";
-import CustomSlider from "./custom-slider";
+import { productSchema as formSchema } from "@/schemas/products";
+import CustomSlider from "@/components/admin/products/custom-slider";
 import {
   Popover,
   PopoverContent,

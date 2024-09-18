@@ -1,5 +1,5 @@
 import { ColumnDef, SortDirection } from "@tanstack/react-table";
-import { Category, ProductDiscount, Producto } from "@/types";
+import { Category, ProductDiscount, Producto } from "@/types/products";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { EditProductForm } from "./edit-product";
+import { EditProductForm } from "@/components/admin/products/edit-product";
 import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import { format } from "date-fns";
