@@ -18,7 +18,19 @@ import useCarrito from "@/hooks/use-carrito";
 
 const CajeroLayout = () => {
   const { user } = useStore();
-  const {addedProducts, code, quantity, total, isOpenBoleta, setCode, setQuantity, handleAddProduct, handleKeyPress, setIsOpenBoleta, endSale} = useCarrito();
+  const {
+    addedProducts,
+    code,
+    quantity,
+    total,
+    isOpenBoleta,
+    setCode,
+    setQuantity,
+    handleAddProduct,
+    handleKeyPress,
+    setIsOpenBoleta,
+    endSale,
+  } = useCarrito();
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -89,7 +101,11 @@ const CajeroLayout = () => {
                     Detalle de productos y total.
                   </DialogDescription>
                 </DialogHeader>
-                <ProductSummary products={addedProducts} total={total} onClose={endSale} />
+                <ProductSummary
+                  products={addedProducts}
+                  total={total}
+                  onClose={endSale}
+                />
               </DialogContent>
             </Dialog>
           </div>
@@ -124,7 +140,10 @@ const CajeroLayout = () => {
                 </thead>
                 <tbody>
                   {addedProducts.map((product, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <tr
+                      key={index}
+                      className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                    >
                       <td className="py-2 px-4">{product.id}</td>
                       <td className="py-2 px-4">{product.name}</td>
                       <td className="py-2 px-4">{product.quantity}</td>
