@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Botonera from "@/components/admin/actions/layout-buttons";
+import Botonera from "@/components/admin/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {useAuthStore} from "@/store/use-auth";
 import Logo from "../logo";

@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import AddUserForm from "@/components/admin/actions/add-user-form";
+import AddUserForm from "@/components/admin/add-user-form";
 
 export default function AdminLayoutButtons({ variant }: { variant: "light" | "dark" }) {
   const setLocation = useLocation()[1];
