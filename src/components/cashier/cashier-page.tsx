@@ -15,6 +15,7 @@ import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
+import ProductTable from "@/components/cashier/ProductTable"
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -130,39 +131,9 @@ const CajeroLayout = () => {
         {/* Main Content Section */}
         <main className="flex-1 ml-64 p-6 flex flex-col">
           <section className="bg-white shadow-md rounded-lg p-8 border border-gray-200 mb-6 flex-grow min-h-[400px]">
-            <h3 className="text-lg font-semibold mb-10">
-              Productos en la Compra
-            </h3>
-            {/* Contenedor con scroll para la tabla */}
-            <div className="max-h-64 overflow-y-auto">
-              <table className="min-w-full bg-white border border-gray-200">
-                <thead className="bg-gray-300 border-b border-gray-300 sticky top-0">
-                  <tr className="*:text-black *:text-left *:py-2 *:px-4">
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Precio Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {addedProducts.map((product, index) => (
-                    <tr
-                      key={index}
-                      className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                    >
-                      <td className="py-2 px-4">{product.id}</td>
-                      <td className="py-2 px-4">{product.name}</td>
-                      <td className="py-2 px-4">{product.quantity}</td>
-                      <td className="py-2 px-4">${product.price}</td>
-                      <td className="py-2 px-4">${product.totalPrice}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <h3 className="text-lg font-semibold mb-10">Productos en la Compra</h3>
+            <ProductTable products={addedProducts} />
           </section>
-
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
             style={{ minHeight: "120px" }}
