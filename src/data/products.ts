@@ -24,7 +24,7 @@ export const products: Producto[] = [
     dueDate: new Date("2024-10-10"),
     discount: {
       value: 5,
-      dueDate: new Date("2024-09-16")
+      dueDate: new Date("2024-09-20")
     }
   },
   {
@@ -50,7 +50,7 @@ export const products: Producto[] = [
     dueDate: new Date("2024-09-10"),
     discount: {
       value: 15,
-      dueDate: new Date("2024-09-17")
+      dueDate: new Date("2024-09-20")
     }
   },
   {
