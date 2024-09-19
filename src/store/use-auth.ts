@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { User } from "@/types/users";
+import { devtools } from "zustand/middleware";
 
 // Definir la interfaz del estado de la tienda
 interface Store {
@@ -8,17 +9,10 @@ interface Store {
 }
 
 // Crear el estado global con Zustand
-export const useAuthStore = create<Store>((set) => ({
+export const useAuthStore = create<Store>()(devtools((set) => ({  
   user: {
-    id: 1,
-    name: 'Nelsiño',
-    role: 'admin',
+    name: '',
+    role: '',
   },
-
-  setUser: (user: User) =>
-    set((state) => ({
-      ...state, 
-      user,
-    })),
-
-}));
+  setUser: (user: User) => set({ user }, false, "setUser"),
+})));

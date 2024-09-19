@@ -21,6 +21,18 @@ function NotFound() {
   );
 }
 
+function NonAuthorized() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold text-gray-800">403</h1>
+      <p className="text-lg text-gray-600">No tienes permiso para acceder a esta página.</p>
+      <Button asChild>
+        <Link href="/">Volver al inicio</Link>
+      </Button>
+    </div>
+  );
+}
+
 function DashboardLayout() {
   return (
     <AdminLayout>
@@ -37,6 +49,7 @@ export default function App() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Route path="/" component={LogInPage} />
       <Route path="/NotFound" component={NotFound} />
+      <Route path="/non-authorized" component={NonAuthorized} />
       <AdminRoute path="/dashboard" component={DashboardLayout} />
       {sections.slice(1).map((section: any) => (
         <AdminRoute key={section.href} path={section.href} component={DashboardLayout} />

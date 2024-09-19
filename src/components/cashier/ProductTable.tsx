@@ -1,11 +1,20 @@
-"use client";
-
-import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
-import { Table, TableHeader, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@/components/ui/table";
 import { productColumns, Product } from "@/components/cashier/ProductColumns";
+import { formatPrice } from "@/lib/utils";
 
 interface ProductTableProps {
-    products: Product[];
+  products: Product[];
 }
 
 const ProductTable = ({ products }: ProductTableProps) => {
@@ -44,49 +53,56 @@ const ProductTable = ({ products }: ProductTableProps) => {
           {table.getRowModel().rows.map((row, index) => (
             <TableRow
               key={row.id}
-              className={`hover:bg-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+              className={`hover:bg-gray-200 ${
+                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+              }`}
             >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell
-                  key={cell.id}
-                  className="py-2 px-4 text-center"
-                >
-                  {cell.column.id === 'price' ? (
-                    <div className="flex flex-col items-center">
-                      {row.original.discountedPrice < row.original.originalPrice ? (
-                        <>
-                          <span className="line-through text-gray-500">
-                            {new Intl.NumberFormat("es-CL", {
-                              style: "currency",
-                              currency: "CLP",
-                            }).format(row.original.originalPrice)}
-                          </span>
-                          <span className="text-red-500">
-                            {new Intl.NumberFormat("es-CL", {
-                              style: "currency",
-                              currency: "CLP",
-                            }).format(row.original.discountedPrice)}
-                          </span>
-                          <span className="text-gray-500">
-                            (-{Math.round(
-                              ((row.original.originalPrice - row.original.discountedPrice) / row.original.originalPrice) * 100
-                            )} %)
-                          </span>
-                        </>
+              {row.getVisibleCells().map((cell) => {
+                const discount = row.original.discountedPrice ?? 0;
+                return (
+                  (
+                    <TableCell key={cell.id} className="py-2 px-4 text-center">
+                      {cell.column.id === "price" ? (
+                        <div className="flex flex-col items-center">
+                          {discount <
+                          row.original.originalPrice ? (
+                            <>
+                              <span className="line-through text-gray-500">
+                                {new Intl.NumberFormat("es-CL", {
+                                  style: "currency",
+                                  currency: "CLP",
+                                }).format(row.original.originalPrice)}
+                              </span>
+                              <span className="text-red-500">
+                                {new Intl.NumberFormat("es-CL", {
+                                  style: "currency",
+                                  currency: "CLP",
+                                }).format(discount)}
+                              </span>
+                              <span className="text-gray-500">
+                                (-
+                                {Math.round(
+                                  ((row.original.originalPrice -
+                                    discount) /
+                                    row.original.originalPrice) *
+                                    100
+                                )}{" "}
+                                %)
+                              </span>
+                            </>
+                          ) : (
+                            <span>
+                              {formatPrice(row.original.originalPrice)}
+                            </span>
+                          )}
+                        </div>
                       ) : (
-                        <span>
-                          {new Intl.NumberFormat("es-CL", {
-                            style: "currency",
-                            currency: "CLP",
-                          }).format(row.original.originalPrice)}
-                        </span>
+                        flexRender(cell.column.columnDef.cell, cell.getContext())
                       )}
-                    </div>
-                  ) : (
-                    flexRender(cell.column.columnDef.cell, cell.getContext())
-                  )}
-                </TableCell>
-              ))}
+                    </TableCell>
+                  )
+                )
+              })}
             </TableRow>
           ))}
         </TableBody>
