@@ -18,7 +18,7 @@ export default function ProductActions() {
     <div className="flex gap-4">
       <Dialog open={isProductDialogOpen} onOpenChange={setIsProductDialogOpen}>
         <DialogTrigger asChild>
-          <Button>
+          <Button variant={"outline"}>
             Agregar Producto
           </Button>
         </DialogTrigger>
@@ -34,7 +34,7 @@ export default function ProductActions() {
       </Dialog>
       <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
         <DialogTrigger asChild>
-          <Button>
+          <Button variant={"outline"}>
             Agregar Categoria
           </Button>
         </DialogTrigger>

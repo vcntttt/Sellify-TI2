@@ -1,5 +1,5 @@
-import { ColumnDef, SortDirection } from "@tanstack/react-table";
-import { Category, ProductDiscount, Producto } from "@/types/products";
+import { ColumnDef } from "@tanstack/react-table";
+import { ProductDiscount, Producto } from "@/types/products";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,25 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { EditProductForm } from "@/components/admin/products/edit-product";
 import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import clsx from "clsx";
-
-// eslint-disable-next-line react-refresh/only-export-components
-const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
-  if (isSorted === "asc") {
-    return <ArrowUp className="h-4 w-4" />;
-  }
-  if (isSorted === "desc") {
-    return <ArrowDown className="h-4 w-4" />;
-  }
-
-  return null;
-};
+import { formatDate, formatPrice } from "@/lib/utils";
+import { SortedIcon } from "@/icons/sorted-icon";
 
 export const columns: ColumnDef<Producto>[] = [
   {
@@ -35,6 +22,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -50,6 +38,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -65,6 +54,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -80,6 +70,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -93,16 +84,9 @@ export const columns: ColumnDef<Producto>[] = [
       const discount = row.getValue("discount") as ProductDiscount;
       const discountedPrice = price - (price * discount.value) / 100;
 
-      const formattedPrice = new Intl.NumberFormat("es-CL", {
-        style: "currency",
-        currency: "CLP",
-      }).format(price);
+      const formattedPrice = formatPrice(price);
 
-      const formattedDiscount = new Intl.NumberFormat("es-CL", {
-        style: "currency",
-        currency: "CLP",
-      }).format(discountedPrice);
-
+      const formattedDiscount = formatPrice(discountedPrice);
       return (
         <div className="text-left font-medium">
           {discount.value > 0 ? (
@@ -123,6 +107,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -166,6 +151,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -181,6 +167,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -193,7 +180,7 @@ export const columns: ColumnDef<Producto>[] = [
       const currentDate = new Date();
       const dueDate = row.getValue("dueDate") as Date;
 
-      const formattedDate = format(dueDate, "dd-MM-yyyy", { locale: es });
+      const formattedDate = formatDate(dueDate);
       const daysDiff = differenceInCalendarDays(dueDate, currentDate);
 
       if (daysDiff > 0) {
@@ -228,6 +215,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="hover:bg-slate-700 hover:text-white"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -238,7 +226,7 @@ export const columns: ColumnDef<Producto>[] = [
     },
     cell: ({ row }) => {
       const createdAt = row.getValue("createdAt") as Date;
-      const formattedDate = new Intl.DateTimeFormat("es-CL").format(createdAt);
+      const formattedDate = formatDate(createdAt);
 
       return <div className="text-left font-medium">{formattedDate}</div>;
     },
@@ -250,28 +238,10 @@ export const columns: ColumnDef<Producto>[] = [
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isOpen, setIsOpen] = useState(false);
-      const id = row.getValue("id") as number;
-      const name = row.getValue("name") as string;
-      const stock = row.getValue("stock") as number;
-      const price = row.getValue("price") as number;
-      const category = row.getValue("category") as Category;
-      const discount = row.getValue("discount") as ProductDiscount;
-      const dueDate = row.getValue("dueDate") as Date;
-      const createdAt = row.getValue("createdAt") as Date;
-      const product = {
-        id,
-        name,
-        stock,
-        price,
-        category,
-        discount,
-        dueDate,
-        createdAt,
-      };
       return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="">
+            <Button variant="secondary" className="">
               Editar Producto
             </Button>
           </DialogTrigger>
@@ -283,7 +253,7 @@ export const columns: ColumnDef<Producto>[] = [
               </DialogDescription>
             </DialogHeader>
             <EditProductForm
-              product={product}
+              product={row.original}
               onClose={() => setIsOpen(false)}
             />
           </DialogContent>

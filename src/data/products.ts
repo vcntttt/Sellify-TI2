@@ -8,7 +8,7 @@ export const products: Producto[] = [
     price: 500,
     category: "Frutas",
     createdAt: new Date("2024-08-15"),
-    dueDate: new Date("2024-09-07"),
+    dueDate: new Date("2024-09-05"),
     discount: {
       value: 0,
       dueDate: null // No tiene fecha de vencimiento

@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import Botonera from "@/components/admin/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 // import { useAuthStore } from "@/store/use-auth";
-import Logo from "@/components/logo";
+import Logo from "@/icons/logo";
 
 export default function AdminLayout({
   children,
