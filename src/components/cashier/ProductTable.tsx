@@ -25,7 +25,7 @@ const ProductTable = ({ products }: ProductTableProps) => {
   });
 
   return (
-    <div className="relative max-h-64 overflow-y-auto shadow-md rounded-lg border border-gray-200">
+    <div className="relative max-h-[400px] overflow-y-auto shadow-md rounded-lg border border-gray-200">
       <Table className="min-w-full bg-white border-collapse">
         {/* Header */}
         <TableHeader className="sticky top-0 bg-gray-300 border-b border-gray-300">
@@ -53,55 +53,43 @@ const ProductTable = ({ products }: ProductTableProps) => {
           {table.getRowModel().rows.map((row, index) => (
             <TableRow
               key={row.id}
-              className={`hover:bg-gray-200 ${
-                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-              }`}
+              className={`hover:bg-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
             >
               {row.getVisibleCells().map((cell) => {
                 const discount = row.original.discountedPrice ?? 0;
                 return (
-                  (
-                    <TableCell key={cell.id} className="py-2 px-4 text-center">
-                      {cell.column.id === "price" ? (
-                        <div className="flex flex-col items-center">
-                          {discount <
-                          row.original.originalPrice ? (
-                            <>
-                              <span className="line-through text-gray-500">
-                                {new Intl.NumberFormat("es-CL", {
-                                  style: "currency",
-                                  currency: "CLP",
-                                }).format(row.original.originalPrice)}
-                              </span>
-                              <span className="text-red-500">
-                                {new Intl.NumberFormat("es-CL", {
-                                  style: "currency",
-                                  currency: "CLP",
-                                }).format(discount)}
-                              </span>
-                              <span className="text-gray-500">
-                                (-
-                                {Math.round(
-                                  ((row.original.originalPrice -
-                                    discount) /
-                                    row.original.originalPrice) *
-                                    100
-                                )}{" "}
-                                %)
-                              </span>
-                            </>
-                          ) : (
-                            <span>
-                              {formatPrice(row.original.originalPrice)}
+                  <TableCell key={cell.id} className="py-2 px-4 text-center">
+                    {cell.column.id === "price" ? (
+                      <div className="flex items-center justify-center">
+                        {discount < row.original.originalPrice ? (
+                          <>
+                            <span className="line-through text-gray-500 mr-2">
+                              {new Intl.NumberFormat("es-CL", {
+                                style: "currency",
+                                currency: "CLP",
+                              }).format(row.original.originalPrice)}
                             </span>
-                          )}
-                        </div>
-                      ) : (
-                        flexRender(cell.column.columnDef.cell, cell.getContext())
-                      )}
-                    </TableCell>
-                  )
-                )
+                            <span className="text-red-500 mr-2">
+                              {new Intl.NumberFormat("es-CL", {
+                                style: "currency",
+                                currency: "CLP",
+                              }).format(discount)}
+                            </span>
+                            <span className="text-gray-500">
+                              (-{Math.round(((row.original.originalPrice - discount) / row.original.originalPrice) * 100)}%)
+                            </span>
+                          </>
+                        ) : (
+                          <span>
+                            {formatPrice(row.original.originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      flexRender(cell.column.columnDef.cell, cell.getContext())
+                    )}
+                  </TableCell>
+                );
               })}
             </TableRow>
           ))}

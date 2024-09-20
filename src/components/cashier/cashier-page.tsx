@@ -16,6 +16,7 @@ import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form"
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
 import ProductTable from "@/components/cashier/ProductTable"
+import Logo from '@/icons/logo.tsx'; // Ajusta la ruta si es necesario
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -37,9 +38,17 @@ const CajeroLayout = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
       <header className="bg-white shadow-md p-4 fixed top-0 left-0 w-full flex justify-between items-center z-10">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Panel de Cajero
-        </h2>
+        <div className="flex items-center">
+          <div className="flex items-center gap-2 font-semibold">
+          <Link href="/" className="flex items-center gap-2 font-semibold">
+            <Logo className="h-8 w-8 filter invert" />
+            <span className="text-black">Sellify</span>
+          </Link>
+          </div>
+          <h2 className="text-2xl font-semibold text-gray-800 ml-10">
+            Panel de Cajero
+          </h2>
+        </div>
         <div className="text-gray-600 flex flex-col items-end">
           <p className="text-sm">
             Cajero: <span className="font-medium">{user.name}</span>
@@ -130,9 +139,10 @@ const CajeroLayout = () => {
 
         {/* Main Content Section */}
         <main className="flex-1 ml-64 p-6 flex flex-col">
-          <section className="bg-white shadow-md rounded-lg p-8 border border-gray-200 mb-6 flex-grow min-h-[400px]">
-            <h3 className="text-lg font-semibold mb-10">Productos en la Compra</h3>
-            <ProductTable products={addedProducts} />
+          <section className="shadow-md rounded-lg border mb-7 flex-grow">
+            <div className="flex-grow overflow-hidden">
+              <ProductTable products={addedProducts} />
+            </div>
           </section>
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
