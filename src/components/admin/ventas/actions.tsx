@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { es } from "date-fns/locale";
 
 export default function VentasActions({ tableRef }: { tableRef: any }) {
   const [date, setDate] = useState<Date | undefined>(undefined);
@@ -33,7 +34,7 @@ export default function VentasActions({ tableRef }: { tableRef: any }) {
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Filtrar por fecha</span>}
+            {date ? format(date, "PPP", { locale: es }) : <span>Filtrar por fecha</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -41,6 +42,7 @@ export default function VentasActions({ tableRef }: { tableRef: any }) {
             mode="single"
             selected={date}
             onSelect={setDate}
+            locale={es}
             initialFocus
           />
         </PopoverContent>

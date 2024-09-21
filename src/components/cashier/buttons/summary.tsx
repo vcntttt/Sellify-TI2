@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 
 interface Product {
   id: number;
@@ -20,18 +21,9 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
     <div className="px-6 pt-6">
       <div className="max-h-96 overflow-y-auto">
         {products.map((product, index) => {
-          const formattedOriginalPrice = new Intl.NumberFormat("es-CL", {
-            style: "currency",
-            currency: "CLP",
-          }).format(product.originalPrice);
-          const formattedTotalPrice = new Intl.NumberFormat("es-CL", {
-            style: "currency",
-            currency: "CLP",
-          }).format(product.totalPrice);
-          const formattedDiscountedPrice = new Intl.NumberFormat("es-CL", {
-            style: "currency",
-            currency: "CLP",
-          }).format(product.discountedPrice || product.totalPrice);
+          const formattedOriginalPrice = formatPrice(product.originalPrice);
+          const formattedTotalPrice = formatPrice (product.totalPrice);
+          const formattedDiscountedPrice = formatPrice(product.discountedPrice || product.totalPrice);
           const discount = product.discountedPrice
             ? (product.originalPrice - product.discountedPrice) / product.originalPrice * 100
             : 0;
@@ -62,7 +54,7 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
         })}
       </div>
       <div className="text-right font-bold text-lg mt-4 text-gray-800 border-t pt-4 border-gray-200">
-        Total: {new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" }).format(total)}
+        Total: {formatPrice(total)}
       </div>
 
       <div className="w-full flex justify-end pt-4">

@@ -7,10 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { products } from "@/data/products";
+import { useProductStore } from "@/store/use-products";
 import { useState } from "react";
 
 export default function ProductSearch() {
+  const { products } = useProductStore();
   const [code, setCode] = useState("");
 
   const filteredProducts = products.filter(
