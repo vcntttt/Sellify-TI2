@@ -48,7 +48,7 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
               </div>
               <div className="ml-8 text-right text-gray-700 font-semibold">
                 {product.discountedPrice && discount > 0 ? (
-                  <div className="flex flex-col items-end">
+                  <div className="flex items-end gap-x-2">
                     <span className="line-through text-gray-500">{formattedOriginalPrice}</span>
                     <span className="text-red-500">{formattedDiscountedPrice}</span>
                     <span className="text-gray-500">(-{Math.round(discount)}%)</span>

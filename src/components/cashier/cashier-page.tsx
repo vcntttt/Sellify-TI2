@@ -15,8 +15,8 @@ import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
-import ProductTable from "@/components/cashier/ProductTable"
-import Logo from '@/icons/logo.tsx'; // Ajusta la ruta si es necesario
+import ProductTable from "@/components/cashier/data-table"
+import Logo from '@/icons/logo.tsx';
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -41,8 +41,7 @@ const CajeroLayout = () => {
         <div className="flex items-center">
           <div className="flex items-center gap-2 font-semibold">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Logo className="h-8 w-8 filter invert" />
-            <span className="text-black">Sellify</span>
+            <Logo className="size-12 filter invert"/>
           </Link>
           </div>
           <h2 className="text-2xl font-semibold text-gray-800 ml-10">
@@ -100,11 +99,11 @@ const CajeroLayout = () => {
 
             <Dialog open={isOpenBoleta} onOpenChange={setIsOpenBoleta}>
               <DialogTrigger>
-                <Button className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full">
+                <Button className="rounded-lg shadow-md transition duration-200 w-full">
                   Finalizar Compra
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-[425px]">
+              <DialogContent className="min-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>Boleta</DialogTitle>
                   <DialogDescription>
@@ -123,14 +122,14 @@ const CajeroLayout = () => {
             {user.role === "admin" && (
               <Button
                 asChild
-                className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full whitespace-normal text-center"
+                className="rounded-lg shadow-md transition duration-200 w-full whitespace-normal text-center"
               >
                 <Link href="/dashboard">Volver al panel de administración</Link>
               </Button>
             )}
             <Button
               asChild
-              className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full"
+              className="rounded-lg shadow-md transition duration-200 w-full"
             >
               <Link href="/">Cerrar Sesión</Link>
             </Button>
@@ -140,9 +139,7 @@ const CajeroLayout = () => {
         {/* Main Content Section */}
         <main className="flex-1 ml-64 p-6 flex flex-col">
           <section className="shadow-md rounded-lg border mb-7 flex-grow">
-            <div className="flex-grow overflow-hidden">
               <ProductTable products={addedProducts} />
-            </div>
           </section>
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
@@ -182,18 +179,18 @@ const CajeroLayout = () => {
             <div className="flex justify-end gap-4 mt-4">
               <Button
                 size="lg"
-                className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200"
+                className="rounded-lg shadow-md transition duration-200"
                 onClick={handleAddProduct}
               >
                 Confirmar
               </Button>
-              <Button
+              {/* <Button
                 variant="secondary"
                 size="lg"
                 className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200"
               >
                 Rechazar
-              </Button>
+              </Button> */}
             </div>
           </section>
         </main>
