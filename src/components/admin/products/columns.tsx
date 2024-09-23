@@ -90,7 +90,7 @@ export const columns: ColumnDef<Producto>[] = [
       const formattedDiscount = formatPrice(discountedPrice);
       return (
         <div className="text-left font-medium">
-          {isDiscountValid ? (
+          {isDiscountValid && discount.value > 0 ? (
             <div className="flex items-center gap-2">
               <span className="line-through">{formattedPrice}</span>
               <span className="text-red-500">{formattedDiscount}</span>
