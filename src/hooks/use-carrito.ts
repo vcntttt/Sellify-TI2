@@ -1,7 +1,8 @@
+import { useProductStore } from "@/store/use-products";
 import { useState } from "react";
-import { products as productList } from "@/data/products";
 
 export function useCarrito() {
+    const { products: productList } = useProductStore();
     const [addedProducts, setAddedProducts] = useState<any[]>([]);
     const [code, setCode] = useState<number | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
@@ -11,12 +12,12 @@ export function useCarrito() {
     const handleAddProduct = () => {
         const foundProduct = productList.find((product) => product.id === code);
         if (foundProduct) {
+            console.log(foundProduct)
             const currentDate = new Date();
             const discountDueDate = foundProduct.discount?.dueDate ?? undefined;
             const discountValue = foundProduct.discount?.value ?? 0;
-            const isDiscountValid = discountDueDate 
-                ? currentDate <= discountDueDate
-                : false;
+            const isDiscountValid = discountDueDate ? currentDate < discountDueDate : true;
+            console.log(isDiscountValid)
 
             const originalPrice = foundProduct.price;
             const discountedPrice = isDiscountValid

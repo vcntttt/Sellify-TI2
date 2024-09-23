@@ -20,11 +20,17 @@ export default function ProductSearch() {
 
 
   const finalProducts = filteredProducts.map((product) =>{
-    const discount = product.discount?.value ?? 0;
+    const discountValue = product.discount?.value ?? 0;
+    const discountDueDate = product.discount?.dueDate ?? undefined;
+    const currentDate = new Date();
+    const isDiscountValid = discountDueDate ? currentDate < discountDueDate : true;
+    const priceFinal = isDiscountValid ? (product.price - (product.price * discountValue) / 100) : product.price;
     return {
       
         ...product,
-        discountedPrice: product.price - (product.price * discount) / 100,
+        isDiscountValid,
+        discountedPrice: priceFinal,
+        discountValue: isDiscountValid ? discountValue : 0,
       }
     }
   );
@@ -58,12 +64,13 @@ export default function ProductSearch() {
                 style: "currency",
                 currency: "CLP",
               }).format(product.discountedPrice);
-              const discount = product.discount?.value ?? 0;
+              const discountValue = product.discountValue;
+              const isDiscountValid = product.isDiscountValid;
               return (
                 <TableRow key={index}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  {discount > 0 ? (
+                  {isDiscountValid ? (
                     <TableCell>
                       <span className="line-through">{formattedPrice}</span>{" "}
                       <span className="text-red-500">{formattedDiscount}</span>
@@ -71,7 +78,7 @@ export default function ProductSearch() {
                   ) : (
                     <TableCell>{formattedPrice}</TableCell>
                   )}
-                  <TableCell>{discount ?? 0}%</TableCell>
+                  <TableCell>{discountValue ?? 0}%</TableCell>
                 </TableRow>
               );
             })}

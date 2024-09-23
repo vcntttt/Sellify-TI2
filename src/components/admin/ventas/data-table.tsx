@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VentasActions from "./actions";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -57,6 +57,10 @@ export function DataTable<TData, TValue>({
       columnFilters
     },
   });
+
+  useEffect(() => {
+    table.setPageSize(8);
+  }, [table]);
 
   return (
     <div>
