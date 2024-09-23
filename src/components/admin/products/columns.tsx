@@ -81,15 +81,16 @@ export const columns: ColumnDef<Producto>[] = [
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
+      const currentDate = new Date();
       const discount = row.getValue("discount") as ProductDiscount;
       const discountedPrice = price - (price * discount.value) / 100;
-
+      const isDiscountValid = discount.dueDate ? currentDate < discount.dueDate : true;
       const formattedPrice = formatPrice(price);
 
       const formattedDiscount = formatPrice(discountedPrice);
       return (
         <div className="text-left font-medium">
-          {discount.value > 0 ? (
+          {isDiscountValid ? (
             <div className="flex items-center gap-2">
               <span className="line-through">{formattedPrice}</span>
               <span className="text-red-500">{formattedDiscount}</span>
@@ -119,6 +120,8 @@ export const columns: ColumnDef<Producto>[] = [
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
       const dueDate = discount.dueDate;
+      const currentDate = new Date();
+      const isDiscountValid = dueDate ? currentDate < dueDate : true;
       let daysDiscount: string | null = null;
 
       if (dueDate) {
@@ -138,7 +141,7 @@ export const columns: ColumnDef<Producto>[] = [
 
       return (
         <div className="text-left font-medium flex flex-col gap-y-2">
-          {discount.value}%
+          {isDiscountValid ? discount.value : 0}%
           {daysDiscount && (
             <span className="text-red-500 text-xs">{daysDiscount}</span>
           )}
