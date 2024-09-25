@@ -9,4 +9,4 @@ export const categories = [
   "Aceites",
   "Condimentos",
   "Salsas"
-] as const
+]

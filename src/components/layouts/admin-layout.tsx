@@ -1,20 +1,21 @@
 import { Link, useLocation } from "wouter";
 import clsx from "clsx";
 import { sections } from "@/data/sections";
-import { CircleUser, Menu, Package2 } from "lucide-react";
+// import { CircleUser, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Botonera from "@/components/admin/actions/layout-buttons";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+import Botonera from "@/components/admin/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import useStore from "@/store/use-auth";
-import Logo from "../logo";
+// import { useAuthStore } from "@/store/use-auth";
+import Logo from "@/icons/logo";
 
 export default function AdminLayout({
   children,
@@ -22,7 +23,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [location] = useLocation();
-  const { user } = useStore();
+  // const { user } = useAuthStore();
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -37,7 +38,7 @@ export default function AdminLayout({
               <Logo className="h-8 w-8" />
               <span>Sellify</span>
             </Link>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="secondary"
@@ -51,10 +52,11 @@ export default function AdminLayout({
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {/* // TODO: Link to logout */}
-                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/">Cerrar Sesión </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -100,7 +102,7 @@ export default function AdminLayout({
                   href="/"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
-                  <Package2 className="h-6 w-6" />
+                  <Logo className="h-6 w-6" />
                   <span className="sr-only text-red-">Sellify</span>
                 </Link>
                 {sections.map((section) => (

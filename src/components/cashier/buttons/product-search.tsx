@@ -7,20 +7,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { products } from "@/data/products";
+import { useProductStore } from "@/store/use-products";
 import { useState } from "react";
 
 export default function ProductSearch() {
+  const { products } = useProductStore();
   const [code, setCode] = useState("");
 
   const filteredProducts = products.filter(
     (product) => product.id == parseInt(code)
   );
 
-  const finalProducts = filteredProducts.map((product) => ({
-    ...product,
-    discountedPrice: product.price - (product.price * product.discount.value) / 100,
-  }));
+
+  const finalProducts = filteredProducts.map((product) =>{
+    const discount = product.discount?.value ?? 0;
+    return {
+      
+        ...product,
+        discountedPrice: product.price - (product.price * discount) / 100,
+      }
+    }
+  );
 
   return (
     <div className="py-4">
@@ -51,11 +58,12 @@ export default function ProductSearch() {
                 style: "currency",
                 currency: "CLP",
               }).format(product.discountedPrice);
+              const discount = product.discount?.value ?? 0;
               return (
                 <TableRow key={index}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  {product.discount.value > 0 ? (
+                  {discount > 0 ? (
                     <TableCell>
                       <span className="line-through">{formattedPrice}</span>{" "}
                       <span className="text-red-500">{formattedDiscount}</span>
@@ -63,7 +71,7 @@ export default function ProductSearch() {
                   ) : (
                     <TableCell>{formattedPrice}</TableCell>
                   )}
-                  <TableCell>{product.discount.value ?? 0}%</TableCell>
+                  <TableCell>{discount ?? 0}%</TableCell>
                 </TableRow>
               );
             })}

@@ -1,13 +1,6 @@
 import { create } from 'zustand';
-
-
-type UserRole = 'admin' | 'cashier' | 'customer';
-
-// Definir la interfaz para el usuario
-interface User {
-  name: string; 
-  role: UserRole; 
-}
+import { User } from "@/types/users";
+import { devtools } from "zustand/middleware";
 
 // Definir la interfaz del estado de la tienda
 interface Store {
@@ -16,18 +9,10 @@ interface Store {
 }
 
 // Crear el estado global con Zustand
-const useAuthStore = create<Store>((set) => ({
+export const useAuthStore = create<Store>()(devtools((set) => ({  
   user: {
-    name: 'Jhon Doe',
-    role: 'admin',
+    name: '',
+    role: '',
   },
-
-  setUser: (user: User) =>
-    set((state) => ({
-      ...state, 
-      user,
-    })),
-
-}));
-
-export default useAuthStore;
+  setUser: (user: User) => set({ user }, false, "setUser"),
+})));

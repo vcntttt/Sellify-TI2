@@ -1,32 +1,53 @@
 import { Link } from "wouter";
-import { Button } from "../ui/button";
-import useStore from "@/store/use-auth";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/use-auth";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { DialogHeader } from "../ui/dialog";
 import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
+import ProductTable from "@/components/cashier/data-table"
+import Logo from '@/icons/logo.tsx';
 
 const CajeroLayout = () => {
-  const { user } = useStore();
-  const {addedProducts, code, quantity, total, isOpenBoleta, setCode, setQuantity, handleAddProduct, handleKeyPress, setIsOpenBoleta, endSale} = useCarrito();
+  const { user } = useAuthStore();
+  const {
+    addedProducts,
+    code,
+    quantity,
+    total,
+    isOpenBoleta,
+    setCode,
+    setQuantity,
+    handleAddProduct,
+    handleKeyPress,
+    setIsOpenBoleta,
+    endSale,
+  } = useCarrito();
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
       <header className="bg-white shadow-md p-4 fixed top-0 left-0 w-full flex justify-between items-center z-10">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Panel de Cajero
-        </h2>
+        <div className="flex items-center">
+          <div className="flex items-center gap-2 font-semibold">
+          <Link href="/" className="flex items-center gap-2 font-semibold">
+            <Logo className="size-12 filter invert"/>
+          </Link>
+          </div>
+          <h2 className="text-2xl font-semibold text-gray-800 ml-10">
+            Panel de Cajero
+          </h2>
+        </div>
         <div className="text-gray-600 flex flex-col items-end">
           <p className="text-sm">
             Cajero: <span className="font-medium">{user.name}</span>
@@ -78,65 +99,48 @@ const CajeroLayout = () => {
 
             <Dialog open={isOpenBoleta} onOpenChange={setIsOpenBoleta}>
               <DialogTrigger>
-                <Button className="bg-slate-700 text-white hover:bg-slate-800 active:bg-slate-900 rounded-lg shadow-md transition duration-200 w-full">
+                <Button className="rounded-lg shadow-md transition duration-200 w-full">
                   Finalizar Compra
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-[425px]">
+              <DialogContent className="min-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>Boleta</DialogTitle>
                   <DialogDescription>
                     Detalle de productos y total.
                   </DialogDescription>
                 </DialogHeader>
-                <ProductSummary products={addedProducts} total={total} onClose={endSale} />
+                <ProductSummary
+                  products={addedProducts}
+                  total={total}
+                  onClose={endSale}
+                />
               </DialogContent>
             </Dialog>
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto space-y-2">
+            {user.role === "admin" && (
+              <Button
+                asChild
+                className="rounded-lg shadow-md transition duration-200 w-full whitespace-normal text-center"
+              >
+                <Link href="/dashboard">Volver al panel de administración</Link>
+              </Button>
+            )}
             <Button
               asChild
-              variant="secondary"
-              className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200 w-full"
+              className="rounded-lg shadow-md transition duration-200 w-full"
             >
-              <Link href="/">Salir del Panel</Link>
+              <Link href="/">Cerrar Sesión</Link>
             </Button>
           </div>
         </aside>
 
         {/* Main Content Section */}
         <main className="flex-1 ml-64 p-6 flex flex-col">
-          <section className="bg-white shadow-md rounded-lg p-8 border border-gray-200 mb-6 flex-grow min-h-[400px]">
-            <h3 className="text-lg font-semibold mb-10">
-              Productos en la Compra
-            </h3>
-            {/* Contenedor con scroll para la tabla */}
-            <div className="max-h-64 overflow-y-auto">
-              <table className="min-w-full bg-white border border-gray-200">
-                <thead className="bg-gray-300 border-b border-gray-300 sticky top-0">
-                  <tr className="*:text-black *:text-left *:py-2 *:px-4">
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Precio Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {addedProducts.map((product, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                      <td className="py-2 px-4">{product.id}</td>
-                      <td className="py-2 px-4">{product.name}</td>
-                      <td className="py-2 px-4">{product.quantity}</td>
-                      <td className="py-2 px-4">${product.price}</td>
-                      <td className="py-2 px-4">${product.totalPrice}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <section className="shadow-md rounded-lg border mb-7 flex-grow">
+              <ProductTable products={addedProducts} />
           </section>
-
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
             style={{ minHeight: "120px" }}
@@ -175,18 +179,18 @@ const CajeroLayout = () => {
             <div className="flex justify-end gap-4 mt-4">
               <Button
                 size="lg"
-                className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200"
+                className="rounded-lg shadow-md transition duration-200"
                 onClick={handleAddProduct}
               >
                 Confirmar
               </Button>
-              <Button
+              {/* <Button
                 variant="secondary"
                 size="lg"
                 className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200"
               >
                 Rechazar
-              </Button>
+              </Button> */}
             </div>
           </section>
         </main>

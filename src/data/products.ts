@@ -1,4 +1,4 @@
-import { Producto } from "@/types";
+import { Producto } from "@/types/products";
 
 export const products: Producto[] = [
   {
@@ -8,7 +8,7 @@ export const products: Producto[] = [
     price: 500,
     category: "Frutas",
     createdAt: new Date("2024-08-15"),
-    dueDate: new Date("2024-09-07"),
+    dueDate: new Date("2024-09-20"),
     discount: {
       value: 0,
       dueDate: null // No tiene fecha de vencimiento
@@ -24,7 +24,7 @@ export const products: Producto[] = [
     dueDate: new Date("2024-10-10"),
     discount: {
       value: 5,
-      dueDate: new Date("2024-09-16")
+      dueDate: new Date("2024-09-22")
     }
   },
   {
@@ -50,7 +50,7 @@ export const products: Producto[] = [
     dueDate: new Date("2024-09-10"),
     discount: {
       value: 15,
-      dueDate: new Date("2024-09-17")
+      dueDate: new Date("2024-09-20")
     }
   },
   {
