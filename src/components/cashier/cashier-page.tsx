@@ -30,7 +30,7 @@ const CajeroLayout = () => {
     setQuantity,
     handleAddProduct,
     handleKeyPress,
-    setIsOpenBoleta,
+    toggleBoleta,
     endSale,
   } = useCarrito();
 
@@ -97,7 +97,7 @@ const CajeroLayout = () => {
               </DialogContent>
             </Dialog>
 
-            <Dialog open={isOpenBoleta} onOpenChange={setIsOpenBoleta}>
+            <Dialog open={isOpenBoleta} onOpenChange={toggleBoleta}>
               <DialogTrigger>
                 <Button className="rounded-lg shadow-md transition duration-200 w-full">
                   Finalizar Compra
