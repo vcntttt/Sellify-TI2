@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { products as productList } from "@/data/products";
+import { useProductStore } from "@/store/use-products";
 
 export function useCarrito() {
     const [addedProducts, setAddedProducts] = useState<any[]>([]);
@@ -8,8 +8,10 @@ export function useCarrito() {
     const [total, setTotal] = useState<number>(0);
     const [isOpenBoleta, setIsOpenBoleta] = useState(false);
 
+    const products = useProductStore((state) => state.products);
+
     const handleAddProduct = () => {
-        const foundProduct = productList.find((product) => product.id === code);
+        const foundProduct = products.find((product) => product.id === code);
         if (foundProduct) {
             const currentDate = new Date();
             const discountDueDate = foundProduct.discount?.dueDate ?? undefined;
@@ -22,6 +24,10 @@ export function useCarrito() {
             const discountedPrice = isDiscountValid
                 ? originalPrice * (1 - discountValue / 100)
                 : originalPrice;
+
+            // Calcular el IVA para el precio descontado y redondear hacia abajo
+            const iva = Math.floor(discountedPrice * 0.19);
+            const totalPriceWithIVA = Math.floor(discountedPrice + iva);
 
             setAddedProducts((prev) => {
                 const existingProductIndex = prev.findIndex(
@@ -38,7 +44,7 @@ export function useCarrito() {
                         quantity: updatedQuantity,
                         originalPrice,
                         discountedPrice,
-                        totalPrice: discountedPrice * updatedQuantity,
+                        totalPrice: totalPriceWithIVA * updatedQuantity, // Total con IVA
                     };
 
                     return updatedProducts;
@@ -48,13 +54,14 @@ export function useCarrito() {
                         quantity,
                         originalPrice,
                         discountedPrice,
-                        totalPrice: discountedPrice * quantity,
+                        totalPrice: totalPriceWithIVA * quantity, // Total con IVA
                     };
                     return [...prev, newProduct];
                 }
             });
 
-            setTotal((prev) => prev + discountedPrice * quantity);
+            // Actualizar el total general con el precio total del nuevo producto (con IVA)
+            setTotal((prev) => prev + totalPriceWithIVA * quantity);
             setCode(null);
             setQuantity(1);
         }
