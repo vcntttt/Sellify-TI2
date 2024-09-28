@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 export type Product = {
-    id: string;
+    id: number;
     name: string;
     quantity: number;
     price: number;
