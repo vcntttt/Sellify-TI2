@@ -3,7 +3,7 @@ import { Venta } from "@/types/ventas";
 import { CircleUserRound, FileDown } from "lucide-react";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { SortedIcon } from "@/icons/sorted-icon";
+import { SortedIcon } from "@/components/icons/sorted-icon";
 import { addDays, isSameDay } from "date-fns";
 
 export const columns: ColumnDef<Venta>[] = [

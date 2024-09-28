@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useProductStore } from "@/store/use-products";
+import { useProductStore } from "@/store/products";
 import { useState } from "react";
 
 export default function ProductSearch() {

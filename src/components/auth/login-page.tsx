@@ -20,7 +20,7 @@ import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useAuthStore } from "@/store/use-auth";
+import { useAuthStore } from "@/store/auth";
 import AdminDialog from "@/components/auth/buttons/admin-dialog";
 
 export default function Login() {

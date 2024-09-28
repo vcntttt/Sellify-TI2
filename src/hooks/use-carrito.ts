@@ -1,4 +1,4 @@
-import { useProductStore } from "@/store/use-products";
+import { useProductStore } from "@/store/products";
 import { useState } from "react";
 
 export function useCarrito() {

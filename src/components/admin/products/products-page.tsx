@@ -1,7 +1,7 @@
 import AdminSection from "@/components/admin/section-template";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useProductStore } from "@/store/use-products";
+import { useProductStore } from "@/store/products";
 import { useEffect } from "react";
 
 export default function Products() {

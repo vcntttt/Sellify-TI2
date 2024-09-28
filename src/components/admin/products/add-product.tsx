@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
-import { useProductStore } from "@/store/use-products";
+import { useProductStore } from "@/store/products";
 
 interface Props {
   onClose: () => void;

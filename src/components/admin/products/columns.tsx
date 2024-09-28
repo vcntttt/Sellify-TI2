@@ -14,7 +14,7 @@ import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import clsx from "clsx";
 import { formatDate, formatPrice } from "@/lib/utils";
-import { SortedIcon } from "@/icons/sorted-icon";
+import { SortedIcon } from "@/components/icons/sorted-icon";
 
 export const columns: ColumnDef<Producto>[] = [
   {

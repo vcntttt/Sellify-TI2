@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store/use-auth";
+import { useAuthStore } from "@/store/auth";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +16,7 @@ import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form"
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
 import ProductTable from "@/components/cashier/data-table"
-import Logo from '@/icons/logo.tsx';
+import Logo from '@/components/icons/logo';
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();

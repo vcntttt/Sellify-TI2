@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categorySchema as formSchema } from "@/schemas/products";
-import { useProductStore } from "@/store/use-products";
+import { useProductStore } from "@/store/products";
 
 interface Props {
   onClose: () => void;
