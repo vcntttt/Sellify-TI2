@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VentasActions from "./actions";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -39,23 +39,9 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
-
-
-  const filtrarPorFecha = (rows) => {
-    if (!fechaInicio || !fechaFin) return rows;
-
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
-
-    return rows.filter((row) => {
-      const fechaVenta = new Date(row.original.fecha);
-      return fechaVenta >= inicio && fechaVenta <= fin;
-    });
-  };
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    []
+  )
 
   const table = useReactTable({
     data,
@@ -65,35 +51,20 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: (table) => filtrarPorFecha(getFilteredRowModel()(table)),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       columnFilters
     },
   });
 
+  useEffect(() => {
+    table.setPageSize(8);
+  }, [table]);
+
   return (
     <div>
       <div className="flex items-center pb-4 justify-end gap-x-4">
-         {/* Inputs de fechas para el filtro */}
-         <div className="flex items-center space-x-2">
-          <label htmlFor="fechaInicio">Desde: </label>
-          <input
-            id="fehaInicio"
-            type="date"
-            value={fechaInicio}
-            onChange={(e) => setFechaInicio(e.target.value)}
-            className="border rounded p-1"
-            />
-          <label htmlFor="fechaFin">Hasta: </label>
-          <input
-            id="fechaFin"
-            type="date"
-            value={fechaFin}
-            onChange={(e) => setFechaFin(e.target.value)}
-            className="border rounded p-1"
-          />
-        </div>  
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
