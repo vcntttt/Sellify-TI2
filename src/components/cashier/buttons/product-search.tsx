@@ -9,37 +9,35 @@ import {
 } from "@/components/ui/table";
 import { useProductStore } from "@/store/products";
 import { useState } from "react";
+import { formatDiscount } from "@/lib/utils"; // Adjust the import path as necessary
 
 export default function ProductSearch() {
   const { products } = useProductStore();
   const [code, setCode] = useState("");
 
   const filteredProducts = products.filter(
-    (product) => product.id == parseInt(code)
+    (product) => product.id === parseInt(code)
   );
 
+  const finalProducts = filteredProducts.map((product) => {
+    const { isValid, value: discountValue } = formatDiscount(product.discount);
+    const priceFinal = isValid
+      ? product.price - (product.price * discountValue) / 100
+      : product.price;
 
-  const finalProducts = filteredProducts.map((product) =>{
-    const discountValue = product.discount?.value ?? 0;
-    const discountDueDate = product.discount?.dueDate ?? undefined;
-    const currentDate = new Date();
-    const isDiscountValid = discountDueDate ? currentDate < discountDueDate : true;
-    const priceFinal = isDiscountValid ? (product.price - (product.price * discountValue) / 100) : product.price;
     return {
-      
-        ...product,
-        isDiscountValid,
-        discountedPrice: priceFinal,
-        discountValue: isDiscountValid ? discountValue : 0,
-      }
-    }
-  );
+      ...product,
+      isDiscountValid: isValid,
+      discountedPrice: priceFinal,
+      discountValue: isValid ? discountValue : 0,
+    };
+  });
 
   return (
     <div className="py-4">
       <Input
         type="number"
-        placeholder="001"
+        placeholder="Código del producto"
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
@@ -60,25 +58,24 @@ export default function ProductSearch() {
                 currency: "CLP",
               }).format(product.price);
 
-              const formattedDiscount = new Intl.NumberFormat("es-CL", {
+              const formattedDiscountedPrice = new Intl.NumberFormat("es-CL", {
                 style: "currency",
                 currency: "CLP",
               }).format(product.discountedPrice);
-              const discountValue = product.discountValue;
-              const isDiscountValid = product.isDiscountValid;
+
               return (
                 <TableRow key={index}>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  {isDiscountValid ? (
+                  {product.isDiscountValid ? (
                     <TableCell>
                       <span className="line-through">{formattedPrice}</span>{" "}
-                      <span className="text-red-500">{formattedDiscount}</span>
+                      <span className="text-red-500">{formattedDiscountedPrice}</span>
                     </TableCell>
                   ) : (
                     <TableCell>{formattedPrice}</TableCell>
                   )}
-                  <TableCell>{discountValue ?? 0}%</TableCell>
+                  <TableCell>{product.discountValue}%</TableCell>
                 </TableRow>
               );
             })}

@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
+import { formatDiscount } from "@/lib/utils"; // Importing the formatDiscount function
+import { ProductDiscount } from "@/types/products"; 
 
 interface Product {
   id: number;
   name: string;
   quantity: number;
-  totalPrice: number; // Total con IVA
+  totalPrice: number; 
   originalPrice: number;
   discountedPrice?: number;
+  discount?: ProductDiscount; 
 }
 
 interface Props {
@@ -17,12 +20,11 @@ interface Props {
 }
 
 const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
-  // Calcular el total del IVA aplicado sin sumarlo al total de la boleta
+  // Calculate the total IVA applied without adding it to the total of the invoice
   const totalIVA = products.reduce((acc, product) => {
-    // Usar el precio con descuento si existe, de lo contrario usar el precio original
     const priceToUse = product.discountedPrice || product.originalPrice;
-    const iva = priceToUse * 0.19; // Calcular el IVA como el 19% del precio a usar
-    return acc + (iva * product.quantity); // Sumar IVA por cada producto según su cantidad
+    const iva = priceToUse * 0.19; // Calculate IVA as 19% of the price to use
+    return acc + (iva * product.quantity); // Sum IVA for each product according to its quantity
   }, 0);
 
   return (
@@ -32,8 +34,10 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
           const formattedOriginalPrice = formatPrice(product.originalPrice);
           const formattedTotalPrice = formatPrice(product.totalPrice);
           const formattedDiscountedPrice = formatPrice(product.discountedPrice || product.totalPrice);
-          const discount = product.discountedPrice
-            ? ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100
+          const discountDetails = product.discount ? formatDiscount(product.discount) : { isValid: false, value: 0 };
+
+          const discount = discountDetails.isValid 
+            ? ((product.originalPrice - (product.discountedPrice || product.originalPrice)) / product.originalPrice) * 100 
             : 0;
 
           return (

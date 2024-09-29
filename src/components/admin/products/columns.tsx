@@ -13,7 +13,7 @@ import { EditProductForm } from "@/components/admin/products/edit-product";
 import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import clsx from "clsx";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { formatDate, formatPrice,formatDiscount } from "@/lib/utils";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 
 export const columns: ColumnDef<Producto>[] = [
@@ -34,19 +34,19 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Precio" />,
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const currentDate = new Date();
       const discount = row.getValue("discount") as ProductDiscount;
-      const discountedPrice = price - (price * discount.value) / 100;
-      const isDiscountValid = discount.dueDate ? currentDate < discount.dueDate : true;
-      const formattedPrice = formatPrice(price);
+      const { isValid } = formatDiscount(discount); 
 
-      const formattedDiscount = formatPrice(discountedPrice);
+      const discountedPrice = isValid ? price - (price * discount.value) / 100 : price; // Calcula el precio con descuento si es válido
+      const formattedPrice = formatPrice(price);
+      const formattedDiscountedPrice = formatPrice(discountedPrice);
+
       return (
         <div className="text-left font-medium">
-          {isDiscountValid && discount.value > 0 ? (
+          {isValid && discount.value > 0 ? (
             <div className="flex items-center gap-2">
               <span className="line-through">{formattedPrice}</span>
-              <span className="text-red-500">{formattedDiscount}</span>
+              <span className="text-red-500">{formattedDiscountedPrice}</span>
             </div>
           ) : (
             <span>{formattedPrice}</span>
@@ -60,19 +60,15 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Descuento" />,
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
+      const { isValid, value } = formatDiscount(discount);
       const dueDate = discount.dueDate;
       const currentDate = new Date();
-      const isDiscountValid = dueDate ? currentDate < dueDate : true;
       let daysDiscount: string | null = null;
 
       if (dueDate) {
-        const currentDate = new Date();
         const daysDiff = differenceInCalendarDays(dueDate, currentDate);
-
         if (daysDiff > 0) {
-          daysDiscount = `Se acaba en ${daysDiff} día${
-            daysDiff > 1 ? "s" : ""
-          }!`;
+          daysDiscount = `Se acaba en ${daysDiff} día${daysDiff > 1 ? "s" : ""}!`;
         } else if (daysDiff === 0) {
           daysDiscount = "Se acaba hoy!";
         } else {
@@ -82,7 +78,7 @@ export const columns: ColumnDef<Producto>[] = [
 
       return (
         <div className="text-left font-medium flex flex-col gap-y-2">
-          {isDiscountValid ? discount.value : 0}%
+          {isValid ? value : 0}% 
           {daysDiscount && (
             <span className="text-red-500 text-xs">{daysDiscount}</span>
           )}
@@ -146,7 +142,6 @@ export const columns: ColumnDef<Producto>[] = [
     accessorKey: "action",
     header: "Editar",
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isOpen, setIsOpen] = useState(false);
       return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
