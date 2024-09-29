@@ -1,9 +1,9 @@
 import axios from "axios";
-import useAuthStore from "../store/authStore";
+// import { useAuthStore } from "../store/authStore";
 
 const instance = axios.create({
-    baseURL: "170.239.85.88:5000/",
-    withCredentials: true
+  baseURL: "/api/",
+  withCredentials: true,
 });
 
 /* instance.interceptors.request.use(config => {
@@ -13,6 +13,7 @@ const instance = axios.create({
     }
     return config
 })
+
 instance.interceptors.response.use(
     response => response,
     error => {
@@ -22,4 +23,5 @@ instance.interceptors.response.use(
         return Promise.reject(error)
     }
 ) */
+
 export default instance;

@@ -61,11 +61,11 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
           );
         })}
       </div>
-      <div className="text-right font-bold text-lg mt-4 text-gray-800 border-t pt-4 border-gray-200">
-        Total: {formatPrice(total)} {/* Total de la boleta sin IVA */}
-      </div>
       <div className="text-right font-bold text-lg mt-2 text-gray-800 border-t pt-2 border-gray-200">
-        Total IVA: {formatPrice(totalIVA)} {/* Mostrar el total IVA */}
+        IVA: {formatPrice(totalIVA)}
+      </div>
+      <div className="text-right font-bold text-lg mt-4 text-gray-800 border-t pt-4 border-gray-200">
+        Total: {formatPrice(total)}
       </div>
 
       <div className="w-full flex justify-end pt-4">

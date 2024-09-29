@@ -1,20 +1,16 @@
-import {
-  Home,
-  LineChart,
-  Package,
-  ShoppingCart,
-} from "lucide-react";
+import { Home, LineChart, Package, ShoppingCart, UserIcon } from "lucide-react";
 import DashboardHome from "@/components/admin/dashboard";
 import Ventas from "@/components/admin/ventas/ventas-page";
 import Analiticas from "@/components/admin/analiticas/analitics-page";
 import Productos from "@/components/admin/products/products-page";
-import { FC } from "react" // Funcional Component
+import { FC } from "react"; // Funcional Component
+import UsersPage from "@/components/admin/users/users-page";
 
 interface Section {
-  name : string;
-  href : string;
-  icon : any;
-  component : FC;
+  name: string;
+  href: string;
+  icon: any;
+  component: FC;
 }
 
 export const sections: Section[] = [
@@ -24,7 +20,7 @@ export const sections: Section[] = [
     icon: Home,
     component: DashboardHome,
   },
-  { 
+  {
     name: "Productos",
     href: "/dashboard/productos",
     icon: Package,
@@ -42,4 +38,10 @@ export const sections: Section[] = [
     icon: LineChart,
     component: Analiticas,
   },
-]
+  {
+    name: "Usuarios",
+    href: "/dashboard/users",
+    icon: UserIcon,
+    component: UsersPage,
+  },
+];

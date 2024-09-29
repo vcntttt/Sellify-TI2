@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,12 +20,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "@/store/auth";
-import AdminDialog from "@/components/auth/buttons/admin-dialog";
 
 export default function Login() {
   const setLocation = useLocation()[1];
   const { user, setUser } = useAuthStore();
-  const [isAdminDialogOpen, setAdminDialogOpen] = useState(false);
 
   const roles = ["admin", "cashier", "customer", ""] as const;
 
@@ -43,21 +40,11 @@ export default function Login() {
     },
   });
 
-  const handleAdminSelect = () => {
-    setAdminDialogOpen(false);
-    setLocation("/dashboard");
-  };
-
-  const handleCashierSelect = () => {
-    setAdminDialogOpen(false);
-    setLocation("/cashier");
-  };
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     setUser(values);
 
     if (values.role === "admin") {
-      setAdminDialogOpen(true); // Muestra el diálogo si es admin
+      setLocation("/dashboard");
     } else if (values.role === "cashier") {
       setLocation("/cashier");
     } else {
@@ -114,13 +101,6 @@ export default function Login() {
           </form>
         </Form>
       </div>
-      {/* Renderiza el diálogo si el rol es admin */}
-      <AdminDialog
-        isOpen={isAdminDialogOpen}
-        onClose={() => setAdminDialogOpen(false)}
-        onAdminSelect={handleAdminSelect}
-        onCashierSelect={handleCashierSelect}
-      />
     </div>
   );
 }
