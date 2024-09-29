@@ -17,16 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DataTableViewOptions } from '../../tables/column-visibility';
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -63,51 +56,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center pb-4 justify-end gap-x-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              ...
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Columnas</DropdownMenuLabel>
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight />
-          </Button>
+      <div className="flex items-center pb-2 justify-between">
+        <Input
+          type="text"
+          placeholder="Buscar usuario..."
+          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("nombre")?.setFilterValue(event.target.value)
+          }
+          className="max-w-md"
+        />
+        <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
+          {/* <ProductActions /> */}
+          <DataTableViewOptions table={table} />
         </div>
       </div>
       <Table>
@@ -147,7 +108,8 @@ export function DataTable<TData, TValue>({
                 No results.
               </TableCell>
             </TableRow>
-          )}
+              )
+              }
         </TableBody>
       </Table>
     </div>

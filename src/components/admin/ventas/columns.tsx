@@ -3,39 +3,17 @@ import { Venta } from "@/types/ventas";
 import { CircleUserRound, FileDown } from "lucide-react";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { SortedIcon } from "@/components/icons/sorted-icon";
 import { addDays, isSameDay } from "date-fns";
+import { DataTableColumnHeader } from "@/components/tables/column-header";
 
 export const columns: ColumnDef<Venta>[] = [
   {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Número de Boleta
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Número de Boleta" />,
   },
   {
     accessorKey: "fecha",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Fecha
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha" />,
     cell: ({ row }) => {
       return formatDate(row.getValue("fecha") as Date);
     },
@@ -59,18 +37,7 @@ export const columns: ColumnDef<Venta>[] = [
   },
   {
     accessorKey: "total",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Total
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Total" />,
     cell: ({ row }) => {
       const total = row.getValue("total") as number;
       return <div className="text-center">

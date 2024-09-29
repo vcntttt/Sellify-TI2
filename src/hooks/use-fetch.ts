@@ -18,7 +18,9 @@ export function useFetch(url: string) {
         console.error("There was a problem with the axios operation:", error);
       })
       .finally(() => {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
       });
   }, [url]);
 

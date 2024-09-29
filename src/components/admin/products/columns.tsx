@@ -14,71 +14,24 @@ import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import clsx from "clsx";
 import { formatDate, formatPrice } from "@/lib/utils";
-import { SortedIcon } from "@/components/icons/sorted-icon";
+import { DataTableColumnHeader } from "@/components/tables/column-header";
 
 export const columns: ColumnDef<Producto>[] = [
   {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ID
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
-    enableHiding: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nombre
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
-    enableHiding: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
   },
   {
     accessorKey: "stock",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Stock
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
-    enableHiding: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Stock" />,
   },
   {
     accessorKey: "price",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Precio
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Precio" />,
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
       const currentDate = new Date();
@@ -101,22 +54,10 @@ export const columns: ColumnDef<Producto>[] = [
         </div>
       );
     },
-    enableHiding: false,
   },
   {
     accessorKey: "discount",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Descuento
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Descuento" />,
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
       const dueDate = discount.dueDate;
@@ -151,34 +92,11 @@ export const columns: ColumnDef<Producto>[] = [
   },
   {
     accessorKey: "category",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Categoría
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
-    enableHiding: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Categoría" />,
   },
   {
     accessorKey: "dueDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Fecha de vencimiento
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de vencimiento" />,
     cell: ({ row }) => {
       const currentDate = new Date();
       const dueDate = row.getValue("dueDate") as Date;
@@ -215,18 +133,7 @@ export const columns: ColumnDef<Producto>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="hover:bg-slate-700 hover:text-white"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Fecha de creación
-          <SortedIcon isSorted={column.getIsSorted()} />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
     cell: ({ row }) => {
       const createdAt = row.getValue("createdAt") as Date;
       const formattedDate = formatDate(createdAt);
@@ -263,6 +170,5 @@ export const columns: ColumnDef<Producto>[] = [
         </Dialog>
       );
     },
-    enableHiding: false,
   },
 ];
