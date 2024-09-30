@@ -1,4 +1,3 @@
-// Registrar productos -> metodo de pago -> boleta
 // Tabla Principal
 export interface Venta {
     id: number;
