@@ -15,8 +15,10 @@ import ProductSearch from "@/components/cashier/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
 import ProductSummary from "@/components/cashier/buttons/summary";
 import useCarrito from "@/hooks/use-carrito";
-import ProductTable from "@/components/cashier/data-table"
+import ProductTable from "@/components/cashier/data-table";
 import Logo from '@/components/icons/logo';
+import PaymentDialog from "@/components/cashier/Payment";
+import { useState } from "react";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -25,25 +27,39 @@ const CajeroLayout = () => {
     code,
     quantity,
     total,
-    isOpenBoleta,
     setCode,
     setQuantity,
     handleAddProduct,
     handleKeyPress,
-    toggleBoleta,
     endSale,
   } = useCarrito();
+
+  const [isDialogOpen, setIsDialogOpen] = useState({ 
+    payment: false, 
+    receipt: false 
+  });
+
+  const handleOpenDialog = (dialogName: 'payment' | 'receipt') => {
+    setIsDialogOpen({ 
+      payment: dialogName === 'payment', 
+      receipt: dialogName === 'receipt' 
+    });
+  };
+
+  const handlePaymentMethodSelect = (method: string) => {
+    console.log(`Selected payment method: ${method}`);
+    handleOpenDialog('receipt'); // Open Receipt Dialog
+    setIsDialogOpen(prevState => ({ ...prevState, payment: false }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
       <header className="bg-white shadow-md p-4 fixed top-0 left-0 w-full flex justify-between items-center z-10">
         <div className="flex items-center">
-          <div className="flex items-center gap-2 font-semibold">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Logo className="size-12 filter invert"/>
+            <Logo className="size-12 filter invert" />
           </Link>
-          </div>
           <h2 className="text-2xl font-semibold text-gray-800 ml-10">
             Panel de Cajero
           </h2>
@@ -97,26 +113,12 @@ const CajeroLayout = () => {
               </DialogContent>
             </Dialog>
 
-            <Dialog open={isOpenBoleta} onOpenChange={toggleBoleta}>
-              <DialogTrigger>
-                <Button className="rounded-lg shadow-md transition duration-200 w-full">
-                  Finalizar Compra
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="min-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Boleta</DialogTitle>
-                  <DialogDescription>
-                    Detalle de productos y total.
-                  </DialogDescription>
-                </DialogHeader>
-                <ProductSummary
-                  products={addedProducts}
-                  total={total}
-                  onClose={endSale}
-                />
-              </DialogContent>
-            </Dialog>
+            <Button
+              className="rounded-lg shadow-md transition duration-200 w-full"
+              onClick={() => handleOpenDialog('payment')} // Open Payment Dialog
+            >
+              Finalizar Compra
+            </Button>
           </div>
           <div className="mt-auto space-y-2">
             {user.role === "admin" && (
@@ -139,7 +141,7 @@ const CajeroLayout = () => {
         {/* Main Content Section */}
         <main className="flex-1 ml-64 p-6 flex flex-col">
           <section className="shadow-md rounded-lg border mb-7 flex-grow">
-              <ProductTable products={addedProducts} />
+            <ProductTable products={addedProducts} />
           </section>
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
@@ -184,17 +186,32 @@ const CajeroLayout = () => {
               >
                 Confirmar
               </Button>
-              {/* <Button
-                variant="secondary"
-                size="lg"
-                className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200"
-              >
-                Rechazar
-              </Button> */}
             </div>
           </section>
         </main>
       </div>
+
+      <PaymentDialog
+        isOpen={isDialogOpen.payment}
+        onClose={() => setIsDialogOpen(prevState => ({ ...prevState, payment: false }))}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+      />
+
+      <Dialog open={isDialogOpen.receipt} onOpenChange={() => setIsDialogOpen(prevState => ({ ...prevState, receipt: false }))}>
+        <DialogContent className="min-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Boleta</DialogTitle>
+            <DialogDescription>
+              Detalle de productos y total.
+            </DialogDescription>
+          </DialogHeader>
+          <ProductSummary
+            products={addedProducts}
+            total={total}
+            onClose={() => { setIsDialogOpen(prevState => ({ ...prevState, receipt: false })); endSale(); }} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

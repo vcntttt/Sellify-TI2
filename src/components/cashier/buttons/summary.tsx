@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
-import { formatDiscount } from "@/lib/utils"; // Importing the formatDiscount function
-import { ProductDiscount } from "@/types/products"; 
+import { formatPrice, formatDiscount } from "@/lib/utils"; 
+import { ProductDiscount } from "@/types/products";
 
 interface Product {
   id: number;
@@ -15,16 +14,15 @@ interface Product {
 
 interface Props {
   products: Product[];
-  total: number; // Total de la boleta sin IVA
+  total: number; 
   onClose: () => void;
 }
 
 const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
-  // Calculate the total IVA applied without adding it to the total of the invoice
   const totalIVA = products.reduce((acc, product) => {
     const priceToUse = product.discountedPrice || product.originalPrice;
-    const iva = priceToUse * 0.19; // Calculate IVA as 19% of the price to use
-    return acc + (iva * product.quantity); // Sum IVA for each product according to its quantity
+    const iva = priceToUse * 0.19; 
+    return acc + (iva * product.quantity); 
   }, 0);
 
   return (
