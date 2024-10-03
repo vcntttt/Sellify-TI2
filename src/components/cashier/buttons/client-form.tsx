@@ -11,25 +11,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userSchema as formSchema } from "@/schemas/user";
+import { userSchema } from "@/schemas/user"; 
+import { useState } from "react"; 
 
 export function RegisterNewClientForm() {
-  // 1. Define your form
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [registeredClients, setRegisteredClients] = useState<any[]>([]);
+
+  const form = useForm<z.infer<typeof userSchema>>({
+    resolver: zodResolver(userSchema),
     defaultValues: {
       rut: "",
       name: "",
       apellido: "",
       email: "",
+      password: "",
+      role: "customer", 
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  function onSubmit(values: z.infer<typeof userSchema>) {
+    const clientExists = registeredClients.some(client => client.rut === values.rut);
+
+    if (clientExists) {
+      alert("El cliente ya está registrado."); 
+      return; 
+    }
+
+    const clientData = {
+      ...values,
+      role: "customer", 
+    };
+
+    setRegisteredClients(prev => [...prev, clientData]);
+
+    form.reset();
+    alert("Cliente registrado correctamente!");
   }
 
   return (
@@ -68,7 +84,7 @@ export function RegisterNewClientForm() {
             <FormItem>
               <FormLabel>Rut</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="21.123.456-78" />
+                <Input {...field} placeholder="12.345.678-9" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,6 +101,23 @@ export function RegisterNewClientForm() {
                   {...field}
                   type="email"
                   placeholder="email@example.com"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contraseña</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="password"
+                  placeholder="******"
                 />
               </FormControl>
               <FormMessage />
