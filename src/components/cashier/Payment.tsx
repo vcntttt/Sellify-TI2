@@ -8,19 +8,29 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form"; 
+import { useClientStore } from "@/store/auth"; 
 
 interface PaymentDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectPaymentMethod: (method: string, rut: string) => void; 
+  onSelectPaymentMethod: (method: string, rut: string) => void;
 }
 
-const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialogProps) => {
+const PaymentDialog = ({
+  isOpen,
+  onClose,
+  onSelectPaymentMethod,
+}: PaymentDialogProps) => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
-  const [customerRUT, setCustomerRUT] = useState<string>(""); 
-  const [isRUTConfirmed, setIsRUTConfirmed] = useState(false); 
+  const [customerRUT, setCustomerRUT] = useState<string>("");
+  const [isRUTConfirmed, setIsRUTConfirmed] = useState(false);
   const [rutError, setRUTError] = useState<string | null>(null);
+  const [clientName, setClientName] = useState<string | null>(null); 
+  const [clientSurname, setClientSurname] = useState<string | null>(null); 
+  const clients = useClientStore((state) => state.clients); 
+  const client = clients.find(client => client.rut === customerRUT); 
 
   const validateRUT = (rut: string): boolean => {
     const rutPattern = /^\d{1,2}(?:\.\d{3}){2}-[0-9Kk]$/;
@@ -33,10 +43,17 @@ const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialog
 
   const confirmRUT = () => {
     if (validateRUT(customerRUT)) {
-      setIsRUTConfirmed(true); 
-      setRUTError(null); 
+      setIsRUTConfirmed(true);
+      setRUTError(null);
+      if (client) {
+        setClientName(client.name);
+        setClientSurname(client.apellido);
+      } else {
+        setClientName(null);
+        setClientSurname(null);
+      }
     } else {
-      setRUTError("Por favor, ingrese un RUT valido (Ej: 12.345.678-9)."); 
+      setRUTError("Por favor, ingrese un RUT valido (Ej: 12.345.678-9).");
     }
   };
 
@@ -48,7 +65,7 @@ const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialog
 
   const completePayment = () => {
     if (selectedMethod) {
-      onSelectPaymentMethod(selectedMethod, customerRUT); 
+      onSelectPaymentMethod(selectedMethod, customerRUT);
       resetPaymentState();
       onClose();
     }
@@ -57,9 +74,11 @@ const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialog
   const resetPaymentState = () => {
     setSelectedMethod(null);
     setIsPaymentConfirmed(false);
-    setIsRUTConfirmed(false); 
-    setCustomerRUT(""); 
-    setRUTError(null); 
+    setIsRUTConfirmed(false);
+    setCustomerRUT("");
+    setRUTError(null);
+    setClientName(null);
+    setClientSurname(null); 
   };
 
   const progressValue = isPaymentConfirmed ? 100 : isRUTConfirmed ? 66 : 0;
@@ -118,15 +137,18 @@ const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialog
                 <Button
                   onClick={confirmRUT}
                   className="rounded-lg shadow-md transition duration-200 mt-2"
-                  disabled={!customerRUT} 
+                  disabled={!customerRUT}
                 >
                   Confirmar RUT
                 </Button>
               </div>
             )}
 
-            {isRUTConfirmed && !selectedMethod && (
+            {isRUTConfirmed && client ? ( 
               <>
+                <p className="text-base">
+                  Cliente: <strong className="font-semibold">{clientName} {clientSurname}</strong>
+                </p>
                 <Button
                   onClick={() => handlePaymentSelection("Efectivo")}
                   className="rounded-lg shadow-md transition duration-200"
@@ -139,6 +161,13 @@ const PaymentDialog = ({ isOpen, onClose, onSelectPaymentMethod }: PaymentDialog
                 >
                   Pagar con Tarjeta de Crédito/Débito
                 </Button>
+              </>
+            ) : isRUTConfirmed && !client && (
+              <>
+                <p className="text-sm text-gray-600">
+                  Este RUT no está registrado. Por favor, regístrelo.
+                </p>
+                <RegisterNewClientForm /> 
               </>
             )}
 
