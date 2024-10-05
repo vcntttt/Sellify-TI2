@@ -5,6 +5,15 @@ export interface User {
   apellido:   string;
   correo:     string;
   rut:        string;
-  telefono:   string;
+  phone:   string;
   role: Role;
+}
+
+// Definición de la interfaz Client
+export interface Client {
+  rut: string;          
+  name: string;        
+  apellido: string;    
+  email: string;       
+  password: string; 
 }

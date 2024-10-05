@@ -21,6 +21,9 @@ import { DataTableViewOptions } from "@/components/tables/column-visibility";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import AddUserForm from "../add-user-form";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,11 +33,12 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
   isLoading,
+  data
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false); 
 
   const table = useReactTable({
     data,
@@ -61,17 +65,32 @@ export function DataTable<TData, TValue>({
         <Input
           type="text"
           placeholder="Buscar usuario..."
-          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          {/* <ProductActions /> */}
+
+          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setIsFormOpen(true)}>Agregar usuario</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
+                <DialogDescription>
+                  Completa el formulario para agregar un nuevo usuario.
+                </DialogDescription>
+              </DialogHeader>
+              <AddUserForm/>
+            </DialogContent>
+          </Dialog>
           <DataTableViewOptions table={table} />
         </div>
       </div>
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
