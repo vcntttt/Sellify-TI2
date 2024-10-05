@@ -1,90 +1,138 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { userSchema as formSchema } from "@/schemas/user";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "../ui/select";
 
-//validacion de rut 9 o mas caracteres
-const formSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
-  email: z.string().email("Ingresa un correo válido."),
-  rut: z.string().regex(/^[0-9]+-[0-9kK]$/, "Ingresa un RUT válido."),
-  role: z.enum(["admin", "cashier", "customer"]),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-export default function AddUserForm() {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+export default function AddUserForm( ) {
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "Jhon",
+      apellido: "Doe",
+      email: "jhon@doe.com",
+      phone: "123456789",
+      password: "123456789",
+      rut: "123456789",
+    },
   });
 
-  const [open, setOpen] = useState(false); 
-
-  const onSubmit = (data: FormData) => {
-    setOpen(true); // mostrar pop-up
-  };
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+  }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <Label htmlFor="name">Nombre</Label>
-          <Input id="name" {...register("name")} />
-          {errors.name && <p className="text-red-500">{errors.name?.message}</p>}
-        </div>
-
-        <div>
-          <Label htmlFor="email">Correo</Label>
-          <Input id="email" {...register("email")} />
-          {errors.email && <p className="text-red-500">{errors.email?.message}</p>}
-        </div>
-
-        <div>
-          <Label htmlFor="rut">RUT</Label>
-          <Input id="rut" {...register("rut")} />
-          {errors.rut && <p className="text-red-500">{errors.rut?.message}</p>}
-        </div>
-
-        <div>
-          <Label htmlFor="role">Rol</Label>
-          <Select
-            onValueChange={(value) => setValue("role", value as FormData["role"])} // Actualiza el valor seleccionado
-          >
-            <SelectTrigger id="role">
-              <SelectValue placeholder="Selecciona un rol" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="cashier">Cajero</SelectItem>
-              <SelectItem value="customer">Cliente</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.role && <p className="text-red-500">{errors.role?.message}</p>}
-        </div>
-
-        <div className="flex gap-x-2 *:w-1/2 pt-4 justify-end">
-          <Button type="submit">Agregar Usuario</Button>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="apellido"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Apellido</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Correo</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contraseña</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefono</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rol</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un rol" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {roles.slice(0, -1).map((role) => (
+                    <SelectItem value={role} key={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+        <div className="flex gap-x-2 *:w-1/3 pt-4 justify-end">
+          <Button type="submit">Agregar</Button>
         </div>
       </form>
-
-      {/* Popup de confirmación */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild />
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Usuario agregado</DialogTitle>
-            <DialogDescription>
-              El usuario ha sido agregado con éxito.
-            </DialogDescription>
-            <Button onClick={() => setOpen(false)}>Cerrar</Button>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </>
+    </Form>
   );
 }

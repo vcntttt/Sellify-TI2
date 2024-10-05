@@ -1,30 +1,17 @@
-import { Link, useLocation } from "wouter";
-import clsx from "clsx";
+import { Link } from "wouter";
 import { sections } from "@/data/sections";
-// import { CircleUser, Menu } from "lucide-react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
 import Botonera from "@/components/admin/layout-buttons";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-// import { useAuthStore } from "@/store/use-auth";
 import Logo from "@/components/icons/logo";
+import AdminLayoutItem from "./admin-layout-item";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [location] = useLocation();
-  // const { user } = useAuthStore();
-
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-slate-800 md:block">
@@ -38,43 +25,11 @@ export default function AdminLayout({
               <Logo className="h-8 w-8" />
               <span>Sellify</span>
             </Link>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full bg-slate-800 hover:bg-slate-700"
-                >
-                  <CircleUser className="h-5 w-5 text-white" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/">Cerrar Sesión </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {sections.map((section) => (
-                <Link
-                  key={section.name}
-                  href={section.href}
-                  className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white",
-                    {
-                      "bg-slate-700 text-white": location === section.href,
-                      "text-white/50": location !== section.href,
-                    }
-                  )}
-                >
-                  <section.icon className="h-4 w-4" />
-                  {section.name}
-                </Link>
+                <AdminLayoutItem key={section.href} section={section} />
               ))}
             </nav>
           </div>
@@ -111,7 +66,7 @@ export default function AdminLayout({
                     href={section.href}
                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                   >
-                    <section.icon className="h-6 w-6" />
+                    {section.icon}
                     {section.name}
                   </Link>
                 ))}

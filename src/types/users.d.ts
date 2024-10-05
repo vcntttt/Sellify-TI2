@@ -1,6 +1,10 @@
 export type Role = "admin" | "cashier" | "customer" | "";
 
 export interface User {
-  name: string;
+  id_usuario: number;
+  apellido:   string;
+  correo:     string;
+  rut:        string;
+  telefono:   string;
   role: Role;
 }

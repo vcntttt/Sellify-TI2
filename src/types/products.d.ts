@@ -1,4 +1,4 @@
-import { categories } from "@/data/categories";
+import type { categories } from "@/data/categories";
 
 export type Category = typeof categories[number];
 
