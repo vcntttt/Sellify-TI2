@@ -11,12 +11,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userSchema } from "@/schemas/user"; 
-import { useState } from "react"; 
+import { userSchema } from "@/schemas/user";
+import { useClientStore } from "@/store/auth"; 
 
 export function RegisterNewClientForm() {
-  const [registeredClients, setRegisteredClients] = useState<any[]>([]);
-
+  const addClient = useClientStore((state) => state.addClient); 
+  const clients = useClientStore((state) => state.clients); 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -30,11 +30,11 @@ export function RegisterNewClientForm() {
   });
 
   function onSubmit(values: z.infer<typeof userSchema>) {
-    const clientExists = registeredClients.some(client => client.rut === values.rut);
+    const clientExists = clients.some(client => client.rut === values.rut);
 
     if (clientExists) {
-      alert("El cliente ya está registrado."); 
-      return; 
+      alert("El cliente ya está registrado.");
+      return;
     }
 
     const clientData = {
@@ -42,9 +42,9 @@ export function RegisterNewClientForm() {
       role: "customer", 
     };
 
-    setRegisteredClients(prev => [...prev, clientData]);
+    addClient(clientData); 
 
-    form.reset();
+    form.reset(); 
     alert("Cliente registrado correctamente!");
   }
 
