@@ -20,6 +20,17 @@ import {
 import { DataTableViewOptions } from '../../tables/column-visibility';
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import AddUserForm from "../add-user-form";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  rut: string;
+  role: "admin" | "cashier" | "customer";
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,12 +39,12 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data: initialData,
 }: DataTableProps<TData, TValue>) {
+  const [data, setData] = useState<User[]>(initialData as unknown as User[]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false); 
 
   const table = useReactTable({
     data,
@@ -46,7 +57,7 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters
+      columnFilters,
     },
   });
 
@@ -54,23 +65,48 @@ export function DataTable<TData, TValue>({
     table.setPageSize(8);
   }, [table]);
 
+  const handleAddUser = (user: User) => {
+    setData((prevData) => [...prevData, user]);
+  };
+
   return (
     <div>
       <div className="flex items-center pb-2 justify-between">
         <Input
           type="text"
           placeholder="Buscar usuario..."
-          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          {/* <ProductActions /> */}
+
+          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setIsFormOpen(true)}>Agregar usuario</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
+                <DialogDescription>
+                  Completa el formulario para agregar un nuevo usuario.
+                </DialogDescription>
+              </DialogHeader>
+              <AddUserForm onAddUser={(data) => {
+                const newUser: User = {
+                  id: Date.now().toString(), 
+                  ...data,
+                };
+                handleAddUser(newUser);
+              }} onClose={() => setIsFormOpen(false)} />
+            </DialogContent>
+          </Dialog>
           <DataTableViewOptions table={table} />
         </div>
       </div>
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -108,8 +144,7 @@ export function DataTable<TData, TValue>({
                 No results.
               </TableCell>
             </TableRow>
-              )
-              }
+          )}
         </TableBody>
       </Table>
     </div>
