@@ -12,7 +12,7 @@ export const useAuthStore = create<Store>()(
     persist(
       (set) => ({
         user: {
-          name: "",
+          nombre: "",
           role: "",
         },
         setUser: (user: User) => set({ user }, false, "setUser"),

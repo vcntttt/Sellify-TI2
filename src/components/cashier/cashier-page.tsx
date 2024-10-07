@@ -28,7 +28,6 @@ const CajeroLayout = () => {
     isOpenBoleta,
     setCode,
     setQuantity,
-    handleAddProduct,
     handleKeyPress,
     toggleBoleta,
     endSale,
@@ -50,7 +49,7 @@ const CajeroLayout = () => {
         </div>
         <div className="text-gray-600 flex flex-col items-end">
           <p className="text-sm">
-            Cajero: <span className="font-medium">{user.name}</span>
+            Cajero: <span className="font-medium">{user.nombre}</span>
           </p>
           <p className="text-xl font-semibold mt-1">
             Total: <span className="font-bold text-blue-600">${total}</span>
@@ -96,12 +95,11 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
-
             <Dialog open={isOpenBoleta} onOpenChange={toggleBoleta}>
               <DialogTrigger>
-                <Button className="rounded-lg shadow-md transition duration-200 w-full">
+                {/* <Button className="rounded-lg shadow-md transition duration-200 w-full">
                   Finalizar Compra
-                </Button>
+                </Button> */}
               </DialogTrigger>
               <DialogContent className="min-w-[425px]">
                 <DialogHeader>
@@ -180,17 +178,17 @@ const CajeroLayout = () => {
               <Button
                 size="lg"
                 className="rounded-lg shadow-md transition duration-200"
-                onClick={handleAddProduct}
+                onClick={toggleBoleta}
               >
                 Confirmar
               </Button>
-              {/* <Button
-                variant="secondary"
+              <Button
+                variant="destructive"
                 size="lg"
-                className="bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 rounded-lg shadow-md transition duration-200"
+                onClick={endSale}
               >
-                Rechazar
-              </Button> */}
+                Cancelar
+              </Button>
             </div>
           </section>
         </main>

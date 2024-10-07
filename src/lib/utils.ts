@@ -17,3 +17,5 @@ export function formatPrice(price: number) {
 export function formatDate(date: Date) {
   return format(addDays(date, 1), "dd-MM-yyyy", { locale: es });
 }
+
+export const sleep = (ss: number) => new Promise((resolve) => setTimeout(resolve, 1000 * ss));
