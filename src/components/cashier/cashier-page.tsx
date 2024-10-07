@@ -31,7 +31,6 @@ const CajeroLayout = () => {
     total,
     setCode,
     setQuantity,
-    handleAddProduct,
     handleKeyPress,
     endSale,
   } = useCarrito();
@@ -68,7 +67,7 @@ const CajeroLayout = () => {
         </div>
         <div className="text-gray-600 flex flex-col items-end">
           <p className="text-sm">
-            Cajero: <span className="font-medium">{user.name}</span>
+            Cajero: <span className="font-medium">{user.nombre}</span>
           </p>
           <p className="text-xl font-semibold mt-1">
             Total: <span className="font-bold text-blue-600">${total}</span>
@@ -114,6 +113,7 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
+<<<<<<< HEAD
 
             <Button
               className="rounded-lg shadow-md transition duration-200 w-full"
@@ -126,6 +126,13 @@ const CajeroLayout = () => {
                 <Button className="bg-green-700 text-white hover:bg-green-800 active:bg-green-900 rounded-lg shadow-md transition duration-200 w-full">
                   Buscar Cliente
                 </Button>
+=======
+            <Dialog open={isOpenBoleta} onOpenChange={toggleBoleta}>
+              <DialogTrigger>
+                {/* <Button className="rounded-lg shadow-md transition duration-200 w-full">
+                  Finalizar Compra
+                </Button> */}
+>>>>>>> origin/data-fetching
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -198,10 +205,20 @@ const CajeroLayout = () => {
               <Button
                 size="lg"
                 className="rounded-lg shadow-md transition duration-200"
-                onClick={handleAddProduct}
+                onClick={toggleBoleta}
               >
                 Confirmar
               </Button>
+<<<<<<< HEAD
+=======
+              <Button
+                variant="destructive"
+                size="lg"
+                onClick={endSale}
+              >
+                Cancelar
+              </Button>
+>>>>>>> origin/data-fetching
             </div>
           </section>
         </main>
