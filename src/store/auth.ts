@@ -32,17 +32,25 @@ export const useAuthStore = create<Store>()(
   )
 );
 
-// Tienda de clientes
 interface ClientStore {
   clients: Client[];
   addClient: (client: Client) => void;
+  searchClients: (searchTerm: string) => Client[]; 
 }
-
 export const useClientStore = create<ClientStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     clients: [],
     addClient: (client: Client) => set((state) => ({
       clients: [...state.clients, client],
     }), false, "addClient"),
+
+    // Implementación del filtro de búsqueda
+    searchClients: (searchTerm: string) => {
+      const clients = get().clients;
+      return clients.filter((client) =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        client.rut.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    },
   }))
 );

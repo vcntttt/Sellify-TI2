@@ -18,7 +18,9 @@ import useCarrito from "@/hooks/use-carrito";
 import ProductTable from "@/components/cashier/data-table";
 import Logo from '@/components/icons/logo';
 import PaymentDialog from "@/components/cashier/Payment";
+import  SearchClientsButton  from "@/components/cashier/buttons/search-client";
 import { useState } from "react";
+
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -119,6 +121,20 @@ const CajeroLayout = () => {
             >
               Finalizar Compra
             </Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button className="bg-green-700 text-white hover:bg-green-800 active:bg-green-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Buscar Cliente
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  Componente de búsqueda de cliente
+                </DialogHeader>
+                <SearchClientsButton/>
+              </DialogContent>
+            </Dialog>
+
           </div>
           <div className="mt-auto space-y-2">
             {user.role === "admin" && (
