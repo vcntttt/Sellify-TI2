@@ -5,6 +5,7 @@ import { formatDate, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { addDays, isSameDay } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
+import { PDF } from "./pdf";
 
 export const columns: ColumnDef<Venta>[] = [
   {
@@ -74,7 +75,7 @@ export const columns: ColumnDef<Venta>[] = [
     header: "Descargar",
     cell: () => {
       return (
-        <Button variant="secondary">
+        <Button variant="secondary" onClick={PDF}>
           Descargar <FileDown className="w-4 h-4 ml-2" />
         </Button>
       );
