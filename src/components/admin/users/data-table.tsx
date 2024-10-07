@@ -21,9 +21,7 @@ import { DataTableViewOptions } from "@/components/tables/column-visibility";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import AddUserForm from "../add-user-form";
+import UsersActions from './actions';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,7 +36,6 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false); 
 
   const table = useReactTable({
     data,
@@ -72,21 +69,7 @@ export function DataTable<TData, TValue>({
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-
-          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setIsFormOpen(true)}>Agregar usuario</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
-                <DialogDescription>
-                  Completa el formulario para agregar un nuevo usuario.
-                </DialogDescription>
-              </DialogHeader>
-              <AddUserForm/>
-            </DialogContent>
-          </Dialog>
+          <UsersActions/>
           <DataTableViewOptions table={table} />
         </div>
       </div>
