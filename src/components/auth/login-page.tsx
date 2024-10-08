@@ -20,12 +20,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "@/store/auth";
+import { roles } from "@/data/roles";
 
 export default function Login() {
   const setLocation = useLocation()[1];
   const { user, setUser } = useAuthStore();
-
-  const roles = ["admin", "cashier", "customer", ""] as const;
 
   const formSchema = z.object({
     name: z.string().min(0).max(50),
@@ -45,7 +44,7 @@ export default function Login() {
 
     if (values.role === "admin") {
       setLocation("/dashboard");
-    } else if (values.role === "cashier") {
+    } else if (values.role === "cajero") {
       setLocation("/cashier");
     } else {
       setLocation("/non-authorized");
@@ -86,7 +85,7 @@ export default function Login() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {roles.slice(0,-1).map((role) => (
+                      {roles.slice(0,2).map((role) => (
                         <SelectItem value={role} key={role}>
                           {role}
                         </SelectItem>
