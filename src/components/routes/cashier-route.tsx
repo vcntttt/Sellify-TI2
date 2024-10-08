@@ -8,7 +8,7 @@ export default function CashierRoute({ component: Component, ...rest }: any) {
     <Route
       {...rest}
       component={(props) =>
-        user.role === "cashier" || user.role === "admin" ? (
+        user.role === "cajero" || user.role === "admin" ? (
           <Component {...props} />
         ) : (
           <Redirect to="/non-authorized" />
