@@ -20,4 +20,3 @@ export interface Venta {
   export type MetodoPago = "efectivo" | "debito" | "credito";
   
   export type TipoRegistro = "boleta" | "factura";
-  
