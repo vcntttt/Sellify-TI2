@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import { useProductStore } from "@/store/products"; 
-import { Product } from "@/components/cashier/columns";
+import { Product } from "@/components/cajero/columns";
 import { formatDiscount } from "@/lib/utils"; // Asegúrate de que formatDiscount esté exportada correctamente
 
 interface ProductDetails extends Product {

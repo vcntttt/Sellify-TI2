@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import DashboardHome from "@/components/admin/dashboard";
 import { ThemeProvider } from "@/components/theme-provider";
 import LogInPage from "@/components/auth/login-page";
-import CashierPage from "@/components/cashier/cashier-page";
+import CashierPage from "@/components/cajero/cashier-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { sections } from "./data/sections";

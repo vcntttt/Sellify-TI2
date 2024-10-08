@@ -7,16 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useClientStore } from "@/store/auth";
+import { useClients } from "@/hooks/query/use-clients";
 import { useState } from "react";
 
 export default function ClientSearch() {
-  const { clients } = useClientStore();
+  const { data : clients } = useClients();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredClients = clients.filter(
+  const filteredClients = clients?.filter(
     (client) =>
-      client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.rut.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -39,18 +39,18 @@ export default function ClientSearch() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredClients.map((client, index) => (
+            {filteredClients?.map((client, index) => (
               <TableRow key={index}>
-                <TableCell className="font-medium">{client.name}</TableCell>
+                <TableCell className="font-medium">{client.nombre}</TableCell>
                 <TableCell>{client.rut}</TableCell>
-                <TableCell>{client.email}</TableCell>
+                <TableCell>{client.correo}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       )}
 
-      {searchTerm && filteredClients.length === 0 && (
+      {searchTerm && filteredClients?.length === 0 && (
         <div className="mt-4 text-center text-gray-500">
           No se encontraron clientes con ese nombre o RUT.
         </div>

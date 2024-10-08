@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form"; 
-import { useClientStore } from "@/store/auth"; 
+import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form"; 
+import { useClients } from "@/hooks/query/use-clients";
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -29,8 +29,8 @@ const PaymentDialog = ({
   const [rutError, setRUTError] = useState<string | null>(null);
   const [clientName, setClientName] = useState<string | null>(null); 
   const [clientSurname, setClientSurname] = useState<string | null>(null); 
-  const clients = useClientStore((state) => state.clients); 
-  const client = clients.find(client => client.rut === customerRUT); 
+  const {data : clients} = useClients(); 
+  const client = clients?.find(client => client.rut === customerRUT); 
 
   const validateRUT = (rut: string): boolean => {
     const rutPattern = /^\d{1,2}(?:\.\d{3}){2}-[0-9Kk]$/;
@@ -46,7 +46,7 @@ const PaymentDialog = ({
       setIsRUTConfirmed(true);
       setRUTError(null);
       if (client) {
-        setClientName(client.name);
+        setClientName(client.nombre);
         setClientSurname(client.apellido);
       } else {
         setClientName(null);

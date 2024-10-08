@@ -11,16 +11,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import ProductSearch from "@/components/cashier/buttons/product-search";
-import { RegisterNewClientForm } from "@/components/cashier/buttons/client-form";
-import ProductSummary from "@/components/cashier/buttons/summary";
-import useCarrito from "@/hooks/use-carrito";
-import ProductTable from "@/components/cashier/data-table";
-import Logo from '@/components/icons/logo';
-import PaymentDialog from "@/components/cashier/Payment";
-import  SearchClientsButton  from "@/components/cashier/buttons/search-client";
+import ProductSearch from "@/components/cajero/buttons/product-search";
+import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
+import ProductSummary from "@/components/cajero/buttons/summary";
+import useCarrito from "@/hooks/cajero/use-carrito";
+import ProductTable from "@/components/cajero/data-table";
+import Logo from "@/components/icons/logo";
+import PaymentDialog from "@/components/cajero/Payment";
 import { useState } from "react";
-
+import ClientSearch from "./buttons/search-client";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -31,26 +30,27 @@ const CajeroLayout = () => {
     total,
     setCode,
     setQuantity,
+    handleAddProduct,
     handleKeyPress,
     endSale,
   } = useCarrito();
 
-  const [isDialogOpen, setIsDialogOpen] = useState({ 
-    payment: false, 
-    receipt: false 
+  const [isDialogOpen, setIsDialogOpen] = useState({
+    payment: false,
+    receipt: false,
   });
 
-  const handleOpenDialog = (dialogName: 'payment' | 'receipt') => {
-    setIsDialogOpen({ 
-      payment: dialogName === 'payment', 
-      receipt: dialogName === 'receipt' 
+  const handleOpenDialog = (dialogName: "payment" | "receipt") => {
+    setIsDialogOpen({
+      payment: dialogName === "payment",
+      receipt: dialogName === "receipt",
     });
   };
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
-    handleOpenDialog('receipt'); // Open Receipt Dialog
-    setIsDialogOpen(prevState => ({ ...prevState, payment: false }));
+    handleOpenDialog("receipt"); // Open Receipt Dialog
+    setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
   return (
@@ -67,7 +67,7 @@ const CajeroLayout = () => {
         </div>
         <div className="text-gray-600 flex flex-col items-end">
           <p className="text-sm">
-            Cajero: <span className="font-medium">{user.nombre}</span>
+            Cajero: <span className="font-medium">{user.name}</span>
           </p>
           <p className="text-xl font-semibold mt-1">
             Total: <span className="font-bold text-blue-600">${total}</span>
@@ -113,35 +113,24 @@ const CajeroLayout = () => {
                 <RegisterNewClientForm />
               </DialogContent>
             </Dialog>
-<<<<<<< HEAD
 
             <Button
               className="rounded-lg shadow-md transition duration-200 w-full"
-              onClick={() => handleOpenDialog('payment')} // Open Payment Dialog
+              onClick={() => handleOpenDialog("payment")} // Open Payment Dialog
             >
               Finalizar Compra
             </Button>
             <Dialog>
               <DialogTrigger>
-                <Button className="bg-green-700 text-white hover:bg-green-800 active:bg-green-900 rounded-lg shadow-md transition duration-200 w-full">
+                <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
                   Buscar Cliente
                 </Button>
-=======
-            <Dialog open={isOpenBoleta} onOpenChange={toggleBoleta}>
-              <DialogTrigger>
-                {/* <Button className="rounded-lg shadow-md transition duration-200 w-full">
-                  Finalizar Compra
-                </Button> */}
->>>>>>> origin/data-fetching
               </DialogTrigger>
               <DialogContent>
-                <DialogHeader>
-                  Componente de búsqueda de cliente
-                </DialogHeader>
-                <SearchClientsButton/>
+                <DialogHeader>Componente de búsqueda de cliente</DialogHeader>
+                <ClientSearch />
               </DialogContent>
             </Dialog>
-
           </div>
           <div className="mt-auto space-y-2">
             {user.role === "admin" && (
@@ -205,20 +194,10 @@ const CajeroLayout = () => {
               <Button
                 size="lg"
                 className="rounded-lg shadow-md transition duration-200"
-                onClick={toggleBoleta}
+                onClick={handleAddProduct}
               >
                 Confirmar
               </Button>
-<<<<<<< HEAD
-=======
-              <Button
-                variant="destructive"
-                size="lg"
-                onClick={endSale}
-              >
-                Cancelar
-              </Button>
->>>>>>> origin/data-fetching
             </div>
           </section>
         </main>
@@ -226,22 +205,33 @@ const CajeroLayout = () => {
 
       <PaymentDialog
         isOpen={isDialogOpen.payment}
-        onClose={() => setIsDialogOpen(prevState => ({ ...prevState, payment: false }))}
+        onClose={() =>
+          setIsDialogOpen((prevState) => ({ ...prevState, payment: false }))
+        }
         onSelectPaymentMethod={handlePaymentMethodSelect}
       />
 
-      <Dialog open={isDialogOpen.receipt} onOpenChange={() => setIsDialogOpen(prevState => ({ ...prevState, receipt: false }))}>
+      <Dialog
+        open={isDialogOpen.receipt}
+        onOpenChange={() =>
+          setIsDialogOpen((prevState) => ({ ...prevState, receipt: false }))
+        }
+      >
         <DialogContent className="min-w-[425px]">
           <DialogHeader>
             <DialogTitle>Boleta</DialogTitle>
-            <DialogDescription>
-              Detalle de productos y total.
-            </DialogDescription>
+            <DialogDescription>Detalle de productos y total.</DialogDescription>
           </DialogHeader>
           <ProductSummary
             products={addedProducts}
             total={total}
-            onClose={() => { setIsDialogOpen(prevState => ({ ...prevState, receipt: false })); endSale(); }} 
+            onClose={() => {
+              setIsDialogOpen((prevState) => ({
+                ...prevState,
+                receipt: false,
+              }));
+              endSale();
+            }}
           />
         </DialogContent>
       </Dialog>

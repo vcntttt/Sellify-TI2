@@ -11,7 +11,7 @@ import {
   TableRow,
   TableHead,
 } from "@/components/ui/table";
-import { productColumns, Product } from "@/components/cashier/columns";
+import { productColumns, Product } from "@/components/cajero/columns";
 import { formatPrice } from "@/lib/utils";
 
 interface ProductTableProps {

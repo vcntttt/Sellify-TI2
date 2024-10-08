@@ -21,7 +21,7 @@ import { DataTableViewOptions } from "@/components/tables/column-visibility";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import UsersActions from './actions';
+import UsersActions from "./actions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,7 +32,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   isLoading,
-  data
+  data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -62,15 +62,15 @@ export function DataTable<TData, TValue>({
         <Input
           type="text"
           placeholder="Buscar usuario..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          <UsersActions/>
-          <DataTableViewOptions table={table} />
+          <UsersActions />
+          <DataTableViewOptions table={table}/>
         </div>
       </div>
 
@@ -107,7 +107,10 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="animate-fade animate-delay-100">
+                  <TableCell
+                    key={cell.id}
+                    className="animate-fade animate-delay-100"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

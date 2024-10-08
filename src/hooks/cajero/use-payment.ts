@@ -1,6 +1,6 @@
 // hooks/usePaymentDialog.ts
 import { useState } from "react";
-import { useClientStore } from "@/store/auth";
+import { useClientStore } from "@/store/client";
 
 export const usePaymentDialog = () => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
