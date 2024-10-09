@@ -3,7 +3,7 @@ import { sleep } from "@/lib/utils";
 import { UserResponse, UserTypeResponse } from "@/types/users";
 
 export const getUsers = async (): Promise<UserResponse[]> => {
-  await sleep(2);
+  // await sleep(2);
   const response = await axios.get("/users").then((res) => res.data);
   return response;
 };

@@ -16,14 +16,13 @@ export default function AdminLayout({
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-slate-800 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 justify-between items-center px-4 lg:h-[60px] lg:px-6">
+          <div className="flex h-14 justify-between items-center px-4 lg:h-[60px]">
             <Link
               href="/"
               className="flex items-center gap-2 font-semibold text-white"
             >
-              {/* <Package2 className="h-6 w-6" /> */}
-              <Logo className="h-8 w-8" />
-              <span>Sellify</span>
+              <Logo className="size-14"/>
+              <span className="text-md uppercase">S e l l i f y</span>
             </Link>
           </div>
           <div className="flex-1">

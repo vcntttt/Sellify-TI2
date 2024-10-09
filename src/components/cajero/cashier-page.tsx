@@ -96,7 +96,7 @@ const CajeroLayout = () => {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-
+            
             <Dialog>
               <DialogTrigger>
                 <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
@@ -114,12 +114,6 @@ const CajeroLayout = () => {
               </DialogContent>
             </Dialog>
 
-            <Button
-              className="rounded-lg shadow-md transition duration-200 w-full"
-              onClick={() => handleOpenDialog("payment")} // Open Payment Dialog
-            >
-              Finalizar Compra
-            </Button>
             <Dialog>
               <DialogTrigger>
                 <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
@@ -127,10 +121,23 @@ const CajeroLayout = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogHeader>Componente de búsqueda de cliente</DialogHeader>
+              <DialogHeader>
+                  <DialogTitle>Buscar Clientes</DialogTitle>
+                  <DialogDescription>
+                    Busqueda de clientes por nombre o rut.
+                  </DialogDescription>
+                </DialogHeader>
                 <ClientSearch />
               </DialogContent>
             </Dialog>
+
+            <Button
+              className="rounded-lg shadow-md transition duration-200 w-full"
+              onClick={() => handleOpenDialog("payment")} // Open Payment Dialog
+            >
+              Finalizar Compra
+            </Button>
+
           </div>
           <div className="mt-auto space-y-2">
             {user.role === "admin" && (
