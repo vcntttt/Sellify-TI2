@@ -1,59 +1,105 @@
-import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useAuthStore } from "@/store/auth";
+import { roles } from "@/data/roles";
 
 export default function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+  const setLocation = useLocation()[1];
+  const { user, setUser } = useAuthStore();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Username:', username);
-        console.log('Password:', password);
-    };
+  const formSchema = z.object({
+    name: z.string().min(0).max(50),
+    role: z.enum(roles, { message: "Debes seleccionar un rol" }),
+  });
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="w-96 max-w-md bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-                <div className="mb-4">
-                    <label htmlFor="username" className="block text-gray-700 font-medium mb-2">Usuario</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-gray-700 font-medium mb-2">Contraseña</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: user.name,
+      role: "",
+    },
+  });
 
-                <div className="flex flex-col gap-y-2">
-                    <Button
-                        type="submit"
-                        className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300"
-                    >
-                        Ingresar
-                    </Button>
-                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
-                        <Link href="/dashboard">Dashboard</Link>
-                    </Button>
-                    <Button asChild className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-slate-700 transition-colors duration-300">
-                        <Link href="/cashier">Cajero</Link>
-                    </Button>
-                </div>
-            </form>
-        </div>
-    );
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setUser(values);
+
+    if (values.role === "admin") {
+      setLocation("/dashboard");
+    } else if (values.role === "cajero") {
+      setLocation("/cashier");
+    } else {
+      setLocation("/non-authorized");
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-6 shadow-md rounded-md">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nelsiño" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rol</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un rol" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {roles.slice(0,2).map((role) => (
+                        <SelectItem value={role} key={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Entrar</Button>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
 }
