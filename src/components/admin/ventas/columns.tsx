@@ -20,10 +20,15 @@ export const columns: ColumnDef<Venta>[] = [
     },
 
     filterFn: (row, columnId, filterValue) => {
+      if (!filterValue || !filterValue.from || !filterValue.to) {
+        return true;
+      }
+
       const rowDate = new Date(row.getValue(columnId))
+      
       // estadarizacion de fechas provenientes del filtro
-      const fromDate = format(startOfDay(filterValue?.from), "yyyy-MM-dd")
-      const toDate = format(startOfDay(filterValue?.to), "yyyy-MM-dd")
+      const fromDate = format(startOfDay(filterValue?.from), "yyyy-MM-dd");
+      const toDate = format(startOfDay(filterValue?.to), "yyyy-MM-dd");
     
       // Si 'from' y 'to' son el mismo día
       if (filterValue && filterValue.from && filterValue.to && isSameDay(filterValue.from, filterValue.to)) {
@@ -34,10 +39,9 @@ export const columns: ColumnDef<Venta>[] = [
       if (filterValue && filterValue.from && filterValue.to) {
         return isWithinInterval(rowDate, { start: fromDate, end: toDate });
       }
-    
-      // Si no hay filtro, mostramos todas las filas
-      return true;
+      return true ;
     },
+  
   },
   {
     accessorKey: "cliente",
