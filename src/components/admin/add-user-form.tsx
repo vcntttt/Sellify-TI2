@@ -12,15 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { userSchema as formSchema } from "@/schemas/user";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "../ui/select";
+import { roles } from "@/data/roles";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { NewUserBody } from "@/types/users";
+import { useUserMutation } from "@/hooks/query/use-users";
 
-export default function AddUserForm( ) {
+export default function AddUserForm() {
+  const userMutation = useUserMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,11 +35,26 @@ export default function AddUserForm( ) {
       phone: "123456789",
       password: "123456789",
       rut: "123456789",
+      role: "cajero",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const newUser: NewUserBody = {
+      nombre: values.name,
+      apellido: values.apellido,
+      correo: values.email,
+      rut: values.rut,
+      telefono: values.phone,
+      contrasena: values.password,
+      tipo_usuario: values.role,
+    };
+    try {
+      userMutation.mutate(newUser);
+      console.log(newUser);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -86,6 +106,19 @@ export default function AddUserForm( ) {
             <FormItem>
               <FormLabel>Contraseña</FormLabel>
               <FormControl>
+                <Input {...field} type="password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="rut"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rut</FormLabel>
+              <FormControl>
                 <Input {...field} />
               </FormControl>
               <FormMessage />
@@ -105,7 +138,7 @@ export default function AddUserForm( ) {
             </FormItem>
           )}
         />
-        {/* <FormField
+        <FormField
           control={form.control}
           name="role"
           render={({ field }) => (
@@ -120,7 +153,7 @@ export default function AddUserForm( ) {
                 <SelectContent>
                   {roles.slice(0, -1).map((role) => (
                     <SelectItem value={role} key={role}>
-                      {role}
+                      <p className="capitalize">{role}</p>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -128,9 +161,11 @@ export default function AddUserForm( ) {
               <FormMessage />
             </FormItem>
           )}
-        /> */}
+        />
         <div className="flex gap-x-2 *:w-1/3 pt-4 justify-end">
-          <Button type="submit">Agregar</Button>
+          <Button type="submit" disabled={userMutation.isPending}>
+            Agregar
+          </Button>
         </div>
       </form>
     </Form>
