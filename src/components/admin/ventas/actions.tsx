@@ -35,7 +35,7 @@ export default function VentasActions({ tableRef }: { tableRef: any }) {
             variant={"outline"}
             className={cn(
               "w-[300px] justify-start text-left font-normal",
-              !dateRange && "text-muted-foreground"
+              !dateRange?.from && !dateRange?.to && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
