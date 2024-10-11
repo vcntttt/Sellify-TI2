@@ -3,7 +3,7 @@ import { Venta } from "@/types/ventas";
 import { CircleUserRound, FileDown } from "lucide-react";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { addDays, isSameDay } from "date-fns";
+import { format, isSameDay, isWithinInterval, startOfDay } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
 
@@ -18,9 +18,25 @@ export const columns: ColumnDef<Venta>[] = [
     cell: ({ row }) => {
       return formatDate(row.getValue("fecha") as Date);
     },
+
     filterFn: (row, columnId, filterValue) => {
-      const rowDate = new Date(row.getValue(columnId));
-      return filterValue ? isSameDay(addDays(rowDate, 1), filterValue) : true;
+      const rowDate = new Date(row.getValue(columnId))
+      // estadarizacion de fechas provenientes del filtro
+      const fromDate = format(startOfDay(filterValue?.from), "yyyy-MM-dd")
+      const toDate = format(startOfDay(filterValue?.to), "yyyy-MM-dd")
+    
+      // Si 'from' y 'to' son el mismo día
+      if (filterValue && filterValue.from && filterValue.to && isSameDay(filterValue.from, filterValue.to)) {
+        return isSameDay(rowDate, fromDate || toDate);
+      }
+    
+      // Si se selecciona un rango de fechas, verificamos que esté dentro del rango
+      if (filterValue && filterValue.from && filterValue.to) {
+        return isWithinInterval(rowDate, { start: fromDate, end: toDate });
+      }
+    
+      // Si no hay filtro, mostramos todas las filas
+      return true;
     },
   },
   {

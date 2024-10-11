@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -9,41 +9,59 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useEffect, useState } from "react";
 import { es } from "date-fns/locale";
 
 export default function VentasActions({ tableRef }: { tableRef: any }) {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [dateRange, setdateRange] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
 
   useEffect(() => {
-    if (date) {
-      tableRef.getColumn("fecha")?.setFilterValue(date);
+    if (dateRange) {
+      tableRef.getColumn("fecha")?.setFilterValue(dateRange);
     } else {
       tableRef.getColumn("fecha")?.setFilterValue(undefined);
     }
-  }, [date, tableRef]);
+  }, [dateRange, tableRef]);
 
   return (
     <div className="flex gap-4">
       <Popover>
         <PopoverTrigger asChild>
           <Button
+            id="date"
             variant={"outline"}
             className={cn(
-              "w-[280px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              "w-[300px] justify-start text-left font-normal",
+              !dateRange && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP", { locale: es }) : <span>Filtrar por fecha</span>}
+            {dateRange?.from ? (
+              dateRange.to ? (
+                <>
+                  {format(dateRange.from, "LLL dd, y")} -{" "}
+                  {format(dateRange.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(dateRange.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Filtrar por rango de fechas</span>
+            )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent className="w-auto p-0" align="start">
           <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            locale={es}
             initialFocus
+            mode="range"
+            defaultMonth={dateRange?.from}
+            selected={dateRange}
+            onSelect={setdateRange}
+            numberOfMonths={1}
+            locale={es}
           />
         </PopoverContent>
       </Popover>
