@@ -12,8 +12,8 @@ export function PDF() {
     doc.text('Pepitos S.A', 90, 55);
 
     doc.setFontSize(12);
-    doc.text('Fecha: 19 de septiembre 2024', 60, 75);
-    doc.text('Hora: 14:00', 140, 75);
+    doc.text('Fecha: 19 de septiembre 2024', 35, 75);
+    doc.text('Hora: 14:00', 35, 85);
 
     doc.setFontSize(12);
     doc.text('Producto', 35, 105);
@@ -39,12 +39,12 @@ export function PDF() {
     doc.text('IVA 2850', 150, 150);
     doc.text('Monto total 17.850', 150, 160);
 
-    doc.roundedRect(50, 170, 110, 30, 3, 3);
-    doc.text('Código de barras', 90, 185);
+    doc.roundedRect(50, 195, 110, 30, 3, 3);
+    doc.text('Código de barras', 90, 210);
 
     doc.setFontSize(10);
-    doc.text('Timbre electronico SII', 90, 220);
-    doc.text('Res. nº de año', 95, 230);
+    doc.text('Timbre electronico SII', 90, 255);
+    doc.text('Res. nº de año', 95, 275);
 
     doc.save('boleta.pdf');
 };

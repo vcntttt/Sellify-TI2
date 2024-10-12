@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import ClientSearch from "./buttons/search-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { getClients } from "@/api/users";
+import { Boleta } from "./buttons/boleta";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -50,6 +51,8 @@ const CajeroLayout = () => {
     endSale,
   } = useCarrito();
 
+  const iva = total * 0.19;
+
   const [isDialogOpen, setIsDialogOpen] = useState({
     payment: false,
     receipt: false,
@@ -64,6 +67,12 @@ const CajeroLayout = () => {
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
+    const iva = total * 0.19;
+    Boleta({cajero: user.name,
+      products: addedProducts,
+      total,
+      iva
+    })
     handleOpenDialog("receipt"); // Open Receipt Dialog
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
@@ -151,6 +160,17 @@ const CajeroLayout = () => {
               onClick={() => handleOpenDialog("payment")} // Open Payment Dialog
             >
               Finalizar Compra
+            </Button>
+            <Button
+              className="rounded-lg shadow-md transition duration-200 w-full"
+              onClick={() => Boleta({
+                cajero: user.name,
+                products: addedProducts,
+                total,
+                iva
+              })}
+            >
+              Mostrar Boleta (Temporal)
             </Button>
 
           </div>
