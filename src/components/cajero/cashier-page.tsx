@@ -20,7 +20,6 @@ import Logo from "@/components/icons/logo";
 import PaymentDialog from "@/components/cajero/Payment";
 import { useState } from "react";
 import ClientSearch from "./buttons/search-client";
-import { Boleta } from "./buttons/boleta";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
@@ -50,12 +49,6 @@ const CajeroLayout = () => {
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
-    const iva = total * 0.19;
-    Boleta({cajero: user.name,
-      products: addedProducts,
-      total,
-      iva
-    })
     handleOpenDialog("receipt"); // Open Receipt Dialog
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };

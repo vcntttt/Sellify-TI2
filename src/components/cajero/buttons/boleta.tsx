@@ -48,11 +48,11 @@ export function Boleta({ cajero, products, total, iva }: BoletaData){
     let yPosition = 115;
     let monto = 0;
     products.forEach((product) => {
-        doc.text(`${product.name}`, 35, yPosition);
-        doc.text(`${product.quantity}`, 92, yPosition);
-        doc.text(`${product.totalPrice}`, 120, yPosition);
+        doc.text(`${product.name}`, 34.5, yPosition);
+        doc.text(`${product.quantity}`, 91.5, yPosition);
+        doc.text(`${product.totalPrice}`, 121.5, yPosition);
         monto += product.totalPrice
-        doc.text(`${monto}`, 162, yPosition);
+        doc.text(`${monto}`, 161.5, yPosition);
         yPosition += 10;
       });
 
