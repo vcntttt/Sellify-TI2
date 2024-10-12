@@ -73,9 +73,10 @@ export const columns: ColumnDef<Venta>[] = [
   {
     accessorKey: "detalleVentas",
     header: "Descargar",
-    cell: () => {
+    cell: ({row}) => {
+      const venta = row.original;
       return (
-        <Button variant="secondary" onClick={PDF}>
+        <Button variant="secondary" onClick={() => PDF(venta)}>
           Descargar <FileDown className="w-4 h-4 ml-2" />
         </Button>
       );

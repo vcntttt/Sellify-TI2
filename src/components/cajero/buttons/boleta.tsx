@@ -49,17 +49,17 @@ export function Boleta({ cajero, products, total, iva }: BoletaData){
     let monto = 0;
     products.forEach((product) => {
         doc.text(`${product.name}`, 35, yPosition);
-        doc.text(`${product.quantity}`, 91, yPosition);
-        doc.text(`${product.totalPrice.toFixed(2)}`, 120, yPosition);
+        doc.text(`${product.quantity}`, 92, yPosition);
+        doc.text(`${product.totalPrice}`, 120, yPosition);
         monto += product.totalPrice
         doc.text(`${monto}`, 162, yPosition);
         yPosition += 10;
       });
 
     yPosition += 10;
-    doc.text(`IVA: $${iva.toFixed(2)}`, 150, yPosition);
+    doc.text(`IVA: $${iva}`, 150, yPosition);
     yPosition += 10;
-    doc.text(`Total: $${total.toFixed(2)}`, 150, yPosition);
+    doc.text(`Total: $${total}`, 150, yPosition);
 
     yPosition += 25;
     doc.roundedRect(50, yPosition, 110, 30, 3, 3);
