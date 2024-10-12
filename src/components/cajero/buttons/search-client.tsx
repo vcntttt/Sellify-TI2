@@ -11,7 +11,7 @@ import { useClients } from "@/hooks/query/use-clients";
 import { useState } from "react";
 
 export default function ClientSearch() {
-  const { data : clients } = useClients();
+  const { data: clients } = useClients();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredClients = clients?.filter(

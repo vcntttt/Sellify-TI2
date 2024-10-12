@@ -18,11 +18,26 @@ import useCarrito from "@/hooks/cajero/use-carrito";
 import ProductTable from "@/components/cajero/data-table";
 import Logo from "@/components/icons/logo";
 import PaymentDialog from "@/components/cajero/Payment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClientSearch from "./buttons/search-client";
+import { useQueryClient } from "@tanstack/react-query";
+import { getClients } from "@/api/users";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
+  const queryClient = useQueryClient();
+
+    useEffect(() => {
+      const prefetchData = async () => {
+        queryClient.prefetchQuery({
+          queryKey: ["users:clients"],
+          queryFn: getClients,
+          staleTime: 1000 * 60,
+        });
+      }
+      prefetchData();
+    }, [queryClient]);
+
   const {
     addedProducts,
     code,

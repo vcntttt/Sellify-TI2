@@ -1,5 +1,5 @@
 import axios from "@/api/axios";
-import { sleep } from "@/lib/utils";
+// import { sleep } from "@/lib/utils";
 import { NewUserBody, UserResponse } from "@/types/users";
 
 export const getUsers = async (): Promise<UserResponse[]> => {
@@ -9,7 +9,7 @@ export const getUsers = async (): Promise<UserResponse[]> => {
 };
 
 export const getClients = async (): Promise<UserResponse[]> => {
-  await sleep(4);
+  // await sleep(2);
   const { data } = await axios.get("/users?tipo_usuario=cliente")
   return data;
 };

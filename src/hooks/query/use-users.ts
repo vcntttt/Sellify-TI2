@@ -20,6 +20,10 @@ export const useUserMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["users:clients"],
+      });
     }
   });
 
