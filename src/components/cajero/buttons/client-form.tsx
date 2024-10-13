@@ -13,12 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { userSchema } from "@/schemas/user";
 import { useClients } from "@/hooks/query/use-clients";
+import { DrawerContent, DrawerClose, DrawerHeader, DrawerFooter, DrawerTitle } from "@/components/ui/drawer";
 
-export function RegisterNewClientForm() {
+export function RegisterNewClientForm({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const addClient = (data: any) => {
     console.log("addClient", data);
-  }
-  const { data : clients } = useClients();
+  };
+  const { data: clients } = useClients();
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -28,12 +29,12 @@ export function RegisterNewClientForm() {
       apellido: "",
       email: "",
       password: "",
-      role: "cliente", 
+      role: "cliente",
     },
   });
 
   function onSubmit(values: z.infer<typeof userSchema>) {
-    const clientExists = clients?.some(client => client.rut === values.rut);
+    const clientExists = clients?.some((client) => client.rut === values.rut);
 
     if (clientExists) {
       alert("El cliente ya está registrado.");
@@ -42,95 +43,105 @@ export function RegisterNewClientForm() {
 
     const clientData = {
       ...values,
-      role: "customer", 
+      role: "customer",
     };
 
-    addClient(clientData); 
+    addClient(clientData);
 
-    form.reset(); 
+    form.reset();
     alert("Cliente registrado correctamente!");
+    onClose();
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="apellido"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Apellido</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="rut"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rut</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="12.345.678-9" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Correo</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="email@example.com"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Contraseña</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  placeholder="******"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-end gap-x-2 pt-4">
-          <Button type="submit">Registrar</Button>
-        </div>
-      </form>
-    </Form>
+    <>
+      {isOpen && (
+        <DrawerContent className="sm:w-[95%] md:w-[70%] lg:w-[50%] max-w-md mx-auto">
+          <DrawerHeader className="text-center">
+            <DrawerTitle>Registrar Nuevo Cliente</DrawerTitle>
+          </DrawerHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="apellido"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Apellido</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rut"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rut</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="w-full" placeholder="12.345.678-9" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Correo</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="email"
+                        className="w-full"
+                        placeholder="email@example.com"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Contraseña</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="password" className="w-full" placeholder="******" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DrawerFooter className="flex justify-end gap-x-2 pt-4">
+                <DrawerClose asChild>
+                  <Button type="submit">Registrar</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </form>
+          </Form>
+        </DrawerContent>
+      )}
+    </>
   );
 }

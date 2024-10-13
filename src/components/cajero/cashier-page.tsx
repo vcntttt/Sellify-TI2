@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Drawer } from "@/components/ui/drawer"; 
 import ProductSearch from "@/components/cajero/buttons/product-search";
 import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
 import ProductSummary from "@/components/cajero/buttons/summary";
@@ -18,27 +19,11 @@ import useCarrito from "@/hooks/cajero/use-carrito";
 import ProductTable from "@/components/cajero/data-table";
 import Logo from "@/components/icons/logo";
 import PaymentDialog from "@/components/cajero/Payment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ClientSearch from "./buttons/search-client";
-import { useQueryClient } from "@tanstack/react-query";
-import { getClients } from "@/api/users";
-import { Boleta } from "./buttons/boleta";
 
 const CajeroLayout = () => {
   const { user } = useAuthStore();
-  const queryClient = useQueryClient();
-
-    useEffect(() => {
-      const prefetchData = async () => {
-        queryClient.prefetchQuery({
-          queryKey: ["users:clients"],
-          queryFn: getClients,
-          staleTime: 1000 * 60,
-        });
-      }
-      prefetchData();
-    }, [queryClient]);
-
   const {
     addedProducts,
     code,
@@ -50,8 +35,6 @@ const CajeroLayout = () => {
     handleKeyPress,
     endSale,
   } = useCarrito();
-
-  const iva = total * 0.19;
 
   const [isDialogOpen, setIsDialogOpen] = useState({
     payment: false,
@@ -67,15 +50,14 @@ const CajeroLayout = () => {
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
-    const iva = total * 0.19;
-    Boleta({cajero: user.name,
-      products: addedProducts,
-      total,
-      iva
-    })
-    handleOpenDialog("receipt"); // Open Receipt Dialog
+    handleOpenDialog("receipt"); // Abrir el diálogo de la boleta
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const openDrawer = () => setIsDrawerOpen(true);
+  const closeDrawer = () => setIsDrawerOpen(false);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -104,6 +86,7 @@ const CajeroLayout = () => {
         <aside className="bg-white shadow-md rounded-lg p-4 w-64 fixed top-20 left-0 border-r border-gray-200 flex flex-col h-auto min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="flex flex-col gap-4 mb-auto">
             <h3 className="text-lg font-semibold mb-4">Opciones</h3>
+
             <Dialog>
               <DialogTrigger>
                 <Button className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200 w-full">
@@ -120,23 +103,16 @@ const CajeroLayout = () => {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-            
-            <Dialog>
-              <DialogTrigger>
-                <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
-                  Registrar Cliente
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Registrar Cliente</DialogTitle>
-                  <DialogDescription>
-                    Registrar nuevo cliente.
-                  </DialogDescription>
-                </DialogHeader>
-                <RegisterNewClientForm />
-              </DialogContent>
-            </Dialog>
+
+            <Button
+              className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full"
+              onClick={openDrawer}
+            >
+              Registrar Cliente
+            </Button>
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+              <RegisterNewClientForm isOpen={isDrawerOpen} onClose={closeDrawer} />
+            </Drawer>
 
             <Dialog>
               <DialogTrigger>
@@ -145,10 +121,10 @@ const CajeroLayout = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent>
-              <DialogHeader>
+                <DialogHeader>
                   <DialogTitle>Buscar Clientes</DialogTitle>
                   <DialogDescription>
-                    Busqueda de clientes por nombre o rut.
+                    Búsqueda de clientes por nombre o RUT.
                   </DialogDescription>
                 </DialogHeader>
                 <ClientSearch />
@@ -157,22 +133,10 @@ const CajeroLayout = () => {
 
             <Button
               className="rounded-lg shadow-md transition duration-200 w-full"
-              onClick={() => handleOpenDialog("payment")} // Open Payment Dialog
+              onClick={() => handleOpenDialog("payment")}
             >
               Finalizar Compra
             </Button>
-            <Button
-              className="rounded-lg shadow-md transition duration-200 w-full"
-              onClick={() => Boleta({
-                cajero: user.name,
-                products: addedProducts,
-                total,
-                iva
-              })}
-            >
-              Mostrar Boleta (Temporal)
-            </Button>
-
           </div>
           <div className="mt-auto space-y-2">
             {user.role === "admin" && (
