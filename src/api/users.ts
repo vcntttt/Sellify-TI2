@@ -14,8 +14,14 @@ export const getClients = async (): Promise<UserResponse[]> => {
   return data;
 };
 
-export const registerUser = async (userData: NewUserBody): Promise<NewUserBody> => {
-  const { data } = await axios.post<NewUserBody>("/register", userData);
-  
+export const registerUser = async (
+  userData: NewUserBody
+): Promise<NewUserBody> => {
+  const fixedData = {
+    ...userData,
+    estado: "activo",
+  };
+  const { data } = await axios.post<NewUserBody>("/register", fixedData);
+
   return data;
 };

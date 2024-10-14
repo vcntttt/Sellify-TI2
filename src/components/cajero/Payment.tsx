@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form"; 
 import { useClients } from "@/hooks/query/use-clients";
+import { addPoints, updateUserPoints } from "@/api/Client"; 
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -28,7 +29,8 @@ const PaymentDialog = ({
   const [isRUTConfirmed, setIsRUTConfirmed] = useState(false);
   const [clientName, setClientName] = useState<string | null>(null); 
   const [clientSurname, setClientSurname] = useState<string | null>(null); 
-  const {data: clients} = useClients(); 
+  const [skipRegistration, setSkipRegistration] = useState(false);
+  const { data: clients } = useClients(); 
   const client = clients?.find(client => client.rut === customerRUT); 
 
   const handlePaymentSelection = (method: string) => {
@@ -46,9 +48,21 @@ const PaymentDialog = ({
     }
   };
 
-  const confirmPayment = () => {
+  const confirmPayment = async () => {
     if (selectedMethod) {
       setIsPaymentConfirmed(true);
+      try {
+        const pointsToAdd = 10;
+  
+        if (client) {
+          const newPoints = client.puntos + pointsToAdd; 
+          await updateUserPoints(customerRUT, newPoints); 
+        } else {
+          await addPoints(customerRUT, pointsToAdd);
+        }
+      } catch (error) {
+        console.error("Error actualizando los puntos:", error);
+      }
     }
   };
 
@@ -67,12 +81,21 @@ const PaymentDialog = ({
     setCustomerRUT("");
     setClientName(null);
     setClientSurname(null); 
+    setSkipRegistration(false); 
   };
 
-  const progressValue = isPaymentConfirmed ? 100 : isRUTConfirmed ? 66 : 0;
+  const progressValue = isPaymentConfirmed 
+    ? 100 
+    : selectedMethod 
+    ? 66 
+    : isRUTConfirmed 
+    ? 33 
+    : 0;
 
   const dialogTitle = isPaymentConfirmed
     ? "Pago Confirmado"
+    : isRUTConfirmed && !client && !skipRegistration
+    ? "Registrar Cliente"
     : isRUTConfirmed
     ? "Seleccionar Método de Pago"
     : "Rut del Cliente";
@@ -85,6 +108,8 @@ const PaymentDialog = ({
           <DialogDescription className="text-sm text-gray-600">
             {isPaymentConfirmed
               ? "Su pago ha sido confirmado."
+              : isRUTConfirmed && !client && !skipRegistration
+              ? "Este RUT no está registrado. Por favor, registre al cliente."
               : isRUTConfirmed
               ? "Elija un método de pago para continuar."
               : "Ingrese el RUT del cliente"}
@@ -149,13 +174,36 @@ const PaymentDialog = ({
                   Pagar con Tarjeta de Crédito/Débito
                 </Button>
               </>
-            ) : isRUTConfirmed && !client && (
+            ) : isRUTConfirmed && !client && !skipRegistration && (
               <>
-                <p className="text-sm text-gray-600">
-                  Este RUT no está registrado. Por favor, regístrelo.
-                </p>
                 <RegisterNewClientForm /> 
+                <Button
+                  onClick={() => setSkipRegistration(true)} 
+                  className="rounded-lg shadow-md transition duration-200 mt-2"
+                >
+                  Continuar sin Registrar
+                </Button>
               </>
+            )}
+
+            {skipRegistration && (
+              <div className="flex flex-col gap-4">
+                <p className="text-base">
+                  Ha decidido continuar sin registrar al cliente.
+                </p>
+                <Button
+                  onClick={() => handlePaymentSelection("Efectivo")}
+                  className="rounded-lg shadow-md transition duration-200"
+                >
+                  Pagar en Efectivo
+                </Button>
+                <Button
+                  onClick={() => handlePaymentSelection("Tarjeta de Crédito/Débito")}
+                  className="rounded-lg shadow-md transition duration-200"
+                >
+                  Pagar con Tarjeta de Crédito/Débito
+                </Button>
+              </div>
             )}
 
             {selectedMethod && (

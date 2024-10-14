@@ -24,13 +24,13 @@ export function RegisterNewClientForm() {
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      rut: "987654321",
-      name: "junior",
+      rut: "123459876",
+      name: "julio",
       apellido: "Fernandez",
-      email: "jn.fer@example.com",
+      email: "no.fer@example.com",
       password: "pass123",
       role: "cliente",
-      phone: "569131313",
+      phone: "569131315",
     },
   });
 
