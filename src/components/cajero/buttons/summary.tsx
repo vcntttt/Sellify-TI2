@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { formatPrice, formatDiscount } from "@/lib/utils"; 
 import { ProductDiscount } from "@/types/products";
+import { Boleta } from "./boleta";
+import { useAuthStore } from "@/store/auth";
 
 interface Product {
   id: number;
@@ -19,11 +21,23 @@ interface Props {
 }
 
 const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
+  const { user } = useAuthStore();
   const totalIVA = products.reduce((acc, product) => {
     const priceToUse = product.discountedPrice || product.originalPrice;
     const iva = priceToUse * 0.19; 
     return acc + (iva * product.quantity); 
   }, 0);
+
+  const handleFinalizePurchase = () => {
+    const iva = total * 0.19;
+    Boleta({
+      cajero: user.name, 
+      products,          
+      total,             
+      iva                
+    });
+    onClose();
+  };
 
   return (
     <div className="px-6 pt-6">
@@ -71,7 +85,7 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
       </div>
 
       <div className="w-full flex justify-end pt-4">
-        <Button onClick={onClose}>Finalizar compra</Button>
+        <Button onClick={handleFinalizePurchase}>Finalizar compra</Button>
       </div>
     </div>
   );

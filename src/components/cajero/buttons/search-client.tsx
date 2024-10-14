@@ -36,6 +36,7 @@ export default function ClientSearch() {
               <TableHead className="w-[100px]">Nombre</TableHead>
               <TableHead>RUT</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Puntos</TableHead> 
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -44,6 +45,7 @@ export default function ClientSearch() {
                 <TableCell className="font-medium">{client.nombre}</TableCell>
                 <TableCell>{client.rut}</TableCell>
                 <TableCell>{client.correo}</TableCell>
+                <TableCell>{client.puntos}</TableCell> 
               </TableRow>
             ))}
           </TableBody>

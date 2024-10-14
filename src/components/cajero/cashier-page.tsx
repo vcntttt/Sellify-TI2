@@ -50,7 +50,7 @@ const CajeroLayout = () => {
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
-    handleOpenDialog("receipt"); // Abrir el diálogo de la boleta
+    handleOpenDialog("receipt"); // Open Receipt Dialog
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 

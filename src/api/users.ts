@@ -9,7 +9,7 @@ export const getUsers = async (): Promise<UserResponse[]> => {
 };
 
 export const getClients = async (): Promise<UserResponse[]> => {
-  // await sleep(2);
+  // await sleep(4);
   const { data } = await axios.get("/users?tipo_usuario=cliente")
   return data;
 };
