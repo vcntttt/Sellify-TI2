@@ -7,63 +7,72 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { login } from "@/api/users";
 import { useAuthStore } from "@/store/auth";
-import { roles } from "@/data/roles";
+import { useLocation } from "wouter";
+import Logo from "../icons/logo";
 
 export default function Login() {
   const setLocation = useLocation()[1];
-  const { user, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const formSchema = z.object({
-    name: z.string().min(0).max(50),
-    role: z.enum(roles, { message: "Debes seleccionar un rol" }),
+    rut: z.string().min(8, {message:"Ingrese rut valido"}).max(9, {message:"Ingrese rut valido"}),
+    password: z.string().min(6, {message:"La contraseña debe tener al menos 6 caracteres"}).max(50, {message:"La contraseña debe tener menos de 50 caracteres"}),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user.name,
-      role: "",
+      rut: "",
+      password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setUser(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+   try{
+    const { token, info } = await login({
+      rut: values.rut,
+      contrasena: values.password,
+    });
 
-    if (values.role === "admin") {
+    setUser({ name: info.nombre, role: info.tipo_usuario, access_token: token});
+
+    if (!token) {
+      setLocation("/non-authorized");
+    }
+
+    if (info.tipo_usuario === "admin") {
       setLocation("/dashboard");
-    } else if (values.role === "cajero") {
+    } else if (info.tipo_usuario === "cajero") {
       setLocation("/cashier");
     } else {
       setLocation("/non-authorized");
     }
+  } catch (error) {
+     console.log(error);
+   }
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 shadow-md rounded-md">
+      <div className="bg-white p-6 shadow-md rounded-md flex flex-col items-center justify-center">
+      <h1 className="text-2xl uppercase font-bold">S e l l i f y</h1>
+        <Logo className="size-48 filter invert"/>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="rut"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nombre</FormLabel>
+                  <FormLabel>Rut</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nelsiño" {...field} />
+                    <Input placeholder="211234567" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -71,32 +80,18 @@ export default function Login() {
             />
             <FormField
               control={form.control}
-              name="role"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rol</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un rol" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {roles.slice(0,2).map((role) => (
-                        <SelectItem value={role} key={role}>
-                          {role}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password"/>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" className="flex w-full">Entrar</Button>
           </form>
         </Form>
       </div>

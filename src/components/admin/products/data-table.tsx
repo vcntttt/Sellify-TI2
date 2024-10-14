@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import ProductActions from "./actions";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

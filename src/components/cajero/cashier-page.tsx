@@ -1,29 +1,29 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Drawer } from "@/components/ui/drawer"; 
 import ProductSearch from "@/components/cajero/buttons/product-search";
-import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
 import ProductSummary from "@/components/cajero/buttons/summary";
 import useCarrito from "@/hooks/cajero/use-carrito";
 import ProductTable from "@/components/cajero/data-table";
 import Logo from "@/components/icons/logo";
 import PaymentDialog from "@/components/cajero/Payment";
 import { useState } from "react";
+import { ResponsiveModal } from "../responsive-modal";
 import ClientSearch from "./buttons/search-client";
+import { RegisterNewClientForm } from "./buttons/client-form";
 
 const CajeroLayout = () => {
-  const { user } = useAuthStore();
+  const { user, logOut } = useAuthStore();
+  const setLocation = useLocation()[1];
   const {
     addedProducts,
     code,
@@ -54,11 +54,6 @@ const CajeroLayout = () => {
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const openDrawer = () => setIsDrawerOpen(true);
-  const closeDrawer = () => setIsDrawerOpen(false);
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
@@ -87,49 +82,40 @@ const CajeroLayout = () => {
           <div className="flex flex-col gap-4 mb-auto">
             <h3 className="text-lg font-semibold mb-4">Opciones</h3>
 
-            <Dialog>
-              <DialogTrigger>
-                <Button className="bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900 rounded-lg shadow-md transition duration-200 w-full">
-                  Ver Productos
+            <ResponsiveModal
+              trigger={
+                <Button className="bg-blue-700 text-white hover:bg-blue-800 rounded-lg shadow-md transition duration-200 w-full">
+                  Buscar Producto
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Productos</DialogTitle>
-                  <DialogDescription>
-                    Buscador de productos por código.
-                  </DialogDescription>
-                  <ProductSearch />
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-
-            <Button
-              className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full"
-              onClick={openDrawer}
+              }
+              title="Buscar Producto"
+              description="Buscador de productos"
             >
-              Registrar Cliente
-            </Button>
-            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-              <RegisterNewClientForm isOpen={isDrawerOpen} onClose={closeDrawer} />
-            </Drawer>
-
-            <Dialog>
-              <DialogTrigger>
+              <ProductSearch />
+            </ResponsiveModal>
+            <ResponsiveModal
+              trigger={
                 <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
                   Buscar Cliente
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Buscar Clientes</DialogTitle>
-                  <DialogDescription>
-                    Búsqueda de clientes por nombre o RUT.
-                  </DialogDescription>
-                </DialogHeader>
-                <ClientSearch />
-              </DialogContent>
-            </Dialog>
+              }
+              title="Buscar Cliente"
+              description="Buscador de clientes por nombre o rut"
+              className="md:min-w-[700px]"
+            >
+              <ClientSearch/>
+            </ResponsiveModal>
+            <ResponsiveModal
+              trigger={
+                <Button className="bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 rounded-lg shadow-md transition duration-200 w-full">
+                  Registrar Cliente
+                </Button>
+              }
+              title="Registrar Cliente"
+              description="Registrar nuevos clientes"
+            >
+              <RegisterNewClientForm/>
+            </ResponsiveModal>
 
             <Button
               className="rounded-lg shadow-md transition duration-200 w-full"
@@ -150,8 +136,12 @@ const CajeroLayout = () => {
             <Button
               asChild
               className="rounded-lg shadow-md transition duration-200 w-full"
+              onClick={() => {
+                logOut()
+                setLocation("/")
+              }}
             >
-              <Link href="/">Cerrar Sesión</Link>
+              Cerrar Sesión
             </Button>
           </div>
         </aside>

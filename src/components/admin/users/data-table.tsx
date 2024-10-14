@@ -17,11 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import UsersActions from "./actions";
+import { useUsers } from "@/hooks/query/use-users";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +37,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { refetch } = useUsers();
 
   const table = useReactTable({
     data,
@@ -66,7 +68,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
           <UsersActions />
-          <DataTableViewOptions table={table}/>
+          <DataTableViewOptions table={table} refetchFn={refetch}/>
         </div>
       </div>
 

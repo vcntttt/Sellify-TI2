@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import VentasActions from "./actions";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
