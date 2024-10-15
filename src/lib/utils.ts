@@ -15,11 +15,12 @@ export function formatPrice(price: number) {
   }).format(price);
 }
 
-export function formatDiscount(discount?: ProductDiscount) {
+export function formatDiscount(discount: ProductDiscount) {
   const currentDate = new Date();
   const isValid = discount?.dueDate ? currentDate < discount.dueDate : true;
   const value = discount?.value ?? 0; 
-  return { isValid, value };
+  const dueDate = discount?.dueDate ?? undefined
+  return { isValid, value, dueDate };
 }
 
 export function formatDate(date: Date) {

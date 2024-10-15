@@ -20,7 +20,7 @@ export default function Products() {
 
   return (
     <AdminSection title="Productos">
-      <DataTable columns={columns} data={products} />
+      <DataTable columns={columns} data={data ?? []} />
     </AdminSection>
   );
 }

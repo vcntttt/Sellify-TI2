@@ -35,15 +35,14 @@ export const columns: ColumnDef<Producto>[] = [
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
       const discount = row.getValue("discount") as ProductDiscount;
-      const { isValid } = formatDiscount(discount); 
-
-      const discountedPrice = isValid ? price - (price * discount.value) / 100 : price; // Calcula el precio con descuento si es válido
+      const { isValid, value } = formatDiscount(discount);
       const formattedPrice = formatPrice(price);
+      const discountedPrice = isValid ? price - (price * value) / 100 : price;
       const formattedDiscountedPrice = formatPrice(discountedPrice);
 
       return (
         <div className="text-left font-medium">
-          {isValid && discount.value > 0 ? (
+          {isValid && value > 0 ? (
             <div className="flex items-center gap-2">
               <span className="line-through">{formattedPrice}</span>
               <span className="text-red-500">{formattedDiscountedPrice}</span>
@@ -60,8 +59,7 @@ export const columns: ColumnDef<Producto>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Descuento" />,
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
-      const { isValid, value } = formatDiscount(discount);
-      const dueDate = discount.dueDate;
+      const { isValid, value, dueDate } = formatDiscount(discount);
       const currentDate = new Date();
       let daysDiscount: string | null = null;
 
