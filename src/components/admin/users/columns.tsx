@@ -42,6 +42,7 @@ export const columns: ColumnDef<UserResponse>[] = [
               "bg-teal-600": tipo === "cliente",
               "bg-blue-600": tipo === "cajero",
               "bg-slate-800": tipo === "admin",
+              "bg-cyan-700": tipo === "proveedor",
             })
           }>
             {tipo}

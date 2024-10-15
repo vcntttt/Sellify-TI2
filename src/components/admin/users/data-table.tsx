@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          <UsersActions />
+          <UsersActions tableRef={table}/>
           <DataTableViewOptions table={table} refetchFn={refetch}/>
         </div>
       </div>
