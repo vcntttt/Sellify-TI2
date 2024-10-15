@@ -18,7 +18,12 @@ export interface UserResponse {
   tipo_usuario:  Role;
 }
 
-export interface UserTypeResponse {
-  id_tipo_usuario: number;
-  tipo:           string;
+export interface NewUserBody {
+  rut:          string;
+  nombre:       string;
+  apellido:     string;
+  correo:       string;
+  contrasena:   string;
+  telefono:     string;
+  tipo_usuario: Role;
 }

@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/types/users";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
+import { Badge } from "@/components/ui/badge"; // Importa tu componente Badge
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -21,10 +22,33 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "telefono",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Telefono" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Teléfono" />,
   },
   {
     accessorKey: "correo",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Correo" />,
+  },
+  {
+    accessorKey: "tipo_usuario",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Tipo de Usuario" />,
+    cell: ({ getValue }) => {
+      const tipo = getValue<string>();
+
+      const colorClasses = {
+        cliente: "bg-teal-600 text-white",
+        cajero: "bg-cyan-600 text-white",
+        admin: "bg-slate-800 text-white",
+      };
+
+      if (!colorClasses[tipo]) return null;
+
+      return (
+        <div className="flex justify-center items-center h-full">
+          <Badge className={`capitalize ${colorClasses[tipo]}`}>
+            {tipo}
+          </Badge>
+        </div>
+      );
+    },
   },
 ];

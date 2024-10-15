@@ -103,3 +103,96 @@ export default function Login() {
     </div>
   );
 }
+/* 
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useAuthStore } from "@/store/auth";
+import { login } from "@/api/auth"; // Importa la función de login
+
+export default function Login() {
+  const setLocation = useLocation()[1];
+  const { setUser } = useAuthStore();
+
+  const formSchema = z.object({
+    rut: z.string().min(8, "El RUT debe tener al menos 8 caracteres."),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres."),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      rut: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { user, token } = await login(values.rut, values.password);
+
+      setUser({ ...user, token });
+
+      if (user.role === "admin") {
+        setLocation("/dashboard");
+      } else if (user.role === "cajero") {
+        setLocation("/cashier");
+      } else {
+        setLocation("/non-authorized");
+      }
+    } catch (error: any) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Credenciales incorrectas. Intenta nuevamente.");
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-6 shadow-md rounded-md">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="rut"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>RUT</FormLabel>
+                  <FormControl>
+                    <Input placeholder="12345678-9" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Entrar</Button>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
+}
+ */
