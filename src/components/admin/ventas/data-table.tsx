@@ -17,9 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import VentasActions from "./actions";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,10 +49,6 @@ export function DataTable<TData, TValue>({
       columnFilters
     },
   });
-
-  useEffect(() => {
-    table.setPageSize(8);
-  }, [table]);
 
   return (
     <div>

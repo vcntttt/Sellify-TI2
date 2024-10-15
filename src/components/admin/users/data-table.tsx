@@ -17,11 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
-import { useEffect, useState } from "react";
+import { DataTableViewOptions } from "@/components/tables/column-options";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import UsersActions from "./actions";
+import { useUsers } from "@/hooks/query/use-users";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +37,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { refetch } = useUsers();
 
   const table = useReactTable({
     data,
@@ -52,10 +54,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  useEffect(() => {
-    table.setPageSize(12);
-  }, [table]);
-
   return (
     <div>
       <div className="flex items-center pb-2 justify-between">
@@ -69,8 +67,8 @@ export function DataTable<TData, TValue>({
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          <UsersActions />
-          <DataTableViewOptions table={table}/>
+          <UsersActions tableRef={table}/>
+          <DataTableViewOptions table={table} refetchFn={refetch}/>
         </div>
       </div>
 
@@ -109,7 +107,7 @@ export function DataTable<TData, TValue>({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className="animate-fade animate-delay-100"
+                    // className="animate-fade animate-delay-100"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

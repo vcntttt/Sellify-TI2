@@ -1,5 +1,5 @@
 export default function logo({ className }: { className?: string }) {
   return (
-    <img src="/logo.svg" alt="logo" width="100" height="100" className={className} />
+    <img src="/sellify.svg" alt="logo" width="256" height="256" className={className} />
   )
 }

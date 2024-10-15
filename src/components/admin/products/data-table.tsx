@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import ProductActions from "./actions";
-import { DataTableViewOptions } from "@/components/tables/column-visibility";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,10 +54,6 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
-
-  useEffect(() => {
-    table.setPageSize(8);
-  }, [table]);
 
   return (
     <div>

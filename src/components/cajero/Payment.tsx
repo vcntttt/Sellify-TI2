@@ -26,34 +26,23 @@ const PaymentDialog = ({
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
   const [customerRUT, setCustomerRUT] = useState<string>("");
   const [isRUTConfirmed, setIsRUTConfirmed] = useState(false);
-  const [rutError, setRUTError] = useState<string | null>(null);
   const [clientName, setClientName] = useState<string | null>(null); 
   const [clientSurname, setClientSurname] = useState<string | null>(null); 
-  const {data : clients} = useClients(); 
+  const {data: clients} = useClients(); 
   const client = clients?.find(client => client.rut === customerRUT); 
-
-  const validateRUT = (rut: string): boolean => {
-    const rutPattern = /^\d{1,2}(?:\.\d{3}){2}-[0-9Kk]$/;
-    return rutPattern.test(rut);
-  };
 
   const handlePaymentSelection = (method: string) => {
     setSelectedMethod(method);
   };
 
   const confirmRUT = () => {
-    if (validateRUT(customerRUT)) {
-      setIsRUTConfirmed(true);
-      setRUTError(null);
-      if (client) {
-        setClientName(client.nombre);
-        setClientSurname(client.apellido);
-      } else {
-        setClientName(null);
-        setClientSurname(null);
-      }
+    setIsRUTConfirmed(true);
+    if (client) {
+      setClientName(client.nombre);
+      setClientSurname(client.apellido);
     } else {
-      setRUTError("Por favor, ingrese un RUT valido (Ej: 12.345.678-9).");
+      setClientName(null);
+      setClientSurname(null);
     }
   };
 
@@ -76,7 +65,6 @@ const PaymentDialog = ({
     setIsPaymentConfirmed(false);
     setIsRUTConfirmed(false);
     setCustomerRUT("");
-    setRUTError(null);
     setClientName(null);
     setClientSurname(null); 
   };
@@ -133,7 +121,6 @@ const PaymentDialog = ({
                   placeholder="Ej: 12.345.678-9"
                   className="border border-gray-300 rounded-lg p-2 mt-1"
                 />
-                {rutError && <p className="text-red-600 text-sm">{rutError}</p>} {/* Display error message */}
                 <Button
                   onClick={confirmRUT}
                   className="rounded-lg shadow-md transition duration-200 mt-2"

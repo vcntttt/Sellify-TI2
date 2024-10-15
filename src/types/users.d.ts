@@ -5,6 +5,7 @@ export type Role = typeof roles[number];
 export interface CurrentUser {
   name: string;
   role: Role;
+  access_token: string;
 }
 
 export interface UserResponse {
@@ -26,4 +27,26 @@ export interface NewUserBody {
   contrasena:   string;
   telefono:     string;
   tipo_usuario: Role;
+}
+
+export interface LoginData {
+  rut: string;
+  contrasena: string;
+}
+
+export interface UserInfoResponse {
+  id_usuario: number;
+  nombre: string;
+  apellido: string;
+  correo: string;
+  rut: string;
+  telefono: string;
+  tipo_usuario: Role;
+  puntos: number;
+  fecha_creacion: string;
+  estado: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
 }

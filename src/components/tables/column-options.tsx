@@ -9,16 +9,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { RefreshCcw } from "lucide-react";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
+  refetchFn?: () => void;
 }
 
 export function DataTableViewOptions<TData>({
   table,
+  refetchFn,
 }: DataTableViewOptionsProps<TData>) {
   return (
     <div className="flex items-center justify-end gap-x-4">
+      <Button size={"icon"} variant={"outline"} onClick={refetchFn ?? (() => {alert("refetchFn no definida")})}>
+        <RefreshCcw size={20}/>
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
