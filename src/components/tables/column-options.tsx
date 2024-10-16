@@ -9,6 +9,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import { RefreshCcw } from "lucide-react";
 
 interface DataTableViewOptionsProps<TData> {
@@ -20,6 +36,7 @@ export function DataTableViewOptions<TData>({
   table,
   refetchFn,
 }: DataTableViewOptionsProps<TData>) {
+  
   return (
     <div className="flex items-center justify-end gap-x-4">
       <Button size={"icon"} variant={"outline"} onClick={refetchFn ?? (() => {alert("refetchFn no definida")})}>
@@ -59,7 +76,35 @@ export function DataTableViewOptions<TData>({
             })}
         </DropdownMenuContent>
       </DropdownMenu>
-      <div className="space-x-2">
+      <div className="space-x-2 flex">
+      <TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>
+    <Select onValueChange={(value) => table.setPageSize(parseInt(value))}>
+      <SelectTrigger className="w-[80px]">
+        <SelectValue placeholder="10" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Filas por página</SelectLabel>
+          <SelectItem value="6">6</SelectItem>
+          <SelectItem value="8">8</SelectItem>
+          <SelectItem value="10">10</SelectItem>
+          <SelectItem value="12">12</SelectItem>
+          <SelectItem value="14">14</SelectItem>
+          <SelectItem value="16">16</SelectItem>
+          <SelectItem value="18">18</SelectItem>
+          <SelectItem value="20">20</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>Cambia el número de filas por página</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
         <Button
           variant="outline"
           size="icon"
