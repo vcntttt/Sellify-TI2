@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { usePayment } from "@/hooks/cajero/use-payment"; // Ajusta la ruta de importación según sea necesario
 import {
   Dialog,
   DialogContent,
@@ -8,93 +8,51 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form"; 
-import { useClients } from "@/hooks/query/use-clients";
-import { addPoints, updateUserPoints } from "@/api/Client"; 
+import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
 
 interface PaymentDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectPaymentMethod: (method: string, rut: string) => void;
+  totalCost: number;
 }
 
 const PaymentDialog = ({
   isOpen,
   onClose,
   onSelectPaymentMethod,
+  totalCost,
 }: PaymentDialogProps) => {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
-  const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
-  const [customerRUT, setCustomerRUT] = useState<string>("");
-  const [isRUTConfirmed, setIsRUTConfirmed] = useState(false);
-  const [clientName, setClientName] = useState<string | null>(null); 
-  const [clientSurname, setClientSurname] = useState<string | null>(null); 
-  const [skipRegistration, setSkipRegistration] = useState(false);
-  const { data: clients } = useClients(); 
-  const client = clients?.find(client => client.rut === customerRUT); 
+  const {
+    selectedMethod,
+    isPaymentConfirmed,
+    customerRUT,
+    isRUTConfirmed,
+    clientName,
+    clientSurname,
+    skipRegistration,
+    sufficientPoints,
+    handlePaymentSelection,
+    confirmRUT,
+    confirmPayment,
+    completePayment,
+    resetPaymentState,
+    setCustomerRUT, 
+    client,
+    setSkipRegistration, 
+  } = usePayment(totalCost);
 
-  const handlePaymentSelection = (method: string) => {
-    setSelectedMethod(method);
-  };
-
-  const confirmRUT = () => {
-    setIsRUTConfirmed(true);
-    if (client) {
-      setClientName(client.nombre);
-      setClientSurname(client.apellido);
-    } else {
-      setClientName(null);
-      setClientSurname(null);
-    }
-  };
-
-  const confirmPayment = async () => {
-    if (selectedMethod) {
-      setIsPaymentConfirmed(true);
-      try {
-        const pointsToAdd = 10;
-  
-        if (client) {
-          const newPoints = client.puntos + pointsToAdd; 
-          await updateUserPoints(customerRUT, newPoints); 
-        } else {
-          await addPoints(customerRUT, pointsToAdd);
-        }
-      } catch (error) {
-        console.error("Error actualizando los puntos:", error);
-      }
-    }
-  };
-
-  const completePayment = () => {
-    if (selectedMethod) {
-      onSelectPaymentMethod(selectedMethod, customerRUT);
-      resetPaymentState();
-      onClose();
-    }
-  };
-
-  const resetPaymentState = () => {
-    setSelectedMethod(null);
-    setIsPaymentConfirmed(false);
-    setIsRUTConfirmed(false);
-    setCustomerRUT("");
-    setClientName(null);
-    setClientSurname(null); 
-    setSkipRegistration(false); 
-  };
-
-  const progressValue = isPaymentConfirmed 
-    ? 100 
-    : selectedMethod 
-    ? 66 
-    : isRUTConfirmed 
-    ? 33 
+  const progressValue = isPaymentConfirmed
+    ? 100
+    : selectedMethod
+    ? 66
+    : isRUTConfirmed
+    ? 33
     : 0;
 
   const dialogTitle = isPaymentConfirmed
     ? "Pago Confirmado"
-    : isRUTConfirmed && !client && !skipRegistration
+    : isRUTConfirmed && !skipRegistration
     ? "Registrar Cliente"
     : isRUTConfirmed
     ? "Seleccionar Método de Pago"
@@ -108,7 +66,7 @@ const PaymentDialog = ({
           <DialogDescription className="text-sm text-gray-600">
             {isPaymentConfirmed
               ? "Su pago ha sido confirmado."
-              : isRUTConfirmed && !client && !skipRegistration
+              : isRUTConfirmed && !skipRegistration
               ? "Este RUT no está registrado. Por favor, registre al cliente."
               : isRUTConfirmed
               ? "Elija un método de pago para continuar."
@@ -117,15 +75,15 @@ const PaymentDialog = ({
         </DialogHeader>
 
         <Progress value={progressValue} className="mt-2 mb-4" />
-
         {isPaymentConfirmed ? (
           <div className="flex flex-col gap-4">
             <p className="text-base">
               Su pago con el método:{" "}
-              <strong className="font-semibold">{selectedMethod}</strong> ha sido confirmado.
+              <strong className="font-semibold">{selectedMethod}</strong> ha sido
+              confirmado.
             </p>
             <Button
-              onClick={completePayment}
+              onClick={() => completePayment(onSelectPaymentMethod, onClose)}
               className="rounded-lg shadow-md transition duration-200"
             >
               Finalizar y Ver Boleta
@@ -142,7 +100,7 @@ const PaymentDialog = ({
                   id="customer-rut"
                   type="text"
                   value={customerRUT}
-                  onChange={(e) => setCustomerRUT(e.target.value)}
+                  onChange={(e) => setCustomerRUT(e.target.value)} // Asegúrate de que setCustomerRUT esté definido en usePayment
                   placeholder="Ej: 12.345.678-9"
                   className="border border-gray-300 rounded-lg p-2 mt-1"
                 />
@@ -156,10 +114,13 @@ const PaymentDialog = ({
               </div>
             )}
 
-            {isRUTConfirmed && client ? ( 
+            {isRUTConfirmed && client && (
               <>
                 <p className="text-base">
-                  Cliente: <strong className="font-semibold">{clientName} {clientSurname}</strong>
+                  Cliente:{" "}
+                  <strong className="font-semibold">
+                    {clientName} {clientSurname}
+                  </strong>
                 </p>
                 <Button
                   onClick={() => handlePaymentSelection("Efectivo")}
@@ -168,17 +129,29 @@ const PaymentDialog = ({
                   Pagar en Efectivo
                 </Button>
                 <Button
-                  onClick={() => handlePaymentSelection("Tarjeta de Crédito/Débito")}
+                  onClick={() =>
+                    handlePaymentSelection("Tarjeta de Crédito/Débito")
+                  }
                   className="rounded-lg shadow-md transition duration-200"
                 >
                   Pagar con Tarjeta de Crédito/Débito
                 </Button>
+                {sufficientPoints && (
+                  <Button
+                    onClick={() => handlePaymentSelection("Puntos")}
+                    className="rounded-lg shadow-md transition duration-200"
+                  >
+                    Pagar con Puntos
+                  </Button>
+                )}
               </>
-            ) : isRUTConfirmed && !client && !skipRegistration && (
+            )}
+
+            {isRUTConfirmed && !client && !skipRegistration && (
               <>
-                <RegisterNewClientForm /> 
+                <RegisterNewClientForm />
                 <Button
-                  onClick={() => setSkipRegistration(true)} 
+                  onClick={() => setSkipRegistration(true)} // Asegúrate de que setSkipRegistration esté definido en usePayment
                   className="rounded-lg shadow-md transition duration-200 mt-2"
                 >
                   Continuar sin Registrar
@@ -198,7 +171,9 @@ const PaymentDialog = ({
                   Pagar en Efectivo
                 </Button>
                 <Button
-                  onClick={() => handlePaymentSelection("Tarjeta de Crédito/Débito")}
+                  onClick={() =>
+                    handlePaymentSelection("Tarjeta de Crédito/Débito")
+                  }
                   className="rounded-lg shadow-md transition duration-200"
                 >
                   Pagar con Tarjeta de Crédito/Débito
@@ -213,14 +188,17 @@ const PaymentDialog = ({
                   <strong className="font-semibold">{selectedMethod}</strong>?
                 </p>
                 <div className="flex justify-between">
-                  <Button onClick={resetPaymentState} className="bg-gray-300 hover:bg-gray-400">
+                  <Button
+                    onClick={resetPaymentState}
+                    className="rounded-lg shadow-md transition duration-200"
+                  >
                     Volver
                   </Button>
                   <Button
                     onClick={confirmPayment}
                     className="rounded-lg shadow-md transition duration-200"
                   >
-                    Confirmar
+                    Confirmar Pago
                   </Button>
                 </div>
               </div>
