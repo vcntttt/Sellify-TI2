@@ -145,8 +145,8 @@ export const columns: ColumnDef<Producto>[] = [
       return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="secondary" className="">
-              Editar Producto
+            <Button variant="secondary">
+              Editar Product
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">

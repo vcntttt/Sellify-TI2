@@ -34,11 +34,12 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, addDays } from 'date-fns';
 import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
 import { useCategories } from "@/hooks/query/use-categories";
 import { useAddProductMutation, useProducts } from "@/hooks/query/use-products";
+import { useEffect } from "react";
 
 interface Props {
   onClose: () => void;
@@ -60,7 +61,7 @@ export function AddProductForm({ onClose }: Props) {
       price: 500000,
       category: "",
       createdAt: format(new Date(), "yyyy-MM-dd"),
-      dueDate: format(new Date(), "yyyy-MM-dd"),
+      dueDate: format((addDays(new Date(), 7)), "yyyy-MM-dd"),
       discount: {
         value: 0,
         dueDate: null,
@@ -68,8 +69,12 @@ export function AddProductForm({ onClose }: Props) {
     },
   });
 
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
+  }, [form.formState.errors]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("🚀 ~ onSubmit ~ values:", values);
+    console.log("🚀 ~ onSubmit ~ addProduct ~ values:", values);
     try {
       addProductMutation.mutate({
         ...values,
@@ -209,7 +214,7 @@ export function AddProductForm({ onClose }: Props) {
                   <Calendar
                     mode="single"
                     selected={new Date(field.value)}
-                    onSelect={field.onChange}
+                    onSelect={(date) => field.onChange(date)}
                     disabled={(date) => date < new Date()}
                     locale={es}
                     initialFocus

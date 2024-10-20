@@ -1,5 +1,6 @@
 import axios from "@/api/axios";
-import { sleep } from "@/lib/utils";
+import { formatDatesFromRespone } from "@/lib/utils";
+// import { sleep } from "@/lib/utils";
 import {
   EditProductBody,
   NewProductBody,
@@ -12,7 +13,7 @@ function responseToProduct(productResponse: ProductResponse): Producto {
     id: productResponse.id_producto,
     name: productResponse.nombre,
     stock: productResponse.stock,
-    price: productResponse.precio_venta,
+    price: typeof productResponse.precio_venta === "string" ? parseInt(productResponse.precio_venta) : productResponse.precio_venta,
     category: productResponse.categoria,
     createdAt: new Date(productResponse.fecha_registro),
     dueDate: new Date(productResponse.fecha_vencimiento),
@@ -23,18 +24,17 @@ function responseToProduct(productResponse: ProductResponse): Producto {
     product.discount = {
       value: parseFloat(productResponse.descuento),
       dueDate: productResponse.vencimiento_descuento
-        ? new Date(productResponse.vencimiento_descuento)
+        ? (new Date(productResponse.vencimiento_descuento))
         : undefined,
     };
   }
-
   return product;
 }
 
 function productToResponse(product: Producto): NewProductBody {
   const response: NewProductBody = {
     nombre: product.name,
-    fecha_vencimiento: product.dueDate,
+    fecha_vencimiento: formatDatesFromRespone((new Date(product.dueDate))),
     stock: product.stock,
     precio_venta: product.price,
     categoria: product.category,
@@ -54,7 +54,7 @@ function productToResponse(product: Producto): NewProductBody {
 }
 
 export const getProducts = async (): Promise<Producto[]> => {
-  await sleep(2)
+  // await sleep(2)
   const { data } = await axios.get<ProductResponse[]>("/products");
 
   return data.map(responseToProduct);

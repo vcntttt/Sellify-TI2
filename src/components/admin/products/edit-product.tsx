@@ -39,6 +39,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
 import { useCategories } from "@/hooks/query/use-categories";
 import { useEditProductMutation } from "@/hooks/query/use-products";
+import { useEffect } from "react";
 
 interface Props {
   product: Producto;
@@ -48,6 +49,10 @@ interface Props {
 export function EditProductForm({ product, onClose }: Props) {
   const { data: categories = [] } = useCategories();
   const editProductMutation = useEditProductMutation();
+
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ current product:", product);
+  }, [product]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,20 +67,24 @@ export function EditProductForm({ product, onClose }: Props) {
           : product.price,
       category: product.category,
       createdAt: format(new Date(product.createdAt), "yyyy-MM-dd"),
-      dueDate: format(new Date(product.dueDate), "yyyy-MM-dd"),
+      dueDate:  format(new Date(product.dueDate), "yyyy-MM-dd", { locale: es }),
       codigoBarras: product.codigoBarras,
       discount: {
         value: product.discount?.value ?? 0,
-        dueDate: format(new Date(product.dueDate), "yyyy-MM-dd"),
+        dueDate: product.discount?.dueDate 
+        ? format(new Date(product.discount.dueDate), "yyyy-MM-dd") 
+        : undefined,
       },
     },
   });
 
-  // useEffect(() => {
-  //   console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
-  // }, [form.formState.errors]);
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
+  }, [form.formState.errors]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("🚀 ~ onSubmit ~ editProduct ~ values:", values);
+
     try {
       editProductMutation.mutate({
         ...values,
@@ -214,8 +223,11 @@ export function EditProductForm({ product, onClose }: Props) {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={new Date(field.value)}
-                    onSelect={field.onChange}
+                    selected={(new Date(field.value))}
+                    onSelect={(date) => {
+                      if (!date) return undefined;
+                      return field.onChange(format((date), "yyyy-MM-dd"))
+                    }}
                     disabled={(date) => date < new Date()}
                     locale={es}
                     initialFocus
@@ -279,7 +291,10 @@ export function EditProductForm({ product, onClose }: Props) {
                         <Calendar
                           mode="single"
                           selected={new Date(field.value ?? "")}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            if (!date) return undefined;
+                            return field.onChange(format(date, "yyyy-MM-dd"))
+                          }}
                           disabled={(date) => date < new Date()}
                           locale={es}
                           initialFocus

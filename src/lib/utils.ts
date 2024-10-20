@@ -26,7 +26,11 @@ export function formatDiscount(discount?: ProductDiscount) {
 }
 
 export function formatDate(date: Date) {
-  return format(date, "dd-MM-yyyy", { locale: es });
+  return format((date), "dd-MM-yyyy", { locale: es });
 }
 
 export const sleep = (ss: number) => new Promise((resolve) => setTimeout(resolve, 1000 * ss));
+
+export function formatDatesFromRespone(date: string | Date) {
+  return format(new Date(date), "yyyy-MM-dd");
+}

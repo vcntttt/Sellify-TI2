@@ -1,4 +1,4 @@
-import { addProduct, getProducts } from '@/api/products';
+import { addProduct, editProduct, getProducts } from '@/api/products';
 import { Producto } from '@/types/products';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -14,17 +14,23 @@ export const useProducts = () => {
   return { isFetching, data, error, refetch };
 }
 
-export const useAddProductMutation = () => {
+const useProductMutation = (mutationFn: (product: Producto) => Promise<any>) => {
   const queryClient = useQueryClient();
 
-  const addProductMutation = useMutation({
-    mutationFn: (product: Producto) => addProduct(product),
+  return useMutation({
+    mutationFn,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [productQueryKey],
       });
-    }
-  })
+    },
+  });
+};
 
-  return addProductMutation;
-}
+export const useAddProductMutation = () => {
+  return useProductMutation((product: Producto) => addProduct(product));
+};
+
+export const useEditProductMutation = () => {
+  return useProductMutation((product: Producto) => editProduct(product));
+};

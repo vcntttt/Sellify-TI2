@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { parse, isValid, format } from 'date-fns';
 
 export const productSchema = z.object({
   id: z.number(),
@@ -19,19 +18,8 @@ export const productSchema = z.object({
     z.number().min(1, { message: "El precio debe ser mayor a 0" })
   ),
   category: z.string().min(1, { message: "Debe seleccionar una categoría" }),
-  createdAt: z.preprocess((arg) => {
-    const parsedDate = parse(arg as string, "yyyy-MM-dd", new Date());
-    return isValid(parsedDate) ? format(parsedDate, "yyyy-MM-dd") : undefined;
-  }, z.string()),
-  dueDate: z.preprocess((arg) => {
-    if (typeof arg === "string") {
-      const parsedDate = parse(arg, "yyyy-MM-dd", new Date());
-      if (isValid(parsedDate)) {
-        return format(parsedDate, "yyyy-MM-dd");
-      }
-    }
-    return undefined;
-  }, z.string({ required_error: "La fecha de vencimiento es obligatoria" })),
+  createdAt: z.string(),
+  dueDate: z.string({ required_error: "La fecha de vencimiento es obligatoria" }),
   discount: z
     .object({
       value: z.preprocess(
