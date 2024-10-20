@@ -15,7 +15,9 @@ export function formatPrice(price: number) {
   }).format(price);
 }
 
-export function formatDiscount(discount: ProductDiscount) {
+export function formatDiscount(discount?: ProductDiscount) {
+  if (!discount) return { isValid: false, value: 0, dueDate: undefined };
+
   const currentDate = new Date();
   const isValid = discount?.dueDate ? currentDate < discount.dueDate : true;
   const value = discount?.value ?? 0; 
