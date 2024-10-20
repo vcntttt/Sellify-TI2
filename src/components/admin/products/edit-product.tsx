@@ -23,7 +23,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 import { Input } from "@/components/ui/input";
 import { Producto } from "@/types/products";
 import { productSchema as formSchema } from "@/schemas/products";
@@ -38,7 +37,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
-import { useProductStore } from "@/store/products";
+import { useCategories } from "@/hooks/query/use-categories";
+import { useEditProductMutation } from "@/hooks/query/use-products";
 
 interface Props {
   product: Producto;
@@ -46,34 +46,52 @@ interface Props {
 }
 
 export function EditProductForm({ product, onClose }: Props) {
-  const { categories, editProduct, deleteProduct } = useProductStore();
-  // 1. Define your form
+  const { data: categories = [] } = useCategories();
+  const editProductMutation = useEditProductMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: product.id,
       name: product.name,
       stock: product.stock,
-      price: product.price,
+      description: product.description ?? "",
+      price:
+        typeof product.price === "string"
+          ? parseInt(product.price)
+          : product.price,
       category: product.category,
-      createdAt: product.createdAt,
-      dueDate: product.dueDate,
+      createdAt: format(new Date(product.createdAt), "yyyy-MM-dd"),
+      dueDate: format(new Date(product.dueDate), "yyyy-MM-dd"),
+      codigoBarras: product.codigoBarras,
       discount: {
         value: product.discount?.value ?? 0,
-        dueDate: product.discount?.dueDate ?? undefined,
+        dueDate: format(new Date(product.dueDate), "yyyy-MM-dd"),
       },
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    editProduct(values);
-    onClose();
-  }
+  // useEffect(() => {
+  //   console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
+  // }, [form.formState.errors]);
 
-  function handleDelete() {
-    deleteProduct(product);
-    onClose();
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      editProductMutation.mutate({
+        ...values,
+        createdAt: format(new Date(values.createdAt), "yyyy-MM-dd"),
+        dueDate: format(new Date(values.dueDate), "yyyy-MM-dd"),
+        discount: {
+          value: values.discount?.value ?? 0,
+          dueDate: values.discount?.dueDate
+            ? format(new Date(values.discount.dueDate), "yyyy-MM-dd")
+            : null,
+        },
+      });
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -85,6 +103,32 @@ export function EditProductForm({ product, onClose }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nombre del producto</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripcion</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="codigoBarras"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Codigo de Barras</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -143,45 +187,45 @@ export function EditProductForm({ product, onClose }: Props) {
           )}
         />
         <FormField
-                control={form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha de vencimiento</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP", { locale: es })
-                            ) : (
-                              <span>Seleccione una fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
-                          locale={es}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          control={form.control}
+          name="dueDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Fecha de vencimiento</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(field.value)}
+                    onSelect={field.onChange}
+                    disabled={(date) => date < new Date()}
+                    locale={es}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>Descuento</AccordionTrigger>
@@ -234,7 +278,7 @@ export function EditProductForm({ product, onClose }: Props) {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value ?? undefined}
+                          selected={new Date(field.value ?? "")}
                           onSelect={field.onChange}
                           disabled={(date) => date < new Date()}
                           locale={es}
@@ -251,7 +295,7 @@ export function EditProductForm({ product, onClose }: Props) {
         </Accordion>
 
         <div className="flex gap-x-2 *:w-1/2 pt-4">
-          <Button onClick={handleDelete} variant="destructive">Retirar producto</Button>
+          <Button variant="destructive">Retirar producto</Button>
           <Button type="submit">Guardar cambios</Button>
         </div>
       </form>

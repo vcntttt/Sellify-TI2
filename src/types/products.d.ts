@@ -13,6 +13,7 @@ export interface Producto {
   dueDate: Date | string;
   discount?: ProductDiscount;
   codigoBarras?: string;
+  description?: string;
 }
 
 export interface ProductResponse {
@@ -41,6 +42,7 @@ export interface EditProductBody {
   categoria:         string;
   descuento?:         number;
   vencimiento_descuento?: Date | string;
+  codigo_barras?: string;
 }
 
 export interface NewProductBody extends EditProductBody {

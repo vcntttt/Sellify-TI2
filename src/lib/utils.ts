@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx"
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { twMerge } from "tailwind-merge"
 import { ProductDiscount } from "@/types/products"; 
@@ -26,7 +26,7 @@ export function formatDiscount(discount?: ProductDiscount) {
 }
 
 export function formatDate(date: Date) {
-  return format(addDays(date, 1), "dd-MM-yyyy", { locale: es });
+  return format(date, "dd-MM-yyyy", { locale: es });
 }
 
 export const sleep = (ss: number) => new Promise((resolve) => setTimeout(resolve, 1000 * ss));
