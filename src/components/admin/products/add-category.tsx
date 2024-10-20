@@ -11,15 +11,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categorySchema as formSchema } from "@/schemas/products";
-import { useProductStore } from "@/store/products";
+import { useCategories, useCategoryMutation } from "@/hooks/query/use-categories";
 
 interface Props {
   onClose: () => void;
 }
 
 export function AddCategory({ onClose }: Props) {
-  const { categories, addCategory } = useProductStore();
-  // 1. Define your form
+  const { data: categories } = useCategories();
+  const categoryMutation = useCategoryMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,15 +28,18 @@ export function AddCategory({ onClose }: Props) {
     },
 );
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const existingCategory = categories.find((category) => category === values.name);
+    const existingCategory = categories?.find((category) => category === values.name);
     if (existingCategory) {
       alert("La categoria ya existe");
       return
     }
-    addCategory(values.name);
-    onClose();
+    try{
+      categoryMutation.mutate(values.name);
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
