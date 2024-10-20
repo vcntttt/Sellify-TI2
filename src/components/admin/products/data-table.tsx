@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import ProductActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
+import { useProducts } from "@/hooks/query/use-products";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -37,7 +38,8 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     createdAt: false,
   });
-  
+  const { refetch } = useProducts();
+
   const table = useReactTable({
     data,
     columns,
@@ -69,7 +71,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
           <ProductActions />
-          <DataTableViewOptions table={table} />
+          <DataTableViewOptions table={table} refetchFn={refetch}/>
         </div>
       </div>
       <div className="rounded-md border">

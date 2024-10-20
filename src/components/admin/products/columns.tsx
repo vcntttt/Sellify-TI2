@@ -18,8 +18,8 @@ import { DataTableColumnHeader } from "@/components/tables/column-header";
 
 export const columns: ColumnDef<Producto>[] = [
   {
-    accessorKey: "id",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+    accessorKey: "codigoBarras",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Codigo Barras" />,
   },
   {
     accessorKey: "name",
@@ -140,6 +140,7 @@ export const columns: ColumnDef<Producto>[] = [
     accessorKey: "action",
     header: "Editar",
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isOpen, setIsOpen] = useState(false);
       return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
