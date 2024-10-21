@@ -1,18 +1,11 @@
 import { useReducer } from "react";
 import { Producto } from "@/types/products";
-import { formatDiscount } from "@/lib/utils";
+import { formatDiscount, priceToInt } from "@/lib/utils";
 import { useProducts } from "@/hooks/query/use-products";
-
-interface ProductDetails extends Producto {
-  quantity: number;
-  originalPrice: number;
-  discountedPrice: number;
-  totalPrice: number;
-  iva: number;
-}
+import { ToSellProduct } from "@/types/products";
 
 interface CartState {
-  addedProducts: ProductDetails[];
+  addedProducts: ToSellProduct[];
   code: number | null;
   quantity: number;
   total: number;
@@ -38,20 +31,20 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
   switch (action.type) {
     case "ADD_PRODUCT": {
       const foundProduct = action.payload.products.find((product) => product.id === action.payload.code);
-
       if (!foundProduct) return state;
 
-      const { price, discount } = foundProduct;
-      const { isValid, value } = formatDiscount(discount);
-      const discountedPrice = isValid ? price - (price * value) / 100 : price;
+      const { price: productPrice, discount, codigoBarras ="" } = foundProduct;
+      const price = priceToInt(productPrice);
+      const { isValid, value: discountValue } = formatDiscount(discount);
+      const discountedPrice = isValid ? price - (price * discountValue) / 100 : price;
       const iva = Math.floor(discountedPrice * 0.19);
-      const totalPriceWithIva = discountedPrice + iva;
+      const totalPrice = discountedPrice;
 
       const existingProductIndex = state.addedProducts.findIndex(
         (product) => product.id === foundProduct.id
       );
 
-      let updatedProducts: ProductDetails[];
+      let updatedProducts: ToSellProduct[];
 
       if (existingProductIndex >= 0) {
         updatedProducts = [...state.addedProducts];
@@ -61,17 +54,21 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
         updatedProducts[existingProductIndex] = {
           ...existingProduct,
           quantity: updatedQuantity,
-          totalPrice: totalPriceWithIva * updatedQuantity,
+          totalPrice: totalPrice * updatedQuantity,
           iva,
         };
       } else {
-        const newProduct: ProductDetails = {
-          ...foundProduct,
-          quantity: action.payload.quantity,
+        const newProduct: ToSellProduct = {
           originalPrice: price,
-          discountedPrice,
-          totalPrice: totalPriceWithIva * action.payload.quantity,
+          id: foundProduct.id,
+          name: foundProduct.name,
+          quantity: action.payload.quantity,
+          unitPrice: totalPrice,
+          totalPrice: totalPrice * action.payload.quantity,
+          codigoBarras,
           iva,
+          discountValue: discountValue || 0,
+          discountedPrice,
         };
         updatedProducts = [...state.addedProducts, newProduct];
       }
@@ -103,7 +100,7 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
   }
 }
 
-export function useCarrito() {
+function useCarrito() {
   const { data: products = [] } = useProducts();
   const [state, dispatch] = useReducer(carritoReducer, initialState);
 

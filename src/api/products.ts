@@ -1,5 +1,5 @@
 import axios from "@/api/axios";
-import { formatDatesFromRespone } from "@/lib/utils";
+import { formatDatesFromRespone, priceToInt } from "@/lib/utils";
 // import { sleep } from "@/lib/utils";
 import {
   EditProductBody,
@@ -13,7 +13,7 @@ function responseToProduct(productResponse: ProductResponse): Producto {
     id: productResponse.id_producto,
     name: productResponse.nombre,
     stock: productResponse.stock,
-    price: typeof productResponse.precio_venta === "string" ? parseInt(productResponse.precio_venta) : productResponse.precio_venta,
+    price: priceToInt(productResponse.precio_venta),
     category: productResponse.categoria,
     createdAt: new Date(productResponse.fecha_registro),
     dueDate: new Date(productResponse.fecha_vencimiento),

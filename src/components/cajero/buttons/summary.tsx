@@ -1,21 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { formatPrice, formatDiscount } from "@/lib/utils"; 
-import { ProductDiscount } from "@/types/products";
+import { formatPrice } from "@/lib/utils"; 
 import { Boleta } from "./boleta";
 import { useAuthStore } from "@/store/auth";
-
-interface Product {
-  id: number;
-  name: string;
-  quantity: number;
-  totalPrice: number; 
-  originalPrice: number;
-  discountedPrice?: number;
-  discount?: ProductDiscount; 
-}
+import { ToSellProduct } from "@/types/products";
 
 interface Props {
-  products: Product[];
+  products: ToSellProduct[];
   total: number; 
   onClose: () => void;
 }
@@ -23,7 +13,7 @@ interface Props {
 const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
   const { user } = useAuthStore();
   const totalIVA = products.reduce((acc, product) => {
-    const priceToUse = product.discountedPrice || product.originalPrice;
+    const priceToUse = product.discountedPrice || product.unitPrice;
     const iva = priceToUse * 0.19; 
     return acc + (iva * product.quantity); 
   }, 0);
@@ -46,11 +36,6 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
           const formattedOriginalPrice = formatPrice(product.originalPrice);
           const formattedTotalPrice = formatPrice(product.totalPrice);
           const formattedDiscountedPrice = formatPrice(product.discountedPrice || product.totalPrice);
-          const discountDetails = product.discount ? formatDiscount(product.discount) : { isValid: false, value: 0 };
-
-          const discount = discountDetails.isValid 
-            ? ((product.originalPrice - (product.discountedPrice || product.originalPrice)) / product.originalPrice) * 100 
-            : 0;
 
           return (
             <div
@@ -63,11 +48,11 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
                 <span className="text-gray-500">x{product.quantity}</span>
               </div>
               <div className="ml-8 text-right text-gray-700 font-semibold">
-                {product.discountedPrice && discount > 0 ? (
+                {product.discountedPrice && product.discountValue > 0 ? (
                   <div className="flex items-end gap-x-2">
                     <span className="line-through text-gray-500">{formattedOriginalPrice}</span>
                     <span className="text-red-500">{formattedDiscountedPrice}</span>
-                    <span className="text-gray-500">(-{Math.round(discount)}%)</span>
+                    <span className="text-gray-500">(-{Math.round(product.discountValue)}%)</span>
                   </div>
                 ) : (
                   formattedTotalPrice

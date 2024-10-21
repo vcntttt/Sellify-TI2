@@ -16,6 +16,19 @@ export interface Producto {
   description?: string;
 }
 
+export interface ToSellProduct {
+  id: number;
+  name: string;
+  quantity: number;
+  unitPrice: number
+  totalPrice: number
+  codigoBarras: string;
+  iva: number
+  discountValue: number
+  discountedPrice: number
+  originalPrice: number
+}
+
 export interface ProductResponse {
   categoria:         string;
   codigo_barras:     string;
