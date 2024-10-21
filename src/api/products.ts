@@ -44,8 +44,9 @@ function productToResponse(product: Producto): NewProductBody {
 
   if (product.discount?.value && product.discount?.dueDate) {
     response.descuento = product.discount.value;
-    response.vencimiento_descuento = product.discount.dueDate;
+    response.vencimiento_descuento = formatDatesFromRespone(new Date(product.discount.dueDate));
   }
+  
   if (product.codigoBarras) {
     response.codigo_barras = product.codigoBarras;
   }
@@ -62,6 +63,7 @@ export const getProducts = async (): Promise<Producto[]> => {
 
 export const editProduct = async (product: Producto) => {
   const editedProduct: EditProductBody = productToResponse(product);
+  console.log("🚀 ~ editProduct ~ editedProduct:", editedProduct)
 
   const { data } = await axios.put<ProductResponse>(
     `/product/barcode/${editedProduct.codigo_barras}`,
