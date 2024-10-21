@@ -112,7 +112,7 @@ const CashierPage = () => {
               <Button
                 size="lg"
                 className="rounded-lg shadow-md transition duration-200"
-                onClick={() => handleOpenDialog("payment")}
+                onClick={() => setPaymentDialogOpen(true)}
               >
                 Finalizar Compra
               </Button>
