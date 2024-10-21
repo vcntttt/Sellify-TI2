@@ -32,7 +32,7 @@ export function Boleta({ cajero, products, total, iva }: BoletaData){
     doc.text('N° Boleta: 555555', 87, 30.5);
 
     doc.setFontSize(16);
-    doc.text('Pepitos S.A', 90, 55);
+    doc.text('Sellify', 90, 55);
 
     doc.setFontSize(12);
     doc.text(`Fecha: ${formattedDate}`, 35, 75);
