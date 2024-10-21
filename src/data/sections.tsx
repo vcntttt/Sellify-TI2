@@ -1,7 +1,6 @@
-import { Home, LineChart, Package, ShoppingCart, UserIcon } from "lucide-react";
+import { Home, Package, ShoppingCart, UserIcon } from "lucide-react";
 import DashboardHome from "@/components/admin/dashboard";
 import Ventas from "@/components/admin/ventas/ventas-page";
-import Analiticas from "@/components/admin/analiticas/analitics-page";
 import Productos from "@/components/admin/products/products-page";
 import UsersPage from "@/components/admin/users/users-page";
 import { getUsers } from "@/api/users";
@@ -35,12 +34,6 @@ export const sections: Section[] = [
     href: "/dashboard/ventas",
     icon: <ShoppingCart className="size-4"/>,
     component: Ventas,
-  },
-  {
-    name: "Analíticas",
-    href: "/dashboard/analiticas",
-    icon: <LineChart className="size-4"/>,
-    component: Analiticas,
   },
   {
     name: "Usuarios",

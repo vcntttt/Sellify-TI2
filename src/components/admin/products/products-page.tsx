@@ -1,19 +1,14 @@
 import AdminSection from "@/components/admin/section-template";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useProductStore } from "@/store/products";
-import { useEffect } from "react";
+import { useProducts } from "@/hooks/query/use-products";
 
 export default function Products() {
-  const products = useProductStore((state) => state.products)
-
-  useEffect(() => {
-    console.log(products);
-  }, [products]);
+  const { data , isFetching} = useProducts();
 
   return (
     <AdminSection title="Productos">
-      <DataTable columns={columns} data={products} />
+      <DataTable columns={columns} data={data ?? []} isLoading={isFetching} />
     </AdminSection>
   );
 }

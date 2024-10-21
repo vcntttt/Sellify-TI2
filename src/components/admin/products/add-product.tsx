@@ -34,28 +34,34 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, addDays } from 'date-fns';
 import { Calendar as CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
-import { useProductStore } from "@/store/products";
+import { useCategories } from "@/hooks/query/use-categories";
+import { useAddProductMutation, useProducts } from "@/hooks/query/use-products";
+import { useEffect } from "react";
 
 interface Props {
   onClose: () => void;
 }
 
 export function AddProductForm({ onClose }: Props) {
-  const { products, categories, addProduct } = useProductStore();
-  // 1. Define your form
+  const { data: categories = [] } = useCategories();
+  const { data: products } = useProducts();
+  const addProductMutation = useAddProductMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: products.length + 1,
-      name: "",
-      stock: 0,
-      price: 0,
+      id: products?.length ?? 0 + 1,
+      name: "Xiaomi 14",
+      codigoBarras: "",
+      description: "telefono",
+      stock: 200,
+      price: 500000,
       category: "",
-      createdAt: new Date(),
-      dueDate: new Date(),
+      createdAt: format(new Date(), "yyyy-MM-dd"),
+      dueDate: format((addDays(new Date(), 7)), "yyyy-MM-dd"),
       discount: {
         value: 0,
         dueDate: null,
@@ -63,11 +69,28 @@ export function AddProductForm({ onClose }: Props) {
     },
   });
 
-  // 2. Define a submit handler.
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
+  }, [form.formState.errors]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Submitted values:", values);
-    addProduct(values);
-    onClose();
+    console.log("🚀 ~ onSubmit ~ addProduct ~ values:", values);
+    try {
+      addProductMutation.mutate({
+        ...values,
+        createdAt: format(new Date(values.createdAt), "yyyy-MM-dd"),
+        dueDate: format(new Date(values.dueDate), "yyyy-MM-dd"),
+        discount: {
+          value: values.discount?.value ?? 0,
+          dueDate: values.discount?.dueDate
+            ? format(new Date(values.discount.dueDate), "yyyy-MM-dd")
+            : null,
+        },
+      });
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -79,6 +102,32 @@ export function AddProductForm({ onClose }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nombre del producto</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripcion</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="codigoBarras"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Codigo de Barras</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -137,45 +186,45 @@ export function AddProductForm({ onClose }: Props) {
           )}
         />
         <FormField
-                control={form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha de vencimiento</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP", { locale: es })
-                            ) : (
-                              <span>Seleccione una fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
-                          locale={es}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          control={form.control}
+          name="dueDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Fecha de vencimiento</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(field.value)}
+                    onSelect={(date) => field.onChange(date)}
+                    disabled={(date) => date < new Date()}
+                    locale={es}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>Descuento</AccordionTrigger>
@@ -228,7 +277,7 @@ export function AddProductForm({ onClose }: Props) {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value ?? undefined}
+                          selected={new Date(field.value ?? "")}
                           onSelect={field.onChange}
                           disabled={(date) => date < new Date()}
                           locale={es}

@@ -1,18 +1,11 @@
 import { useReducer } from "react";
-import { useProductStore } from "@/store/products"; 
-import { Product } from "@/components/cajero/columns";
-import { formatDiscount } from "@/lib/utils"; // Asegúrate de que formatDiscount esté exportada correctamente
-
-interface ProductDetails extends Product {
-  quantity: number;
-  originalPrice: number;
-  discountedPrice: number;
-  totalPrice: number;
-  iva: number; 
-}
+import { Producto } from "@/types/products";
+import { formatDiscount, priceToInt } from "@/lib/utils";
+import { useProducts } from "@/hooks/query/use-products";
+import { ToSellProduct } from "@/types/products";
 
 interface CartState {
-  addedProducts: ProductDetails[];
+  addedProducts: ToSellProduct[];
   code: number | null;
   quantity: number;
   total: number;
@@ -20,7 +13,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: "ADD_PRODUCT"; payload: { code: number; quantity: number } }
+  | { type: "ADD_PRODUCT"; payload: { code: number; quantity: number; products: Producto[] } }
   | { type: "SET_CODE"; payload: number | null }
   | { type: "SET_QUANTITY"; payload: number }
   | { type: "TOGGLE_BOLETA" }
@@ -37,22 +30,21 @@ const initialState: CartState = {
 export function carritoReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_PRODUCT": {
-      const products = useProductStore.getState().products; 
-      const foundProduct = products.find((product) => product.id === action.payload.code);
+      const foundProduct = action.payload.products.find((product) => product.id === action.payload.code);
+      if (!foundProduct) return state;
 
-      if (!foundProduct) return state; 
-
-      const { price, discount } = foundProduct;
-      const { isValid, value } = formatDiscount(discount); 
-      const discountedPrice = isValid ? price - (price * value) / 100 : price;
-      const iva = Math.floor(discountedPrice * 0.19); 
-      const totalPriceWithIva = discountedPrice + iva; 
+      const { price: productPrice, discount, codigoBarras ="" } = foundProduct;
+      const price = priceToInt(productPrice);
+      const { isValid, value: discountValue } = formatDiscount(discount);
+      const discountedPrice = isValid ? price - (price * discountValue) / 100 : price;
+      const iva = Math.floor(discountedPrice * 0.19);
+      const totalPrice = discountedPrice;
 
       const existingProductIndex = state.addedProducts.findIndex(
         (product) => product.id === foundProduct.id
       );
 
-      let updatedProducts: ProductDetails[];
+      let updatedProducts: ToSellProduct[];
 
       if (existingProductIndex >= 0) {
         updatedProducts = [...state.addedProducts];
@@ -62,17 +54,21 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
         updatedProducts[existingProductIndex] = {
           ...existingProduct,
           quantity: updatedQuantity,
-          totalPrice: totalPriceWithIva * updatedQuantity,
-          iva, 
+          totalPrice: totalPrice * updatedQuantity,
+          iva,
         };
       } else {
-        const newProduct: ProductDetails = {
-          ...foundProduct,
-          quantity: action.payload.quantity,
+        const newProduct: ToSellProduct = {
           originalPrice: price,
+          id: foundProduct.id,
+          name: foundProduct.name,
+          quantity: action.payload.quantity,
+          unitPrice: totalPrice,
+          totalPrice: totalPrice * action.payload.quantity,
+          codigoBarras,
+          iva,
+          discountValue: discountValue || 0,
           discountedPrice,
-          totalPrice: totalPriceWithIva * action.payload.quantity,
-          iva, 
         };
         updatedProducts = [...state.addedProducts, newProduct];
       }
@@ -104,12 +100,16 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
   }
 }
 
-export function useCarrito() {
+function useCarrito() {
+  const { data: products = [] } = useProducts();
   const [state, dispatch] = useReducer(carritoReducer, initialState);
 
   const handleAddProduct = () => {
-    if (state.code) {
-      dispatch({ type: "ADD_PRODUCT", payload: { code: state.code, quantity: state.quantity } });
+    if (state.code && products.length > 0) {
+      dispatch({
+        type: "ADD_PRODUCT",
+        payload: { code: state.code, quantity: state.quantity, products },
+      });
     }
   };
 

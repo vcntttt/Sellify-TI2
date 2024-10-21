@@ -7,20 +7,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useProductStore } from "@/store/products";
 import { useState } from "react";
-import { formatDiscount } from "@/lib/utils"; // Adjust the import path as necessary
+import { formatDiscount, priceToInt } from "@/lib/utils";
+import { useProducts } from "@/hooks/query/use-products";
+import { Producto } from "@/types/products";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductSearch() {
-  const { products } = useProductStore();
-  const [code, setCode] = useState("");
+  const { data: products, isFetching } = useProducts();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredProducts = products.filter(
-    (product) => product.id === parseInt(code)
-  );
+  const filteredProducts = searchTerm
+    ? products?.filter(
+        (product) =>
+          product.codigoBarras?.includes(searchTerm) ||
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
-  const finalProducts = filteredProducts.map((product) => {
-    const { isValid, value: discountValue } = formatDiscount(product.discount);
+  const finalProducts = filteredProducts?.map((productItem: Producto) => {
+    const { isValid, value: discountValue } = formatDiscount(
+      productItem.discount
+    );
+    const product = {
+      ...productItem,
+      price: priceToInt(productItem.price),
+    };
+
     const priceFinal = isValid
       ? product.price - (product.price * discountValue) / 100
       : product.price;
@@ -35,42 +48,57 @@ export default function ProductSearch() {
 
   return (
     <div className="py-4">
-      <Input
-        type="number"
-        placeholder="Código del producto"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-      />
-      {filteredProducts.length > 0 && (
+      {isFetching ? (
+        <div className="flex items-center justify-center">
+          <Skeleton className="h-6 w-full" />
+        </div>
+      ) : (
+        <Input
+          className="mb-4"
+          type="number"
+          placeholder="Nombre o Código del producto"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      )}
+      {(filteredProducts?.length ?? 0) > 0 && (
+        <div className="max-h-[390px] overflow-y-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Producto</TableHead>
+              <TableHead>Producto</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Precio</TableHead>
               <TableHead>Descuento</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {finalProducts.map((product, index) => {
+            {finalProducts?.map((product, index) => {
               const formattedPrice = new Intl.NumberFormat("es-CL", {
                 style: "currency",
                 currency: "CLP",
               }).format(product.price);
 
-              const formattedDiscountedPrice = new Intl.NumberFormat("es-CL", {
-                style: "currency",
-                currency: "CLP",
-              }).format(product.discountedPrice);
+              const formattedDiscountedPrice = new Intl.NumberFormat(
+                "es-CL",
+                {
+                  style: "currency",
+                  currency: "CLP",
+                }
+              ).format(product.discountedPrice);
 
               return (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {product.name}
+                  </TableCell>
                   <TableCell>{product.stock}</TableCell>
                   {product.isDiscountValid ? (
                     <TableCell>
                       <span className="line-through">{formattedPrice}</span>{" "}
-                      <span className="text-red-500">{formattedDiscountedPrice}</span>
+                      <span className="text-red-500">
+                        {formattedDiscountedPrice}
+                      </span>
                     </TableCell>
                   ) : (
                     <TableCell>{formattedPrice}</TableCell>
@@ -81,6 +109,7 @@ export default function ProductSearch() {
             })}
           </TableBody>
         </Table>
+      </div>
       )}
     </div>
   );

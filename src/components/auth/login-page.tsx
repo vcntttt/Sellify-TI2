@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { login } from "@/api/users";
+import { login } from "@/api/auth";
 import { useAuthStore } from "@/store/auth";
 import { useLocation } from "wouter";
 import Logo from "../icons/logo";

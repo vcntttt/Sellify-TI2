@@ -11,6 +11,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -22,14 +23,17 @@ import {
 import { Input } from "@/components/ui/input";
 import ProductActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
+import { useProducts } from "@/hooks/query/use-products";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
+  isLoading,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -37,7 +41,8 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     createdAt: false,
   });
-  
+  const { refetch } = useProducts();
+
   const table = useReactTable({
     data,
     columns,
@@ -69,7 +74,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
           <ProductActions />
-          <DataTableViewOptions table={table} />
+          <DataTableViewOptions table={table} refetchFn={refetch}/>
         </div>
       </div>
       <div className="rounded-md border">
@@ -96,33 +101,38 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No se encontraron resultados.
+          {isLoading ? (
+            Array.from({ length: 10 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell colSpan={columns.length}>
+                  <Skeleton className="rounded-md h-6 w-full" />
                 </TableCell>
               </TableRow>
-            )}
-          </TableBody>
+            ))
+          ) : table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    // className="animate-fade animate-delay-100"
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No se encontraron resultados.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
         </Table>
       </div>
     </div>

@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({
           placeholder="Buscar usuario..."
           value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("nombre")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />

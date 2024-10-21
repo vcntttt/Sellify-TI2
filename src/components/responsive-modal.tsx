@@ -39,7 +39,7 @@ export function ResponsiveModal({ children, trigger, title, description, classNa
         <DialogContent className={`${className} sm:max-w-[425px]`}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="sr-only">
               {description}
             </DialogDescription>
           </DialogHeader>
@@ -55,7 +55,7 @@ export function ResponsiveModal({ children, trigger, title, description, classNa
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>
+          <DrawerDescription className="sr-only">
             {description}
           </DrawerDescription>
         </DrawerHeader>
