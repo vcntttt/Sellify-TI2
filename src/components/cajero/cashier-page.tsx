@@ -54,6 +54,9 @@ const CajeroLayout = () => {
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
+  const [isPaymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const dynamicTotalCost = total;
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header Section */}
@@ -81,6 +84,7 @@ const CajeroLayout = () => {
         <aside className="bg-white shadow-md rounded-lg p-4 w-64 fixed top-20 left-0 border-r border-gray-200 flex flex-col h-auto min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="flex flex-col gap-4 mb-auto">
             <h3 className="text-lg font-semibold mb-4">Opciones</h3>
+
 
             <ResponsiveModal
               trigger={
@@ -119,7 +123,7 @@ const CajeroLayout = () => {
 
             <Button
               className="rounded-lg shadow-md transition duration-200 w-full"
-              onClick={() => handleOpenDialog("payment")}
+              onClick={() => setPaymentDialogOpen(true)} 
             >
               Finalizar Compra
             </Button>
@@ -199,14 +203,15 @@ const CajeroLayout = () => {
         </main>
       </div>
 
+      {/* Payment Dialog */}
       <PaymentDialog
-        isOpen={isDialogOpen.payment}
-        onClose={() =>
-          setIsDialogOpen((prevState) => ({ ...prevState, payment: false }))
-        }
+        isOpen={isPaymentDialogOpen}
+        onClose={() => setPaymentDialogOpen(false)}
         onSelectPaymentMethod={handlePaymentMethodSelect}
+        totalCost={dynamicTotalCost}
       />
 
+      {/* Receipt Dialog */}
       <Dialog
         open={isDialogOpen.receipt}
         onOpenChange={() =>
