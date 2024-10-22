@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import VentasActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
@@ -52,9 +53,20 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center pb-8 justify-end gap-x-4">
-        <VentasActions tableRef={table} />
-        <DataTableViewOptions table={table} />
+      <div className="flex items-center pb-2 justify-between">
+        <Input
+            type="text"
+            placeholder="Buscar boleta..."
+            value={(table.getColumn("id")?.getFilterValue() as number) ?? ""}
+            onChange={(event) =>
+              table.getColumn("id")?.setFilterValue(event.target.value)
+            }
+            className="max-w-md"
+          />
+        <div className="flex items-center justify-end gap-x-4">
+          <VentasActions tableRef={table} />
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
       <Table>
         <TableHeader>

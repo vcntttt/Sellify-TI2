@@ -11,6 +11,10 @@ export const columns: ColumnDef<Venta>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Número de Boleta" />,
+    filterFn: (row, columnId, filterValue) => {
+      const cellValue = row.getValue(columnId); 
+      return String(cellValue).includes(String(filterValue)); 
+    },
   },
   {
     accessorKey: "fecha",
