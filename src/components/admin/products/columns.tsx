@@ -70,7 +70,7 @@ export const columns: ColumnDef<Producto>[] = [
         } else if (daysDiff === 0) {
           daysDiscount = "Se acaba hoy!";
         } else {
-          daysDiscount = "El descuento ha expirado";
+          daysDiscount = "";
         }
       }
 
