@@ -1,26 +1,26 @@
-import { Home, LogOut, Package, ShoppingCart, UserIcon } from "lucide-react";
+import { Home, LogOut, type LucideIcon, Package, ShoppingCart, UserIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
 import clsx from "clsx";
 import Logo from "@/components/icons/logo";
 import { useAuthStore } from "@/store/auth";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { useEffect, useState } from "react";
 
 export interface SidebarItem {
   title: string;
   url: string;
-  icon: any;
+  icon: LucideIcon;
 }
 
 const items: SidebarItem[] = [
@@ -47,19 +47,9 @@ const items: SidebarItem[] = [
 ];
 
 export function AppSidebar() {
-  const [location] = useLocation();
-  const { open, setOpen } = useSidebar();
+  const { open } = useSidebar()
+  const [ location ] = useLocation();
   const { logOut } = useAuthStore();
-  const isTablet = useMediaQuery("(max-width: 1030px)");
-  const [manualToggle, setManualToggle] = useState(false);
-
-  useEffect(() => {
-    const open = isTablet ? false : manualToggle
-    if (isTablet) {
-      setOpen(open);
-    }
-    setOpen(open)
-  }, [isTablet, manualToggle, setOpen]);
 
   return (
     <Sidebar collapsible="icon">
@@ -82,13 +72,12 @@ export function AppSidebar() {
               S e l l i f y
             </span>
           </Link>
-          <SidebarTrigger
-            onClick={() => setManualToggle(!manualToggle)}
-            className="md:flex hidden justify-center text-left font-normal hover:bg-slate-700 hover:text-white"
-          />
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-2 pt-2">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Secciones</SidebarGroupLabel>
+          <SidebarGroupContent>
         <SidebarMenu className="space-y-1">
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
@@ -103,13 +92,15 @@ export function AppSidebar() {
                 )}
               >
                 <Link href={item.url}>
-                  <item.icon />
+                  <item.icon/>
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

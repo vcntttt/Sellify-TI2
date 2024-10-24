@@ -45,7 +45,7 @@ export default function App() {
           />
         ))}
         <CashierRoute path="/cashier" component={CashierPage} />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>
   );
