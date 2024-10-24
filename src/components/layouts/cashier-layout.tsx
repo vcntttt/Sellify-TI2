@@ -13,11 +13,7 @@ interface Props {
   total: number;
 }
 
-export default function CashierLayout({
-  user,
-  logOut,
-  total,
-}: Props) {
+export default function CashierLayout({ user, logOut, total }: Props) {
   return (
     <>
       <header className="bg-white shadow-md p-4 fixed top-0 left-0 w-full flex justify-between items-center z-10">

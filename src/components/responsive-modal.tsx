@@ -1,5 +1,4 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -26,17 +23,29 @@ interface Props {
   title: string;
   description: string;
   className?: string;
+  state?: boolean;
+  setState?: (state: boolean) => void;
 }
 
-export function ResponsiveModal({ children, trigger, title, description, className }: Props) {
-  const [open, setOpen] = useState(false);
+export function ResponsiveModal({
+  children,
+  trigger,
+  title,
+  description,
+  className,
+  state,
+  setState,
+}: Props) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = state !== undefined ? state : internalOpen;
+  const setOpen = setState !== undefined ? setState : setInternalOpen;
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className={`${className} sm:max-w-[425px]`}>
+        <DialogContent className={`sm:max-w-[425px] ${className}`}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription className="sr-only">
@@ -60,11 +69,6 @@ export function ResponsiveModal({ children, trigger, title, description, classNa
           </DrawerDescription>
         </DrawerHeader>
         {children}
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

@@ -67,19 +67,22 @@ export function EditProductForm({ product, onClose }: Props) {
           : product.price,
       category: product.category,
       createdAt: format(new Date(product.createdAt), "yyyy-MM-dd"),
-      dueDate:  format(new Date(product.dueDate), "yyyy-MM-dd", { locale: es }),
+      dueDate: format(new Date(product.dueDate), "yyyy-MM-dd", { locale: es }),
       codigoBarras: product.codigoBarras,
       discount: {
         value: product.discount?.value ?? 0,
-        dueDate: product.discount?.dueDate 
-        ? format(new Date(product.discount.dueDate), "yyyy-MM-dd") 
-        : undefined,
+        dueDate: product.discount?.dueDate
+          ? format(new Date(product.discount.dueDate), "yyyy-MM-dd")
+          : undefined,
       },
     },
   });
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
+    console.log(
+      "🚀 ~ useEffect ~ form.formState.errors:",
+      form.formState.errors
+    );
   }, [form.formState.errors]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -105,7 +108,11 @@ export function EditProductForm({ product, onClose }: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="grid grid-cols-2 gap-4"
+      >
+        <div className="flex flex-col gap-4">
         <FormField
           control={form.control}
           name="name"
@@ -132,19 +139,51 @@ export function EditProductForm({ product, onClose }: Props) {
             </FormItem>
           )}
         />
-        <FormField
+         <FormField
           control={form.control}
-          name="codigoBarras"
+          name="dueDate"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Codigo de Barras</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>Fecha de vencimiento</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(field.value)}
+                    onSelect={(date) => {
+                      if (!date) return undefined;
+                      return field.onChange(format(date, "yyyy-MM-dd"));
+                    }}
+                    disabled={(date) => date < new Date()}
+                    locale={es}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
+        </div>
+        <div className="flex flex-col gap-4">
         <FormField
           control={form.control}
           name="stock"
@@ -195,50 +234,8 @@ export function EditProductForm({ product, onClose }: Props) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="dueDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Fecha de vencimiento</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(new Date(field.value), "PPP", { locale: es })
-                      ) : (
-                        <span>Seleccione una fecha</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={(new Date(field.value))}
-                    onSelect={(date) => {
-                      if (!date) return undefined;
-                      return field.onChange(format((date), "yyyy-MM-dd"))
-                    }}
-                    disabled={(date) => date < new Date()}
-                    locale={es}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Accordion type="single" collapsible>
+        </div>
+        <Accordion type="single" collapsible className="col-span-2">
           <AccordionItem value="item-1">
             <AccordionTrigger>Descuento</AccordionTrigger>
             <AccordionContent className="space-y-6">
@@ -293,7 +290,7 @@ export function EditProductForm({ product, onClose }: Props) {
                           selected={new Date(field.value ?? "")}
                           onSelect={(date) => {
                             if (!date) return undefined;
-                            return field.onChange(format(date, "yyyy-MM-dd"))
+                            return field.onChange(format(date, "yyyy-MM-dd"));
                           }}
                           disabled={(date) => date < new Date()}
                           locale={es}
@@ -309,7 +306,7 @@ export function EditProductForm({ product, onClose }: Props) {
           </AccordionItem>
         </Accordion>
 
-        <div className="flex gap-x-2 *:w-1/2 pt-4">
+        <div className="flex gap-x-2 *:w-1/2 pt-4 col-span-2">
           <Button variant="destructive">Retirar producto</Button>
           <Button type="submit">Guardar cambios</Button>
         </div>

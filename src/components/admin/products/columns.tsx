@@ -1,37 +1,38 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductDiscount, Producto } from "@/types/products";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { EditProductForm } from "@/components/admin/products/edit-product";
 import { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import clsx from "clsx";
-import { formatDate, formatPrice,formatDiscount } from "@/lib/utils";
+import { formatDate, formatPrice, formatDiscount } from "@/lib/utils";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
+import { ResponsiveModal } from "@/components/responsive-modal";
 
 export const columns: ColumnDef<Producto>[] = [
   {
     accessorKey: "codigoBarras",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Codigo Barras" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Codigo Barras" />
+    ),
   },
   {
     accessorKey: "name",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nombre" />
+    ),
   },
   {
     accessorKey: "stock",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Stock" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Stock" />
+    ),
   },
   {
     accessorKey: "price",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Precio" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Precio" />
+    ),
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
       const discount = row.getValue("discount") as ProductDiscount;
@@ -56,7 +57,9 @@ export const columns: ColumnDef<Producto>[] = [
   },
   {
     accessorKey: "discount",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Descuento" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Descuento" />
+    ),
     cell: ({ row }) => {
       const discount = row.getValue("discount") as ProductDiscount;
       const { isValid, value, dueDate } = formatDiscount(discount);
@@ -66,7 +69,9 @@ export const columns: ColumnDef<Producto>[] = [
       if (dueDate) {
         const daysDiff = differenceInCalendarDays(dueDate, currentDate);
         if (daysDiff > 0) {
-          daysDiscount = `Se acaba en ${daysDiff} día${daysDiff > 1 ? "s" : ""}!`;
+          daysDiscount = `Se acaba en ${daysDiff} día${
+            daysDiff > 1 ? "s" : ""
+          }!`;
         } else if (daysDiff === 0) {
           daysDiscount = "Se acaba hoy!";
         } else {
@@ -76,7 +81,7 @@ export const columns: ColumnDef<Producto>[] = [
 
       return (
         <div className="text-left font-medium flex flex-col gap-y-2">
-          {isValid ? value : 0}% 
+          {isValid ? value : 0}%
           {daysDiscount && (
             <span className="text-red-500 text-xs">{daysDiscount}</span>
           )}
@@ -86,11 +91,15 @@ export const columns: ColumnDef<Producto>[] = [
   },
   {
     accessorKey: "category",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Categoría" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Categoría" />
+    ),
   },
   {
     accessorKey: "dueDate",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de vencimiento" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Fecha de vencimiento" />
+    ),
     cell: ({ row }) => {
       const currentDate = new Date();
       const dueDate = row.getValue("dueDate") as Date;
@@ -102,7 +111,12 @@ export const columns: ColumnDef<Producto>[] = [
         return (
           <div className="text-left font-medium flex flex-col gap-y-2">
             {formattedDate}
-            <span className={clsx("text-xs", daysDiff < 7 ? "text-red-500" : "text-black/30")}>
+            <span
+              className={clsx(
+                "text-xs",
+                daysDiff < 7 ? "text-red-500" : "text-black/30"
+              )}
+            >
               Se vence en {daysDiff} día{daysDiff > 1 ? "s" : ""}!
             </span>
           </div>
@@ -127,7 +141,9 @@ export const columns: ColumnDef<Producto>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Fecha de creación" />
+    ),
     cell: ({ row }) => {
       const createdAt = row.getValue("createdAt") as Date;
       const formattedDate = formatDate(createdAt);
@@ -143,25 +159,19 @@ export const columns: ColumnDef<Producto>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isOpen, setIsOpen] = useState(false);
       return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button variant="secondary">
-              Editar Producto
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Editar</DialogTitle>
-              <DialogDescription>
-                Edita la información de tu producto.
-              </DialogDescription>
-            </DialogHeader>
-            <EditProductForm
-              product={row.original}
-              onClose={() => setIsOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
+        <ResponsiveModal
+          trigger={<Button variant="secondary">Editar Producto</Button>}
+          title="Editar Producto"
+          description="Edita la información de tu producto"
+          className="sm:max-w-[625px] sm:min-h-[400px]"
+          state={isOpen}
+          setState={setIsOpen}
+        >
+          <EditProductForm
+            product={row.original}
+            onClose={() => setIsOpen(false)}
+          />
+        </ResponsiveModal>
       );
     },
   },
