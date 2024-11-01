@@ -1,4 +1,4 @@
-import { usePayment } from "@/hooks/cajero/use-payment"; // Ajusta la ruta de importación según sea necesario
+import { usePayment } from "@/hooks/cajero/use-payment";
 import {
   Dialog,
   DialogContent,
@@ -37,9 +37,9 @@ const PaymentDialog = ({
     confirmPayment,
     completePayment,
     resetPaymentState,
-    setCustomerRUT, 
+    setCustomerRUT,
     client,
-    setSkipRegistration, 
+    setSkipRegistration,
   } = usePayment(totalCost);
 
   const progressValue = isPaymentConfirmed
@@ -50,13 +50,15 @@ const PaymentDialog = ({
     ? 33
     : 0;
 
-  const dialogTitle = isPaymentConfirmed
-    ? "Pago Confirmado"
-    : isRUTConfirmed && !skipRegistration
-    ? "Registrar Cliente"
-    : isRUTConfirmed
-    ? "Seleccionar Método de Pago"
-    : "Rut del Cliente";
+
+const dialogTitle = isPaymentConfirmed
+  ? "Pago Confirmado"
+  : (isRUTConfirmed && (client || skipRegistration))
+  ? "Seleccionar Método de Pago"
+  : isRUTConfirmed && !skipRegistration
+  ? "Registrar Cliente"
+  : "Rut del Cliente";
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -66,10 +68,10 @@ const PaymentDialog = ({
           <DialogDescription className="text-sm text-gray-600">
             {isPaymentConfirmed
               ? "Su pago ha sido confirmado."
+              : isRUTConfirmed && client
+              ? "Elija un método de pago para continuar."
               : isRUTConfirmed && !skipRegistration
               ? "Este RUT no está registrado. Por favor, registre al cliente."
-              : isRUTConfirmed
-              ? "Elija un método de pago para continuar."
               : "Ingrese el RUT del cliente"}
           </DialogDescription>
         </DialogHeader>
@@ -100,7 +102,7 @@ const PaymentDialog = ({
                   id="customer-rut"
                   type="text"
                   value={customerRUT}
-                  onChange={(e) => setCustomerRUT(e.target.value)} // Asegúrate de que setCustomerRUT esté definido en usePayment
+                  onChange={(e) => setCustomerRUT(e.target.value)}
                   placeholder="Ej: 12.345.678-9"
                   className="border border-gray-300 rounded-lg p-2 mt-1"
                 />
@@ -151,7 +153,7 @@ const PaymentDialog = ({
               <>
                 <RegisterNewClientForm />
                 <Button
-                  onClick={() => setSkipRegistration(true)} // Asegúrate de que setSkipRegistration esté definido en usePayment
+                  onClick={() => setSkipRegistration(true)}
                   className="rounded-lg shadow-md transition duration-200 mt-2"
                 >
                   Continuar sin Registrar
