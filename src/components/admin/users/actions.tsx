@@ -8,47 +8,63 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import AddUserForm from "../add-user-form";
 import { Role } from "@/types/users";
+import { roles } from "@/data/roles";
 
 export default function UsersActions({ tableRef }: { tableRef: any }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [usuario, setUsuario] = useState<Role | null>(null);
+  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   useEffect(() => {
-    if (usuario === null) {
-      tableRef.getColumn("tipo_usuario")?.setFilterValue(undefined);
+    if (selectedRoles.length > 0) {
+      tableRef?.getColumn("tipo_usuario")?.setFilterValue(selectedRoles);
     } else {
-      tableRef.getColumn("tipo_usuario")?.setFilterValue(usuario);
+      tableRef?.getColumn("tipo_usuario")?.setFilterValue(undefined);
     }
-  }, [usuario, tableRef]);
+  }, [selectedRoles, tableRef]);
+
+  const handleRoleToggle = (role: Role) => {
+    setSelectedRoles((prevRoles) =>
+      prevRoles.includes(role)
+        ? prevRoles.filter((r) => r !== role) 
+        : [...prevRoles, role]
+    );
+  };
 
   return (
     <div className="flex gap-4">
-      <Select onValueChange={(value) => setUsuario(value === "todos" ? null : (value as Role))}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filtrar usuarios" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="todos">Todos</SelectItem>
-          <SelectItem value="admin">Admin</SelectItem>
-          <SelectItem value="cajero">Cajero</SelectItem>
-          <SelectItem value="cliente">Cliente</SelectItem>
-          <SelectItem value="proveedor">Proveedor</SelectItem>
-        </SelectContent>
-      </Select>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="ml-auto hidden h-10 lg:flex">
+            Filtrar Usuarios
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[150px]">
+          <DropdownMenuLabel>Seleccionar roles</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {roles.map((role) => (
+            <DropdownMenuCheckboxItem
+              key={role}
+              checked={selectedRoles.includes(role)}
+              onCheckedChange={() => handleRoleToggle(role)}
+            >
+              {role.charAt(0).toUpperCase() + role.slice(1)}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogTrigger asChild>
-          <Button onClick={() => setIsFormOpen(true)} variant={"outline"}>
-            Agregar usuario
-          </Button>
+          <Button variant="outline">Agregar usuario</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

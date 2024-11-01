@@ -2,6 +2,8 @@ import { Route } from "wouter";
 import AdminLayout from "@/components/layouts/admin-layout";
 import AdminRoute from "@/components/routes/admin-route";
 import CashierRoute from "@/components/routes/cashier-route";
+import AutoservRoute from "@/components/routes/autoserv-route"; 
+import Auto from "@/components/Autoserv/autoserv"
 import DashboardHome from "@/components/admin/dashboard";
 import { ThemeProvider } from "@/components/theme-provider";
 import LogInPage from "@/components/auth/login-page";
@@ -44,9 +46,10 @@ export default function App() {
             component={DashboardLayout}
           />
         ))}
+        <AutoservRoute path="/autoserv" component={Auto} />
         <CashierRoute path="/cashier" component={CashierPage} />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>
   );
-}
+}            
