@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="bg-slate-800 text-white"
+                      className="bg-primary text-white"
                     >
                       {header.isPlaceholder
                         ? null

@@ -1,4 +1,12 @@
-import { Home, LogOut, type LucideIcon, Package, ShoppingCart, UserIcon } from "lucide-react";
+import {
+  Home,
+  LogOut,
+  type LucideIcon,
+  Package,
+  PencilRuler,
+  ShoppingCart,
+  UserIcon,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +24,12 @@ import { Link, useLocation } from "wouter";
 import clsx from "clsx";
 import Logo from "@/components/icons/logo";
 import { useAuthStore } from "@/store/auth";
+import ThemeCustomizer from "./theme-customizer";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 export interface SidebarItem {
   title: string;
@@ -47,8 +61,8 @@ const items: SidebarItem[] = [
 ];
 
 export function AppSidebar() {
-  const { open } = useSidebar()
-  const [ location ] = useLocation();
+  const { open } = useSidebar();
+  const [location] = useLocation();
   const { logOut } = useAuthStore();
 
   return (
@@ -60,7 +74,7 @@ export function AppSidebar() {
           })}
         >
           <Link
-            href="/"
+            href="/dashboard"
             className="flex items-center gap-2 font-semibold text-white"
           >
             <Logo className="size-14" />
@@ -78,37 +92,55 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Secciones</SidebarGroupLabel>
           <SidebarGroupContent>
-        <SidebarMenu className="space-y-1">
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                className={clsx(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-700 active:text-white",
-                  {
-                    "bg-slate-700 text-white": location === item.url,
-                    "text-white/50": location !== item.url,
-                  }
-                )}
-              >
-                <Link href={item.url}>
-                  <item.icon/>
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+            <SidebarMenu className="space-y-1">
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    isActive={location === item.url}
+                    asChild
+                    className={clsx(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 transition-all", 
+                      {
+                        "text-white/50": location !== item.url,
+                      }
+                    )}
+                  >
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
+            <Popover>
+              <SidebarMenuButton
+                asChild
+                className={clsx(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
+                )}
+              >
+                <PopoverTrigger>
+                  <PencilRuler />
+                  <span>Customizar interfaz</span>
+                </PopoverTrigger>
+              </SidebarMenuButton>
+              <PopoverContent>
+                <ThemeCustomizer />
+              </PopoverContent>
+            </Popover>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               className={clsx(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-700 active:text-white"
+                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
               )}
             >
               <Link href="/cashier">
@@ -122,7 +154,7 @@ export function AppSidebar() {
               onClick={() => logOut()}
               asChild
               className={clsx(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-700 active:text-white"
+                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
               )}
             >
               <Link href="/">
