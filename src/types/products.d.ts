@@ -1,6 +1,6 @@
 export interface ProductDiscount {
   value: number;
-  dueDate?: Date | null | string;
+  dueDate?: Date | null;
 }
 
 export interface Producto {
@@ -9,8 +9,8 @@ export interface Producto {
   stock: number;
   price: string | number;
   category: string;
-  createdAt: Date | string;
-  dueDate: Date | string;
+  createdAt: Date;
+  dueDate: Date;
   discount?: ProductDiscount;
   codigoBarras?: string;
   description?: string;
@@ -35,13 +35,13 @@ export interface ProductResponse {
   descripcion:       string;
   descuento:         null;
   estado_producto:   "activo" | "inactivo";
-  fecha_registro:    Date | string;
-  fecha_vencimiento: Date | string;
+  fecha_registro:    string;
+  fecha_vencimiento: string;
   id_producto:       number;
   nombre:            string;
   precio_venta:      string | number;
   stock:             number;
-  vencimiento_descuento: null | string | Date;
+  vencimiento_descuento: null | string;
   descuento:             null | string;
 }
 

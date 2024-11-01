@@ -18,15 +18,15 @@ export const productSchema = z.object({
     z.number().min(1, { message: "El precio debe ser mayor a 0" })
   ),
   category: z.string().min(1, { message: "Debe seleccionar una categoría" }),
-  createdAt: z.string(),
-  dueDate: z.string({ required_error: "La fecha de vencimiento es obligatoria" }),
+  createdAt: z.date(),
+  dueDate: z.date({ required_error: "La fecha de vencimiento es obligatoria" }),
   discount: z
     .object({
       value: z.preprocess(
         (val) => (typeof val === "string" ? parseInt(val, 10) : val),
         z.number().min(0).max(100, { message: "El descuento debe estar entre 0 y 100" })
       ),
-      dueDate: z.string().nullable().optional(),
+      dueDate: z.date().nullable().optional(),
     })
     .optional()
     .refine((discount) => {

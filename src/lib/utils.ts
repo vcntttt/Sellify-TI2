@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import { format } from "date-fns";
+import { addHours, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
 import { ProductDiscount } from "@/types/products";
@@ -36,7 +36,13 @@ export function formatDate(date: Date) {
 export const sleep = (ss: number) =>
   new Promise((resolve) => setTimeout(resolve, 1000 * ss));
 
-export function formatDatesFromRespone(date: string | Date) {
+// response -> products
+export function formatDatesFromResponse(date: string | Date) {
+  return addHours(new Date(date), 3);
+}
+
+// products -> response
+export function formatDatesForResponse(date: string | Date) {
   return format(new Date(date), "yyyy-MM-dd");
 }
 

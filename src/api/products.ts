@@ -1,5 +1,9 @@
 import axios from "@/api/axios";
-import { formatDatesFromRespone, priceToInt } from "@/lib/utils";
+import {
+  formatDatesForResponse,
+  priceToInt,
+  formatDatesFromResponse,
+} from "@/lib/utils";
 // import { sleep } from "@/lib/utils";
 import {
   EditProductBody,
@@ -15,8 +19,8 @@ function responseToProduct(productResponse: ProductResponse): Producto {
     stock: productResponse.stock,
     price: priceToInt(productResponse.precio_venta),
     category: productResponse.categoria,
-    createdAt: new Date(productResponse.fecha_registro),
-    dueDate: new Date(productResponse.fecha_vencimiento),
+    createdAt: formatDatesFromResponse(productResponse.fecha_registro),
+    dueDate: formatDatesFromResponse(productResponse.fecha_vencimiento),
     codigoBarras: productResponse.codigo_barras,
     description: productResponse.descripcion,
   };
@@ -24,7 +28,7 @@ function responseToProduct(productResponse: ProductResponse): Producto {
     product.discount = {
       value: parseFloat(productResponse.descuento),
       dueDate: productResponse.vencimiento_descuento
-        ? (new Date(productResponse.vencimiento_descuento))
+        ? formatDatesFromResponse(productResponse.vencimiento_descuento)
         : undefined,
     };
   }
@@ -34,7 +38,7 @@ function responseToProduct(productResponse: ProductResponse): Producto {
 function productToResponse(product: Producto): NewProductBody {
   const response: NewProductBody = {
     nombre: product.name,
-    fecha_vencimiento: formatDatesFromRespone((new Date(product.dueDate))),
+    fecha_vencimiento: formatDatesForResponse(new Date(product.dueDate)),
     stock: product.stock,
     precio_venta: product.price,
     categoria: product.category,
@@ -44,9 +48,11 @@ function productToResponse(product: Producto): NewProductBody {
 
   if (product.discount?.value && product.discount?.dueDate) {
     response.descuento = product.discount.value;
-    response.vencimiento_descuento = formatDatesFromRespone(new Date(product.discount.dueDate));
+    response.vencimiento_descuento = formatDatesForResponse(
+      new Date(product.discount.dueDate)
+    );
   }
-  
+
   if (product.codigoBarras) {
     response.codigo_barras = product.codigoBarras;
   }
@@ -63,7 +69,7 @@ export const getProducts = async (): Promise<Producto[]> => {
 
 export const editProduct = async (product: Producto) => {
   const editedProduct: EditProductBody = productToResponse(product);
-  console.log("🚀 ~ editProduct ~ editedProduct:", editedProduct)
+  console.log("🚀 ~ editProduct ~ editedProduct:", editedProduct);
 
   const { data } = await axios.put<ProductResponse>(
     `/product/barcode/${editedProduct.codigo_barras}`,

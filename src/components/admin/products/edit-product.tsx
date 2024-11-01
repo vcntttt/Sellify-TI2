@@ -66,14 +66,12 @@ export function EditProductForm({ product, onClose }: Props) {
           ? parseInt(product.price)
           : product.price,
       category: product.category,
-      createdAt: format(new Date(product.createdAt), "yyyy-MM-dd"),
-      dueDate: format(new Date(product.dueDate), "yyyy-MM-dd", { locale: es }),
+      createdAt: new Date(product.createdAt),
+      dueDate: new Date(product.dueDate),
       codigoBarras: product.codigoBarras,
       discount: {
         value: product.discount?.value ?? 0,
-        dueDate: product.discount?.dueDate
-          ? format(new Date(product.discount.dueDate), "yyyy-MM-dd")
-          : undefined,
+        dueDate: product.discount?.dueDate ?? undefined,
       },
     },
   });
@@ -89,17 +87,7 @@ export function EditProductForm({ product, onClose }: Props) {
     console.log("🚀 ~ onSubmit ~ editProduct ~ values:", values);
 
     try {
-      editProductMutation.mutate({
-        ...values,
-        createdAt: format(new Date(values.createdAt), "yyyy-MM-dd"),
-        dueDate: format(new Date(values.dueDate), "yyyy-MM-dd"),
-        discount: {
-          value: values.discount?.value ?? 0,
-          dueDate: values.discount?.dueDate
-            ? format(new Date(values.discount.dueDate), "yyyy-MM-dd")
-            : null,
-        },
-      });
+      editProductMutation.mutate(values);
       onClose();
     } catch (error) {
       console.log(error);
@@ -139,45 +127,26 @@ export function EditProductForm({ product, onClose }: Props) {
             </FormItem>
           )}
         />
-         <FormField
+                <FormField
           control={form.control}
-          name="dueDate"
+          name="category"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Fecha de vencimiento</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(new Date(field.value), "PPP", { locale: es })
-                      ) : (
-                        <span>Seleccione una fecha</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(field.value)}
-                    onSelect={(date) => {
-                      if (!date) return undefined;
-                      return field.onChange(format(date, "yyyy-MM-dd"));
-                    }}
-                    disabled={(date) => date < new Date()}
-                    locale={es}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+            <FormItem>
+              <FormLabel>Categoria</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem value={category} key={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -210,31 +179,48 @@ export function EditProductForm({ product, onClose }: Props) {
             </FormItem>
           )}
         />
-        <FormField
+         <FormField
           control={form.control}
-          name="category"
+          name="dueDate"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categoria</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem value={category} key={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FormItem className="flex flex-col col-span-2">
+              <FormLabel>Fecha de vencimiento</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(field.value)}
+                    onSelect={field.onChange}
+                    disabled={(date) => date < new Date()}
+                    locale={es}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
         </div>
+       
         <Accordion type="single" collapsible className="col-span-2">
           <AccordionItem value="item-1">
             <AccordionTrigger>Descuento</AccordionTrigger>
@@ -288,10 +274,7 @@ export function EditProductForm({ product, onClose }: Props) {
                         <Calendar
                           mode="single"
                           selected={new Date(field.value ?? "")}
-                          onSelect={(date) => {
-                            if (!date) return undefined;
-                            return field.onChange(format(date, "yyyy-MM-dd"));
-                          }}
+                          onSelect={field.onChange}
                           disabled={(date) => date < new Date()}
                           locale={es}
                           initialFocus

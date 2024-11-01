@@ -60,8 +60,8 @@ export function AddProductForm({ onClose }: Props) {
       stock: 200,
       price: 500000,
       category: "",
-      createdAt: format(new Date(), "yyyy-MM-dd"),
-      dueDate: format(addDays(new Date(), 7), "yyyy-MM-dd"),
+      createdAt: new Date(),
+      dueDate: addDays(new Date(), 7),
       discount: {
         value: 0,
         dueDate: null,
@@ -79,17 +79,7 @@ export function AddProductForm({ onClose }: Props) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("🚀 ~ onSubmit ~ addProduct ~ values:", values);
     try {
-      addProductMutation.mutate({
-        ...values,
-        createdAt: format(new Date(values.createdAt), "yyyy-MM-dd"),
-        dueDate: format(new Date(values.dueDate), "yyyy-MM-dd"),
-        discount: {
-          value: values.discount?.value ?? 0,
-          dueDate: values.discount?.dueDate
-            ? format(new Date(values.discount.dueDate), "yyyy-MM-dd")
-            : null,
-        },
-      });
+      addProductMutation.mutate(values);
       onClose();
     } catch (error) {
       console.log(error);
@@ -171,7 +161,7 @@ export function AddProductForm({ onClose }: Props) {
                     <Calendar
                       mode="single"
                       selected={new Date(field.value)}
-                      onSelect={(date) => field.onChange(date)}
+                      onSelect={field.onChange}
                       disabled={(date) => date < new Date()}
                       locale={es}
                       initialFocus
