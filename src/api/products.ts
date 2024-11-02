@@ -4,13 +4,13 @@ import {
   priceToInt,
   formatDatesFromResponse,
 } from "@/lib/utils";
-// import { sleep } from "@/lib/utils";
 import {
   EditProductBody,
   NewProductBody,
   Producto,
   ProductResponse,
 } from "@/types/products";
+import { showNotification } from "@/components/NotificationProvider"; 
 
 function responseToProduct(productResponse: ProductResponse): Producto {
   const product: Producto = {
@@ -62,25 +62,45 @@ function productToResponse(product: Producto): NewProductBody {
 
 export const getProducts = async (): Promise<Producto[]> => {
   // await sleep(2)
-  const { data } = await axios.get<ProductResponse[]>("/products");
+  try {
+    const { data } = await axios.get<ProductResponse[]>("/products");
 
-  return data.map(responseToProduct);
+    showNotification("Productos cargados con éxito."); 
+    return data.map(responseToProduct);
+  } catch (error) {
+    showNotification("Error al cargar los productos."); 
+    throw error; 
+  }
 };
 
 export const editProduct = async (product: Producto) => {
   const editedProduct: EditProductBody = productToResponse(product);
   console.log("🚀 ~ editProduct ~ editedProduct:", editedProduct);
 
-  const { data } = await axios.put<ProductResponse>(
-    `/product/barcode/${editedProduct.codigo_barras}`,
-    editedProduct
-  );
-  return data;
+  try {
+    const { data } = await axios.put<ProductResponse>(
+      `/product/barcode/${editedProduct.codigo_barras}`,
+      editedProduct
+    );
+    
+    showNotification("Producto editado con éxito."); 
+    return data;
+  } catch (error) {
+    showNotification("Error al editar el producto.");
+    throw error; 
+  }
 };
 
 export const addProduct = async (product: Producto) => {
   const newProduct: EditProductBody = productToResponse(product);
 
-  const { data } = await axios.post<ProductResponse>("/product", newProduct);
-  return data;
+  try {
+    const { data } = await axios.post<ProductResponse>("/product", newProduct);
+    
+    showNotification("Producto agregado con éxito."); 
+    return data;
+  } catch (error) {
+    showNotification("Error al agregar el producto."); 
+    throw error; 
+  }
 };
