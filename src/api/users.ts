@@ -4,19 +4,20 @@ import {
   UserResponse,
 } from "@/types/users";
 import { showNotification } from "@/components/NotificationProvider";
+import { format } from "date-fns";
 
 export const getUsers = async (): Promise<UserResponse[]> => {
   try {
     const response = await axios.get("/users").then((res) => res.data);
 
-    showNotification("Usuarios cargados con éxito.", "success");
+    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification("Usuarios cargados con éxito.", "success", loadTime);
 
     return response;
   } catch (error) {
     const errorMessage = "Error al cargar los usuarios.";
-
-
-    showNotification(errorMessage, "error");
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification(errorMessage, "error", errorTime);
     throw error; 
   }
 };
@@ -25,13 +26,14 @@ export const getClients = async (): Promise<UserResponse[]> => {
   try {
     const { data } = await axios.get("/users?tipo_usuario=cliente");
 
-    showNotification("Clientes cargados con éxito.", "success");
+    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification("Clientes cargados con éxito.", "success", loadTime);
 
     return data;
   } catch (error) {
     const errorMessage = "Error al cargar los clientes.";
-
-    showNotification(errorMessage, "error");
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification(errorMessage, "error", errorTime);
     throw error;
   }
 };
@@ -46,14 +48,14 @@ export const registerUser = async (
     };
     const { data } = await axios.post<NewUserBody>("/register", fixedData);
 
-    
-    showNotification("Usuario registrado con éxito.", "success");
+    const successTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification("Usuario registrado con éxito.", "success", successTime);
 
     return data;
   } catch (error) {
     const errorMessage = "Error al registrar el usuario.";
-
-    showNotification(errorMessage, "error");
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification(errorMessage, "error", errorTime);
     throw error; 
   }
 };

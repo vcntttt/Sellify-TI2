@@ -40,6 +40,7 @@ import { es } from "date-fns/locale";
 import { useCategories } from "@/hooks/query/use-categories";
 import { useAddProductMutation, useProducts } from "@/hooks/query/use-products";
 import { useEffect } from "react";
+import { showNotification } from "@/components/NotificationProvider"; 
 
 interface Props {
   onClose: () => void;
@@ -70,19 +71,19 @@ export function AddProductForm({ onClose }: Props) {
   });
 
   useEffect(() => {
-    console.log(
-      "🚀 ~ useEffect ~ form.formState.errors:",
-      form.formState.errors
-    );
+    console.log("🚀 ~ useEffect ~ form.formState.errors:", form.formState.errors);
   }, [form.formState.errors]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("🚀 ~ onSubmit ~ addProduct ~ values:", values);
+    const time = format(new Date(), "dd/MM/yyyy HH:mm:ss");
     try {
-      addProductMutation.mutate(values);
+      await addProductMutation.mutateAsync(values); 
+      showNotification("Producto agregado correctamente", "success", time);
       onClose();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      showNotification("La categoría ya existe!", "warning", time);
     }
   }
 

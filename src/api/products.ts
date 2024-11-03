@@ -11,6 +11,7 @@ import {
   ProductResponse,
 } from "@/types/products";
 import { showNotification } from "@/components/NotificationProvider"; 
+import { format } from "date-fns"; 
 
 function responseToProduct(productResponse: ProductResponse): Producto {
   const product: Producto = {
@@ -63,10 +64,12 @@ function productToResponse(product: Producto): NewProductBody {
 export const getProducts = async (): Promise<Producto[]> => {
   try {
     const { data } = await axios.get<ProductResponse[]>("/products");
-    showNotification("Productos cargados con éxito.", "success"); 
+    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification("Productos cargados con éxito.", "success", loadTime); 
     return data.map(responseToProduct);
   } catch (error) {
-    showNotification("Error al cargar los productos.", "error"); 
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    showNotification("Error al cargar los productos.", "error", errorTime); 
     throw error; 
   }
 };
@@ -81,10 +84,12 @@ export const editProduct = async (product: Producto) => {
       editedProduct
     );
     
-    showNotification("Producto editado con éxito.", "success"); 
+    const successTime = format(new Date(), "dd/MM/yyyy HH:mm:ss"); 
+    showNotification("Producto editado con éxito.", "success", successTime); 
     return data;
   } catch (error) {
-    showNotification("Error al editar el producto.", "error");
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss"); 
+    showNotification("Error al editar el producto.", "error", errorTime);
     throw error; 
   }
 };
@@ -95,10 +100,12 @@ export const addProduct = async (product: Producto) => {
   try {
     const { data } = await axios.post<ProductResponse>("/product", newProduct);
     
-    showNotification("Producto agregado con éxito.", "success"); 
+    const successTime = format(new Date(), "dd/MM/yyyy HH:mm:ss"); 
+    showNotification("Producto agregado con éxito.", "success", successTime); 
     return data;
   } catch (error) {
-    showNotification("Error al agregar el producto.", "error"); 
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss"); 
+    showNotification("Error al agregar el producto.", "error", errorTime); 
     throw error; 
   }
 };
