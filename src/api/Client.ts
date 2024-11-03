@@ -12,11 +12,11 @@ export const addPoints = async (
       puntos,
     });
 
-    showNotification("Puntos agregados con éxito.");
+    showNotification("Puntos agregados con éxito.", "success");
 
     return response.data;
   } catch (error) {
-    showNotification("Error al agregar puntos."); 
+    showNotification("Error al agregar puntos.", "error"); 
     throw error; 
   }
 };
@@ -30,11 +30,11 @@ export const updateUserPoints = async (
       puntos,
     });
 
-    showNotification("Puntos actualizados con éxito.");
+    showNotification("Puntos actualizados con éxito.", "success");
 
     return response.data;
   } catch (error) {
-    showNotification("Error al actualizar puntos."); 
+    showNotification("Error al actualizar puntos.", "error"); 
     throw error; 
   }
 };

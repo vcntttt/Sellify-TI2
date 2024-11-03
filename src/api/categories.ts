@@ -33,12 +33,12 @@ export const addCategory = async (category: string) => {
     });
 
    
-    showNotification("Categoría agregada con éxito.");
+    showNotification("Categoría agregada con éxito.", "success");
 
     return data;
   } catch (error) {
     const errorMessage = "Error al agregar la categoría.";
-    showNotification(errorMessage); 
+    showNotification(errorMessage,"error"); 
     throw error; 
   }
 };

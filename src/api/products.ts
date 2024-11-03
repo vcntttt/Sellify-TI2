@@ -61,14 +61,12 @@ function productToResponse(product: Producto): NewProductBody {
 }
 
 export const getProducts = async (): Promise<Producto[]> => {
-  // await sleep(2)
   try {
     const { data } = await axios.get<ProductResponse[]>("/products");
-
-    showNotification("Productos cargados con éxito."); 
+    showNotification("Productos cargados con éxito.", "success"); 
     return data.map(responseToProduct);
   } catch (error) {
-    showNotification("Error al cargar los productos."); 
+    showNotification("Error al cargar los productos.", "error"); 
     throw error; 
   }
 };
@@ -83,10 +81,10 @@ export const editProduct = async (product: Producto) => {
       editedProduct
     );
     
-    showNotification("Producto editado con éxito."); 
+    showNotification("Producto editado con éxito.", "success"); 
     return data;
   } catch (error) {
-    showNotification("Error al editar el producto.");
+    showNotification("Error al editar el producto.", "error");
     throw error; 
   }
 };
@@ -97,10 +95,10 @@ export const addProduct = async (product: Producto) => {
   try {
     const { data } = await axios.post<ProductResponse>("/product", newProduct);
     
-    showNotification("Producto agregado con éxito."); 
+    showNotification("Producto agregado con éxito.", "success"); 
     return data;
   } catch (error) {
-    showNotification("Error al agregar el producto."); 
+    showNotification("Error al agregar el producto.", "error"); 
     throw error; 
   }
 };
