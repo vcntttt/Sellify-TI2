@@ -16,7 +16,7 @@ import { useClients } from "@/hooks/query/use-clients";
 import { registerUser } from "@/api/users"; 
 import { useUserMutation } from "@/hooks/query/use-users";
 import { NewUserBody } from "@/types/users";
-import { showNotification } from "@/components/NotificationProvider";
+import { ShowNotification } from "@/components/NotificationProvider";
 import { format } from "date-fns";
 
 export function RegisterNewClientForm() {
@@ -41,7 +41,7 @@ export function RegisterNewClientForm() {
 
     if (clientExists) {
       const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-      showNotification("El usuario ya está registrado con ese RUT!", "warning", errorTime);
+      ShowNotification("El usuario ya está registrado con ese RUT!", "warning", errorTime);
       return; 
     }
 
@@ -57,7 +57,7 @@ export function RegisterNewClientForm() {
 
     await registerUser(newUser);
     form.reset();
-    showNotification("Usuario registrado correctamente!", "success", format(new Date(), "dd/MM/yyyy HH:mm:ss"));
+    ShowNotification("Usuario registrado correctamente!", "success", format(new Date(), "dd/MM/yyyy HH:mm:ss"));
   };
 
   return (

@@ -5,7 +5,7 @@ export const NotificationProvider = () => {
   return <Toaster position="top-right" />;
 };
 
-export const showNotification = (
+export const ShowNotification = (
   message: string,
   type: "success" | "error" | "info" | "warning" = "info", 
   description?: string,
@@ -37,7 +37,7 @@ export const showNotification = (
       : Info;
 
   toast.custom(
-    (t) => (
+    () => (
       <div
         style={{
           display: "flex",

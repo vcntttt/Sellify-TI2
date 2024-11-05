@@ -40,7 +40,7 @@ import { es } from "date-fns/locale";
 import { useCategories } from "@/hooks/query/use-categories";
 import { useAddProductMutation, useProducts } from "@/hooks/query/use-products";
 import { useEffect } from "react";
-import { showNotification } from "@/components/NotificationProvider"; 
+import { ShowNotification } from "@/components/NotificationProvider"; 
 
 interface Props {
   onClose: () => void;
@@ -79,11 +79,11 @@ export function AddProductForm({ onClose }: Props) {
     const time = format(new Date(), "dd/MM/yyyy HH:mm:ss");
     try {
       await addProductMutation.mutateAsync(values); 
-      showNotification("Producto agregado correctamente", "success", time);
+      ShowNotification("Producto agregado correctamente", "success", time);
       onClose();
     } catch (error) {
       console.error(error);
-      showNotification("La categoría ya existe!", "warning", time);
+      ShowNotification("La categoría ya existe!", "warning", time);
     }
   }
 

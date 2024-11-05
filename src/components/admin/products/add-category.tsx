@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categorySchema as formSchema } from "@/schemas/products";
 import { useCategories, useCategoryMutation } from "@/hooks/query/use-categories";
-import { showNotification } from "@/components/NotificationProvider";
+import { ShowNotification } from "@/components/NotificationProvider";
 import { format } from "date-fns";
 
 interface Props {
@@ -34,7 +34,7 @@ export function AddCategory({ onClose }: Props) {
     const existingCategory = categories?.find((category) => category === values.name);
     if (existingCategory) {
       const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-      showNotification("La categoría ya existe.","warning", errorTime);
+      ShowNotification("La categoría ya existe.","warning", errorTime);
       return
     }
     try{
