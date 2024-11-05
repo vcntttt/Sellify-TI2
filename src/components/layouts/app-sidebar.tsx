@@ -153,7 +153,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               className={clsx(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-700 active:text-white"
+                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
               )}
             >
               <Link href="/autoserv">

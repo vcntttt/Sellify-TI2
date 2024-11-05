@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categorySchema as formSchema } from "@/schemas/products";
 import { useCategories, useCategoryMutation } from "@/hooks/query/use-categories";
+import { showNotification } from "@/components/NotificationProvider";
+import { format } from "date-fns";
 
 interface Props {
   onClose: () => void;
@@ -31,7 +33,8 @@ export function AddCategory({ onClose }: Props) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     const existingCategory = categories?.find((category) => category === values.name);
     if (existingCategory) {
-      alert("La categoria ya existe");
+      const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      showNotification("La categoría ya existe.","warning", errorTime);
       return
     }
     try{

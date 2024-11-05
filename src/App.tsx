@@ -13,6 +13,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { sections } from "./data/sections";
 import NotFound from "@/components/routes/not-found";
 import NonAuthorized from "@/components/routes/non-authorized";
+import { NotificationProvider } from "@/components/NotificationProvider";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ export default function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
+        <NotificationProvider /> 
         <Route path="/" component={LogInPage} />
         <Route path="/NotFound" component={NotFound} />
         <Route path="/non-authorized" component={NonAuthorized} />
@@ -52,4 +54,4 @@ export default function App() {
       </QueryClientProvider>
     </ThemeProvider>
   );
-}            
+}
