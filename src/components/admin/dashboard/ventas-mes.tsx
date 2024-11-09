@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ExternalLink, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
-import { getMonthlySales } from "@/api/ventas-mes";
+import { getMonthlySales } from "@/api/ventas";
 
 export default function CardVentasMes() {
   const [salesCount, setSalesCount] = useState(0);
