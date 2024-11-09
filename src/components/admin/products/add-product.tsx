@@ -213,7 +213,7 @@ export function AddProductForm({ onClose }: Props) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue placeholder="Selecciona una categoria"/>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
