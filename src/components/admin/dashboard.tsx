@@ -3,7 +3,7 @@ import CardProductosVendidos from "./dashboard/productos-mes";
 import CardIngresos from "./dashboard/ingresos-mes";
 import CardVentasMes from "./dashboard/ventas-mes";
 import Top5ProductsCard from "./dashboard/top5-productos";
-import TablaRegis from "./dashboard/registro/tabla-registro" 
+import TablaRegis from "./registro/tabla-registro" 
 
 export default function Dashboard() {
   return (
@@ -21,8 +21,6 @@ export default function Dashboard() {
         <section>
           <Top5ProductsCard />
         </section>
-          <TablaRegis/>
-        <section/>
       </div>
     </main>
   );

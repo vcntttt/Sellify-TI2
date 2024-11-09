@@ -1,4 +1,5 @@
 import {
+  Bell,
   Home,
   LogOut,
   type LucideIcon,
@@ -57,6 +58,11 @@ const items: SidebarItem[] = [
     title: "Usuarios",
     url: "/dashboard/users",
     icon: UserIcon,
+  },
+  {
+    title: "Registros",
+    url: "/dashboard/registro",
+    icon: Bell,
   },
 ];
 
