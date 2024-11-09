@@ -1,8 +1,9 @@
-import { Home, Package, ShoppingCart, UserIcon } from "lucide-react";
+import { Home, Package, ShoppingCart, UserIcon, Bell } from "lucide-react";
 import DashboardHome from "@/components/admin/dashboard";
 import Ventas from "@/components/admin/ventas/ventas-page";
 import Productos from "@/components/admin/products/products-page";
 import UsersPage from "@/components/admin/users/users-page";
+import Registro from "@/components/admin/registro/tabla-registro";
 import { getUsers } from "@/api/users";
 
 export interface Section {
@@ -44,5 +45,11 @@ export const sections: Section[] = [
       key: ["users"],
       fn: getUsers,
     },
+  },
+  {
+    name: "Registros",
+    href: "/dashboard/registro",
+    icon: <Bell className="size-4"/>,
+    component: Registro,
   },
 ];
