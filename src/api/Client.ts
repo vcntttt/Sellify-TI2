@@ -1,6 +1,6 @@
 import axios from "@/api/axios";
 import { UserResponse } from "@/types/users";
-import { showNotification } from "@/components/NotificationProvider";
+import { ShowNotification } from "@/components/NotificationProvider";
 import { format } from "date-fns";
 
 export const addPoints = async (
@@ -14,12 +14,12 @@ export const addPoints = async (
     });
 
     const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    showNotification("Puntos agregados con éxito.", "success", loadTime);
+    ShowNotification("Puntos agregados con éxito.", "success", loadTime);
 
     return response.data;
   } catch (error) {
     const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    showNotification("Error al agregar puntos.", "error", errorTime); 
+    ShowNotification("Error al agregar puntos.", "error", errorTime); 
     throw error; 
   }
 };
@@ -34,12 +34,12 @@ export const updateUserPoints = async (
     });
 
     const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    showNotification("Puntos actualizados con éxito.", "success", loadTime);
+    ShowNotification("Puntos actualizados con éxito.", "success", loadTime);
 
     return response.data;
   } catch (error) {
     const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    showNotification("Error al actualizar puntos.", "error", errorTime); 
+    ShowNotification("Error al actualizar puntos.", "error", errorTime); 
     throw error; 
   }
 };
