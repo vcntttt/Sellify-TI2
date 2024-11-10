@@ -58,3 +58,16 @@ export const getTopPuntos = async (): Promise<UserResponse[]> => {
     throw error;
   }
 };
+
+export const getTopFrecuentes = async (): Promise<UserResponse[]> => {
+  try {
+    const response = await axios.get("/users/frecuentes"); // modificar
+    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    ShowNotification("Clientes más frecuentes cargados.", "success", loadTime);
+    return response.data;
+  } catch (error) {
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    ShowNotification("Error al cargar clientes más frecuentes.", "error", errorTime);
+    throw error;
+  }
+};
