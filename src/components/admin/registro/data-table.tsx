@@ -12,6 +12,8 @@ import {
   import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
   import { Skeleton } from "@/components/ui/skeleton";
   import { useState } from "react";
+  import RegisterActions from "./actions";
+  import { Input } from "@/components/ui/input";
   
   interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -44,6 +46,20 @@ import {
   
     return (
       <div>
+        <div className="flex items-center pb-2 justify-between">
+          <Input
+            type="text"
+            placeholder="Buscar usuario..."
+            value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("user")?.setFilterValue(event.target.value)
+            }
+            className="max-w-md"
+          />
+        <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
+          <RegisterActions tableRef={table}/>
+        </div>  
+        </div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

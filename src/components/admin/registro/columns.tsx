@@ -12,6 +12,10 @@ type Notification = {
 // Definición de las columnas para la tabla de notificaciones
 export const columns: ColumnDef<Notification>[] = [
   {
+  accessorKey: "message",
+  header: "Mensaje",
+  },
+  {
     accessorKey: "timestamp",
     header: "Fecha y Hora",
     cell: ({ getValue }) => new Date(getValue() as string).toLocaleString(), // Formato de fecha
@@ -28,10 +32,6 @@ export const columns: ColumnDef<Notification>[] = [
         </div>
       );
     },
-  },
-  {
-    accessorKey: "message",
-    header: "Mensaje",
   },
   {
     accessorKey: "description",

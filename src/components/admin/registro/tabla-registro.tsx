@@ -51,18 +51,6 @@ export default function TablaRegistro() {
       </CardHeader>
 
       <CardContent>
-        {/* Botones de filtro */}
-        <div className="flex gap-4 justify-end mb-4">
-          <Button variant="outline" className="p-2">
-            Filtro
-          </Button>
-          <Button variant="outline" className="p-2">
-            Filtro
-          </Button>
-          <Button variant="outline" className="p-2">
-            Filtro
-          </Button>
-        </div>
         <DataTable columns={columns} data={notifications} isLoading={false} />
       </CardContent>
     </Card>
