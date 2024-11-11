@@ -35,8 +35,7 @@ export default function CardProductosVendidos() {
         {error ? (
           <p className="text-red-500">Error al cargar datos</p>
         ) : (
-          <p className="text-4xl">
-            {productsCount !== null ? productsCount : "Cargando..."}
+          <p className="text-4xl"> cambiar api
           </p>
         )}
         <p className="text-muted-foreground">+15% que el mes pasado</p>
