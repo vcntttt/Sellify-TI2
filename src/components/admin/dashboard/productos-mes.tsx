@@ -7,7 +7,7 @@ import { getMonthlyProducts } from "@/api/productos-mes";
 
 export default function CardProductosVendidos() {
   const [productsCount, setProductsCount] = useState<number | null>(null);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
 
   useEffect(() => {
     async function fetchProductsData() {
@@ -16,7 +16,6 @@ export default function CardProductosVendidos() {
         setProductsCount(totalProductos);
       } catch (err) {
         console.error("Error al obtener la cantidad de productos vendidos:", err);
-        setError(err);
       }
     }
 
@@ -35,10 +34,9 @@ export default function CardProductosVendidos() {
         {error ? (
           <p className="text-red-500">Error al cargar datos</p>
         ) : (
-          <p className="text-4xl"> cambiar api
-          </p>
+          <p className="text-4xl">{productsCount}</p>
         )}
-        <p className="text-muted-foreground">+15% que el mes pasado</p>
+        <p className="text-muted-foreground">Productos vendidos este mes</p>
       </CardContent>
       <CardFooter>
         <Button variant={"link"} asChild className={"hover:underline"}>

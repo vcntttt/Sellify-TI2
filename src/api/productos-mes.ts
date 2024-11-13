@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 
 export async function getMonthlyProducts() {
-  const startDate = format(new Date(), "yyyy-MM-01"); 
-  const endDate = format(new Date(), "yyyy-MM-dd");   
+  const startDate = format(new Date(), "yyyy-MM-01");
+  const endDate = format(new Date(), "yyyy-MM-dd");
 
   try {
     const response = await fetch(`/api/detalleventa?start=${startDate}&end=${endDate}`);
@@ -11,9 +11,9 @@ export async function getMonthlyProducts() {
     }
 
     const data = await response.json();
+    const totalCantidad = data.reduce((acc: number, venta: { cantidad: number }) => acc + venta.cantidad, 0);
 
-
-    return data;
+    return totalCantidad;
   } catch (error) {
     console.error("Error al obtener los productos vendidos del mes:", error);
     return 0;

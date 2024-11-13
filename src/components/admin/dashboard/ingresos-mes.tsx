@@ -38,7 +38,7 @@ export default function CardIngresos() {
         ) : revenue !== null ? (
           <>
             <p className="text-4xl">{formatPrice(revenue)}</p>
-            <p className="text-muted-foreground">+8% que el mes pasado</p>
+            <p className="text-muted-foreground">Total ventas </p>
           </>
         ) : (
           <p>Cargando ingresos...</p>
