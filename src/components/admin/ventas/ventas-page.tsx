@@ -15,7 +15,7 @@ export default function DemoPage() {
             <CardVentasMes />
             <CardProductosVendidos />
           </section>
-      <DataTable columns={columns} data={ventas} />
+      <DataTable columns={columns} data={ventas}/>
       </div>
     </AdminSection>
   );
