@@ -1,32 +1,21 @@
-import axios from "axios";
+import { format } from "date-fns";
 
-interface Venta {
-  total_con_iva: number;
-}
-//no funciona todavia
-export async function getMonthlyRevenue(): Promise<number> {
-  const currentDate = new Date();
-  const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split("T")[0];
-  const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).toISOString().split("T")[0];
+export async function getMonthlyRevenue() {
+  const startDate = format(new Date(), "yyyy-MM-01");
+  const endDate = format(new Date(), "yyyy-MM-dd");
 
   try {
-    const response = await axios.get("/ventas", {
-      params: {
-        fecha_inicio: startDate,
-        fecha_fin: endDate,
-      },
-    });
-
-    const ventas = response.data as Venta[];
-
-    if (!ventas || ventas.length === 0) {
-      return 0;
+    const response = await fetch(`/api/ventas?start=${startDate}&end=${endDate}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los ingresos del mes");
     }
-    const totalRevenue = ventas.reduce((sum: number, venta: Venta) => sum + (venta.total_con_iva || 0), 0);
+
+    const data = await response.json();
+    const totalRevenue = data.reduce((acc: number, sale: { total_con_iva: number }) => acc + sale.total_con_iva, 0);
 
     return totalRevenue;
   } catch (error) {
-    console.error("Error al obtener el total de ingresos:", error);
-    throw error;
+    console.error("Error al obtener los ingresos del mes:", error);
+    return 0;
   }
 }

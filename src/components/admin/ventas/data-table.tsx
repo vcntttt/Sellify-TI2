@@ -18,23 +18,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import VentasActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
+import { getAllSales } from "@/api/ventas"; 
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
 }: DataTableProps<TData, TValue>) {
+  const [data, setData] = useState<TData[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const salesData = await getAllSales();
+      setData(salesData);
+    }
+    fetchData();
+  }, []);
 
   const table = useReactTable({
     data,
@@ -47,7 +53,7 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters
+      columnFilters,
     },
   });
 
@@ -55,14 +61,14 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center pb-2 justify-between">
         <Input
-            type="text"
-            placeholder="Buscar boleta..."
-            value={(table.getColumn("id")?.getFilterValue() as number) ?? ""}
-            onChange={(event) =>
-              table.getColumn("id")?.setFilterValue(event.target.value)
-            }
-            className="max-w-md"
-          />
+          type="text"
+          placeholder="Buscar boleta..."
+          value={(table.getColumn("id")?.getFilterValue() as number) ?? ""}
+          onChange={(event) =>
+            table.getColumn("id")?.setFilterValue(event.target.value)
+          }
+          className="max-w-md"
+        />
         <div className="flex items-center justify-end gap-x-4">
           <VentasActions tableRef={table} />
           <DataTableViewOptions table={table} />
