@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
+import CardForm from "./CardForm"; 
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -50,15 +51,15 @@ const PaymentDialog = ({
     ? 33
     : 0;
 
-
-const dialogTitle = isPaymentConfirmed
-  ? "Pago Confirmado"
-  : (isRUTConfirmed && (client || skipRegistration))
-  ? "Seleccionar Método de Pago"
-  : isRUTConfirmed && !skipRegistration
-  ? "Registrar Cliente"
-  : "Rut del Cliente";
-
+  const dialogTitle = isPaymentConfirmed
+    ? "Pago Confirmado"
+    : selectedMethod
+    ? `Pago con ${selectedMethod}`
+    : (isRUTConfirmed && (client || skipRegistration))
+    ? "Seleccionar Método de Pago"
+    : isRUTConfirmed && !skipRegistration
+    ? "Registrar Cliente"
+    : "Rut del Cliente";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -77,6 +78,7 @@ const dialogTitle = isPaymentConfirmed
         </DialogHeader>
 
         <Progress value={progressValue} className="mt-2 mb-4" />
+
         {isPaymentConfirmed ? (
           <div className="flex flex-col gap-4">
             <p className="text-base">
@@ -183,7 +185,16 @@ const dialogTitle = isPaymentConfirmed
               </div>
             )}
 
-            {selectedMethod && (
+            {selectedMethod === "Tarjeta de Crédito/Débito" && (
+              <div className="mt-6">
+                <CardForm
+                  confirmPayment={confirmPayment}
+                  resetPaymentState={resetPaymentState} 
+                />
+              </div>
+            )}
+
+            {selectedMethod && selectedMethod !== "Tarjeta de Crédito/Débito" && (
               <div className="flex flex-col gap-4">
                 <p className="text-base">
                   ¿Está seguro que desea realizar el pago con el método:{" "}

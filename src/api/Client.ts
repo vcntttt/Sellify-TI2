@@ -46,7 +46,7 @@ export const updateUserPoints = async (
 
 
 
-export const getTopPuntos = async (): Promise<UserResponse[]> => {
+/*export const getTopPuntos = async (): Promise<UserResponse[]> => {
   try {
     const response = await axios.get("/users/puntos"); //modificar 
     const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -70,4 +70,4 @@ export const getTopFrecuentes = async (): Promise<UserResponse[]> => {
     ShowNotification("Error al cargar clientes más frecuentes.", "error", errorTime);
     throw error;
   }
-};
+};*/
