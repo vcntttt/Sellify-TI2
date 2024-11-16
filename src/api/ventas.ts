@@ -30,8 +30,16 @@ export async function getAllSales() {
     const data = await response.json();
 
     const ventas = Array.isArray(data)
-      ? data.map((item) => item.venta) 
-      : [data.venta]; 
+      ? data.map((item) => ({
+          ...item.venta,
+          productos: item.productos, 
+        }))
+      : [
+          {
+            ...data.venta,
+            productos: data.productos,
+          },
+        ];
 
     return ventas;
   } catch (error) {

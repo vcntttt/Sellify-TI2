@@ -69,23 +69,56 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "detalleVentas",
-    header: "Descargar",
+    accessorKey: "productos",
+    header: "Productos Vendidos",
     cell: ({ row }) => {
-      const venta = {
-        numero_documento: row.getValue("numero_documento"),
-        fecha: new Date(row.getValue("fecha_venta") as string),
-        cliente: row.getValue("cliente"),
-        formaPago: row.getValue("forma_pago"),
-        tipoRegistro: row.getValue("tipo_documento"),
-        total: row.getValue("total_con_iva"),
-      };
-
+      const productos = row.getValue("productos") as {
+        nombre: string;
+        cantidad: number;
+        descripcion: string;
+      }[];
+  
+      if (!productos || productos.length === 0) {
+        return <span>No hay productos</span>;
+      }
+  
       return (
-        <Button variant="secondary" onClick={() => PDF(venta)}>
-          Descargar <FileDown className="w-4 h-4 ml-2" />
-        </Button>
+        <ul>
+          {productos.map((producto, index) => (
+            <li key={index}>
+              <strong>{producto.nombre}</strong> - {producto.cantidad} unidades
+              <br />
+            </li>
+          ))}
+        </ul>
       );
     },
+  }
+  
+,  
+{
+  accessorKey: "detalleVentas",
+  header: "Descargar",
+  cell: ({ row }) => {
+    const venta = {
+      numero_documento: row.getValue("numero_documento"),
+      fecha: new Date(row.getValue("fecha_venta") as string),
+      cliente: row.getValue("cliente"),
+      formaPago: row.getValue("forma_pago"),
+      tipoRegistro: row.getValue("tipo_documento"),
+      total: row.getValue("total_con_iva"),
+      productos: row.getValue("productos") as {
+        nombre: string;
+        cantidad: number;
+        descripcion?: string;
+      }[], // Agregamos los productos vendidos
+    };
+
+    return (
+      <Button variant="secondary" onClick={() => PDF(venta)}>
+        Descargar <FileDown className="w-4 h-4 ml-2" />
+      </Button>
+    );
   },
+}
 ];

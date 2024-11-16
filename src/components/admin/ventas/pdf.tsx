@@ -1,39 +1,71 @@
-import { Venta } from '@/types/ventas';
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 
-export function PDF(venta: Venta) {
-    const doc = new jsPDF();
+export function PDF(venta: {
+  numero_documento: string;
+  fecha: Date;
+  cliente: string;
+  formaPago: string;
+  tipoRegistro: string;
+  total: number;
+  productos: { nombre: string; cantidad: number; descripcion?: string }[];
+}) {
+  const doc = new jsPDF();
 
-    doc.roundedRect(60, 15, 90, 20, 3, 3);
-    doc.setFontSize(12);
-    doc.text('RUT: 99.999.999-9', 87, 23.5);
-    doc.text('N° Boleta: 555555', 87, 28);
+  doc.setFontSize(16);
+  doc.text("Sellify S.A", 105, 15, { align: "center" });
+  doc.setFontSize(10);
+  doc.text("RUT: 12345678-9", 105, 20, { align: "center" });
+  doc.text("Teléfono: +56 9 1234 5678", 105, 30, { align: "center" });
 
-    doc.setFontSize(16);
-    doc.text('Pepitos S.A', 90, 55);
 
-    doc.setFontSize(12);
-    doc.text(`Cliente: ${venta.cliente}`, 35, 70);
-    doc.text(`Fecha: ${venta.fecha.toLocaleDateString()}`, 35, 75);
-    doc.text(`Forma de Pago: ${venta.formaPago}`, 35, 80);
+  doc.setFontSize(12);
+  doc.text(`N° Boleta: ${venta.numero_documento}`, 10, 40);
+  doc.text(`Fecha: ${venta.fecha.toLocaleDateString()}`, 10, 45);
+  doc.text(`Cliente: ${venta.cliente}`, 10, 50);
+  doc.text(`Forma de Pago: ${venta.formaPago}`, 10, 55);
 
-    {/*doc.setFontSize(12);
-    doc.text('Producto', 35, 105);
-    doc.text('Cantidad', 85, 105);
-    doc.text('Precio', 120, 105);
-    doc.text('Monto', 160, 105);
-    */}
 
-    const yPosition = 150;
-    doc.text(`Tipo de Documento: ${venta.tipoRegistro}`, 150, yPosition);
-    doc.text(`Total: ${venta.total}`, 150, yPosition + 5);
+  let y = 70;
+  y += 10;
 
-    doc.roundedRect(50, yPosition + 15, 110, 30, 3, 3);
-    doc.text('Código de barras', 90, yPosition + 31);
+  doc.setFontSize(10);
+  doc.text("Producto", 10, y);
+  doc.text("Cantidad", 80, y);
+  y += 5;
 
-    doc.setFontSize(10);
-    doc.text('Timbre electronico SII', 90, yPosition + 51);
-    doc.text('Res. nº de año', 95, yPosition + 56);
 
-    doc.save('boleta.pdf');
-};
+  doc.setDrawColor(200);
+  doc.line(10, y, 200, y);
+  y += 5;
+
+
+  venta.productos.forEach((producto) => {
+    doc.text(producto.nombre, 10, y); 
+    doc.text(`${producto.cantidad}`, 80, y); 
+    y += 5;
+
+
+    if (y > 280) {
+      doc.addPage();
+      y = 10;
+    }
+  });
+
+
+  y += 10;
+  doc.setFontSize(12);
+  doc.text(`Total: $${Math.round(venta.total)}`, 150, y);
+
+
+  doc.setDrawColor(0); 
+  doc.setLineWidth(0.5);
+  doc.rect(50, 260, 110, 20); 
+  doc.setFontSize(8);
+  doc.text("Código de Barras", 105, 270, { align: "center" });
+
+  doc.setFontSize(10);
+  doc.text("Gracias por su compra", 105, 290, { align: "center" });
+
+
+  doc.save(`boleta_${venta.numero_documento}.pdf`);
+}
