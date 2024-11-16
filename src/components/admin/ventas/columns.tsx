@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { format, isSameDay, isWithinInterval, startOfDay } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
-
-export const columns: ColumnDef<Venta>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "numero_documento",
     header: ({ column }) => (
@@ -32,30 +31,17 @@ export const columns: ColumnDef<Venta>[] = [
       }
 
       const rowDate = new Date(row.getValue(columnId));
-      const fromDate = format(startOfDay(filterValue.from), "yyyy-MM-dd");
-      const toDate = format(startOfDay(filterValue.to), "yyyy-MM-dd");
-
-      if (filterValue && filterValue.from && filterValue.to && isSameDay(filterValue.from, filterValue.to)) {
-        return isSameDay(rowDate, fromDate || toDate);
-      }
-
-      if (filterValue && filterValue.from && filterValue.to) {
-        return isWithinInterval(rowDate, { start: fromDate, end: toDate });
-      }
-      return true;
+      return isWithinInterval(rowDate, {
+        start: filterValue.from,
+        end: filterValue.to,
+      });
     },
   },
   {
-    accessorKey: "id_cliente",
+    accessorKey: "cliente",
     header: "Cliente",
     cell: ({ row }) => {
-      const clientId = row.getValue("id_cliente") as number;
-      return (
-        <div className="flex items-center gap-2">
-          <CircleUserRound className="h-5 w-5" />
-          <span>{clientId}</span>
-        </div>
-      );
+      return <span>{row.getValue("cliente")}</span>;
     },
   },
   {
@@ -69,29 +55,17 @@ export const columns: ColumnDef<Venta>[] = [
     },
   },
   {
-    accessorKey: "id_forma_pago",
+    accessorKey: "forma_pago",
     header: "Forma de Pago",
     cell: ({ row }) => {
-      const paymentMethodId = row.getValue("id_forma_pago") as number;
-      const paymentMethod =
-        paymentMethodId === 1
-          ? "Crédito"
-          : paymentMethodId === 2
-          ? "Efectivo"
-          : paymentMethodId === 3
-          ? "Débito"
-          : "Desconocido";
-      return <div className="capitalize">{paymentMethod}</div>;
+      return <span>{row.getValue("forma_pago")}</span>;
     },
   },
   {
-    accessorKey: "id_tipodocumento",
+    accessorKey: "tipo_documento",
     header: "Boleta/Factura",
     cell: ({ row }) => {
-      const documentTypeId = row.getValue("id_tipodocumento") as number;
-      const documentType =
-        documentTypeId === 1 ? "Boleta" : documentTypeId === 2 ? "Factura" : "Desconocido";
-      return <div className="capitalize">{documentType}</div>;
+      return <span>{row.getValue("tipo_documento")}</span>;
     },
   },
   {
@@ -100,13 +74,13 @@ export const columns: ColumnDef<Venta>[] = [
     cell: ({ row }) => {
       const venta = {
         numero_documento: row.getValue("numero_documento"),
-        fecha: new Date(row.getValue("fecha_venta") as string),  
-        cliente: row.getValue("id_cliente"),  
-        formaPago: row.getValue("id_forma_pago") === 1 ? "Crédito" : row.getValue("id_forma_pago") === 2 ? "Efectivo" : "Débito",
-        tipoRegistro: row.getValue("id_tipodocumento") === 1 ? "Boleta" : "Factura",
+        fecha: new Date(row.getValue("fecha_venta") as string),
+        cliente: row.getValue("cliente"),
+        formaPago: row.getValue("forma_pago"),
+        tipoRegistro: row.getValue("tipo_documento"),
         total: row.getValue("total_con_iva"),
       };
-      
+
       return (
         <Button variant="secondary" onClick={() => PDF(venta)}>
           Descargar <FileDown className="w-4 h-4 ml-2" />

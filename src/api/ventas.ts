@@ -22,17 +22,23 @@ export async function getMonthlySales() {
 
 export async function getAllSales() {
   try {
-    const response = await fetch(`/api/ventas`);
+    const response = await fetch(`/api/boletas`);
     if (!response.ok) {
       throw new Error("Error al obtener todas las ventas");
     }
 
     const data = await response.json();
-    return data; 
+
+    const ventas = Array.isArray(data)
+      ? data.map((item) => item.venta) 
+      : [data.venta]; 
+
+    return ventas;
   } catch (error) {
     console.error("Error al obtener todas las ventas:", error);
     return [];
   }
 }
+
 
 
