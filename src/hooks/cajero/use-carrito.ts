@@ -3,13 +3,15 @@ import { Producto } from "@/types/products";
 import { formatDiscount, priceToInt } from "@/lib/utils";
 import { useProducts } from "@/hooks/query/use-products";
 import { ToSellProduct } from "@/types/products";
+import { DetalleVenta } from "@/types/ventas";
 
 interface CartState {
-  addedProducts: ToSellProduct[];
-  code: number | null;
-  quantity: number;
-  total: number;
-  isOpenBoleta: boolean;
+  addedProducts: ToSellProduct[]; 
+  code: number | null;  
+  quantity: number; 
+  total: number;  
+  isOpenBoleta: boolean;  
+  detalleVentas: DetalleVenta[];  
 }
 
 type CartAction =
@@ -25,6 +27,7 @@ const initialState: CartState = {
   quantity: 1,
   total: 0,
   isOpenBoleta: false,
+  detalleVentas: [],  
 };
 
 export function carritoReducer(state: CartState, action: CartAction): CartState {
@@ -33,7 +36,7 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
       const foundProduct = action.payload.products.find((product) => product.id === action.payload.code);
       if (!foundProduct) return state;
 
-      const { price: productPrice, discount, codigoBarras ="" } = foundProduct;
+      const { price: productPrice, discount, codigoBarras = "" } = foundProduct;
       const price = priceToInt(productPrice);
       const { isValid, value: discountValue } = formatDiscount(discount);
       const discountedPrice = isValid ? price - (price * discountValue) / 100 : price;
@@ -45,6 +48,7 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
       );
 
       let updatedProducts: ToSellProduct[];
+      let updatedDetalleVentas: DetalleVenta[];
 
       if (existingProductIndex >= 0) {
         updatedProducts = [...state.addedProducts];
@@ -57,6 +61,12 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
           totalPrice: totalPrice * updatedQuantity,
           iva,
         };
+
+        updatedDetalleVentas = state.detalleVentas.map((detalle) =>
+          detalle.id_producto === foundProduct.id
+            ? { ...detalle, cantidad: updatedQuantity, subtotal: totalPrice * updatedQuantity }
+            : detalle
+        );
       } else {
         const newProduct: ToSellProduct = {
           originalPrice: price,
@@ -70,7 +80,17 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
           discountValue: discountValue || 0,
           discountedPrice,
         };
+
         updatedProducts = [...state.addedProducts, newProduct];
+
+        const newDetalleVenta: DetalleVenta = {
+          id: Date.now(), 
+          id_producto: foundProduct.id,
+          cantidad: action.payload.quantity,
+          subtotal: totalPrice * action.payload.quantity,
+        };
+
+        updatedDetalleVentas = [...state.detalleVentas, newDetalleVenta];
       }
 
       const newTotal = updatedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
@@ -78,6 +98,7 @@ export function carritoReducer(state: CartState, action: CartAction): CartState 
       return {
         ...state,
         addedProducts: updatedProducts,
+        detalleVentas: updatedDetalleVentas,
         total: newTotal,
         code: null,
         quantity: 1,

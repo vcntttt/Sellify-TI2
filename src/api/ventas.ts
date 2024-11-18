@@ -1,5 +1,8 @@
 import { format } from "date-fns";
-
+import {
+  Venta,
+} from "@/types/ventas";
+import axios from "@/api/axios";
 
 export async function getMonthlySales() {
 
@@ -48,5 +51,18 @@ export async function getAllSales() {
   }
 }
 
+export const AddVenta = async (venta: Venta): Promise<Venta> => { // para prueba
+  try {
+    const { data } = await axios.post<Venta>("/ventas", venta);
 
+    const successTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    console.log("Venta registrada con éxito.", "success", successTime);
 
+    return data;
+  } catch (error) {
+    const errorMessage = "Error al registrar la venta.";
+    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    console.error(errorMessage, "error", errorTime);
+    throw error;
+  }
+};

@@ -1,30 +1,27 @@
+// Tabla Principal
 export interface Venta {
+  id_cliente: number;  
+  id_cajero: number;  
+  total_sin_iva: number;  
+  total_con_iva: number;  
+  fecha_venta: string;  
+  numero_documento: string; 
+  porcentaje: number;  
+  id_forma_pago: MetodoPago;  
+  id_tipodocumento: TipoRegistro;  
+  detalleVentas: DetalleVenta[];  
+}
+
+// Tabla Intermedia
+export interface DetalleVenta {
   id: number;
-  cliente?: string;
-  formaPago: MetodoPago;
-  tipoRegistro: TipoRegistro;
-  total: number;
-  fecha: Date;
-  numero_documento: string; // Agregar el número de documento (boleta)
-  productos: Producto[]; // Lista de productos vendidos
+  id_producto: number; 
+  cantidad: number;  
+  subtotal: number;  
 }
 
-export interface Producto {
-  nombre: string;
-  cantidad: number;
-  descripcion?: string;
-  precioUnitario?: number; // Precio unitario (opcional si no se utiliza)
-  subtotal?: number; // Total por producto (opcional si no se utiliza)
-}
+// Tipo de Método de Pago
+export type MetodoPago = "efectivo" | "debito" | "credito" | "Puntos";
 
-  // Tabla Intermedia
-  export interface DetalleVenta {
-    id: number;
-    id_producto: number;
-    cantidad: number;
-    subtotal: number;
-  }
-  
-  export type MetodoPago = "efectivo" | "debito" | "credito";
-  
-  export type TipoRegistro = "boleta" | "factura";
+// Tipo de Registro (Boleta o Factura)
+export type TipoRegistro = "boleta" | "factura";

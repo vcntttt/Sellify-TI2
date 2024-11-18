@@ -9,12 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { RegisterNewClientForm } from "@/components/cajero/buttons/client-form";
-import CardForm from "./CardForm"; 
+import CardForm from "./CardForm";
+import { MetodoPago } from "@/types/ventas";
 
 interface PaymentDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectPaymentMethod: (method: string, rut: string) => void;
+  onSelectPaymentMethod: (method: MetodoPago, rut: string) => void;
   totalCost: number;
 }
 
@@ -51,11 +52,13 @@ const PaymentDialog = ({
     ? 33
     : 0;
 
-  const dialogTitle = isPaymentConfirmed
+    const dialogTitle = isPaymentConfirmed
     ? "Pago Confirmado"
+    : selectedMethod === "debito" || selectedMethod === "credito"
+    ? "Pagar con Tarjeta (Débito / Crédito)"
     : selectedMethod
     ? `Pago con ${selectedMethod}`
-    : (isRUTConfirmed && (client || skipRegistration))
+    : isRUTConfirmed && (client || skipRegistration)
     ? "Seleccionar Método de Pago"
     : isRUTConfirmed && !skipRegistration
     ? "Registrar Cliente"
@@ -127,18 +130,16 @@ const PaymentDialog = ({
                   </strong>
                 </p>
                 <Button
-                  onClick={() => handlePaymentSelection("Efectivo")}
+                  onClick={() => handlePaymentSelection("efectivo")}
                   className="rounded-lg shadow-md transition duration-200"
                 >
                   Pagar en Efectivo
                 </Button>
                 <Button
-                  onClick={() =>
-                    handlePaymentSelection("Tarjeta de Crédito/Débito")
-                  }
+                  onClick={() => handlePaymentSelection("debito")}
                   className="rounded-lg shadow-md transition duration-200"
                 >
-                  Pagar con Tarjeta de Crédito/Débito
+                  Pagar con Tarjeta (Débito / Crédito)
                 </Button>
                 {sufficientPoints && (
                   <Button
@@ -169,32 +170,30 @@ const PaymentDialog = ({
                   Ha decidido continuar sin registrar al cliente.
                 </p>
                 <Button
-                  onClick={() => handlePaymentSelection("Efectivo")}
+                  onClick={() => handlePaymentSelection("efectivo")}
                   className="rounded-lg shadow-md transition duration-200"
                 >
                   Pagar en Efectivo
                 </Button>
                 <Button
-                  onClick={() =>
-                    handlePaymentSelection("Tarjeta de Crédito/Débito")
-                  }
+                  onClick={() => handlePaymentSelection("debito")}
                   className="rounded-lg shadow-md transition duration-200"
                 >
-                  Pagar con Tarjeta de Crédito/Débito
+                  Pagar con Tarjeta (Débito / Crédito)
                 </Button>
               </div>
             )}
 
-            {selectedMethod === "Tarjeta de Crédito/Débito" && (
+            {selectedMethod === "debito" || selectedMethod === "credito" ? (
               <div className="mt-6">
                 <CardForm
                   confirmPayment={confirmPayment}
-                  resetPaymentState={resetPaymentState} 
+                  resetPaymentState={resetPaymentState}
                 />
               </div>
-            )}
+            ) : null}
 
-            {selectedMethod && selectedMethod !== "Tarjeta de Crédito/Débito" && (
+            {selectedMethod && selectedMethod !== "debito" && selectedMethod !== "credito" && (
               <div className="flex flex-col gap-4">
                 <p className="text-base">
                   ¿Está seguro que desea realizar el pago con el método:{" "}
