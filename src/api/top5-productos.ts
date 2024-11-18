@@ -12,9 +12,18 @@ export async function getTop5Products() {
 
     const data = await response.json();
 
-    const topProducts = data
+    const groupedProducts = data.reduce((acc: any, curr: any) => {
+      if (!acc[curr.producto_nombre]) {
+        acc[curr.producto_nombre] = { ...curr };
+      } else {
+        acc[curr.producto_nombre].cantidad += curr.cantidad;
+      }
+      return acc;
+    }, {});
+
+    const topProducts = Object.values(groupedProducts)
       .sort((a: { cantidad: number }, b: { cantidad: number }) => b.cantidad - a.cantidad)
-      .slice(0, 5);
+      .slice(0, 5); 
 
     return topProducts;
   } catch (error) {

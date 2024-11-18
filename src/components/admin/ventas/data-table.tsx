@@ -37,7 +37,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     async function fetchData() {
       const salesData = await getAllSales();
-      setData(salesData);
+      setData(salesData); 
     }
     fetchData();
   }, []);

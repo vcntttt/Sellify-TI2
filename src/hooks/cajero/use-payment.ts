@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useClients } from "@/hooks/query/use-clients";
 import { addPoints, updateUserPoints } from "@/api/Client";
+import { MetodoPago } from "@/types/ventas"; 
 
 export const usePayment = (totalCost: number) => {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<MetodoPago | null>(null);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
   const [customerRUT, setCustomerRUT] = useState<string>("");
   const [isRUTConfirmed, setIsRUTConfirmed] = useState(false);
@@ -15,7 +16,7 @@ export const usePayment = (totalCost: number) => {
 
   const client = clients?.find((client) => client.rut === customerRUT);
 
-  const handlePaymentSelection = (method: string) => {
+  const handlePaymentSelection = (method: MetodoPago) => {
     setSelectedMethod(method);
   };
 
@@ -33,26 +34,36 @@ export const usePayment = (totalCost: number) => {
   };
 
   const confirmPayment = async () => {
-    if (selectedMethod && client) {
+    if (!selectedMethod) return;
+
+    if (client) {
       setIsPaymentConfirmed(true);
       try {
-        if (selectedMethod === "Puntos") {
-          const remainingPoints = client.puntos - totalCost; 
+        if (selectedMethod === "Puntos" && client.puntos >= totalCost) {
+          const remainingPoints = client.puntos - totalCost;
           await updateUserPoints(customerRUT, remainingPoints);
-        } else {
+        } else if (selectedMethod !== "Puntos") {
           const pointsToAdd = 500; 
           const newPoints = client.puntos + pointsToAdd;
           await updateUserPoints(customerRUT, newPoints);
+        } else {
+          // Si no tiene suficientes puntos para pagar con puntos
+          alert("No tiene suficientes puntos para realizar el pago.");
         }
       } catch (error) {
-        console.error("Error actualizando los puntos:", error);
+        console.error("Error al procesar el pago", error);
+        alert("Error al procesar el pago.");
       }
-    } else if (selectedMethod && !client) {
-      await addPoints(customerRUT, 10);
+    } else {
+      try {
+        await addPoints(customerRUT, 10);  
+      } catch (error) {
+        console.error("Error al agregar puntos", error);
+      }
     }
   };
 
-  const completePayment = (onSelectPaymentMethod: (method: string, rut: string) => void, onClose: () => void) => {
+  const completePayment = (onSelectPaymentMethod: (method: MetodoPago, rut: string) => void, onClose: () => void) => {
     if (selectedMethod) {
       onSelectPaymentMethod(selectedMethod, customerRUT);
       resetPaymentState();
@@ -84,8 +95,8 @@ export const usePayment = (totalCost: number) => {
     confirmPayment,
     completePayment,
     resetPaymentState,
-    setCustomerRUT, 
+    setCustomerRUT,
     client,
-    setSkipRegistration, 
+    setSkipRegistration,
   };
 };

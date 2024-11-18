@@ -17,6 +17,7 @@ export interface UserResponse {
   rut:          string;
   telefono:     string;
   tipo_usuario:  Role;
+  nombre_completo : string;
 }
 
 export interface NewUserBody {

@@ -10,6 +10,13 @@ import { Input } from "@/components/ui/input";
 import PaymentDialog from "@/components/cajero/Payment";
 import ProductSummary from "@/components/cajero/buttons/summary";
 import { Link } from "wouter";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const AutoservPage = () => {
   const { user, logOut } = useAuthStore();
@@ -129,33 +136,25 @@ const AutoservPage = () => {
         totalCost={total}
       />
 
-      {/* Receipt Summary */}
-      {isDialogOpen.receipt && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-5 shadow-md max-w-lg w-full">
-            <h2 className="text-xl font-semibold mb-4">Boleta</h2>
-            <p className="mb-4">Detalle de productos y total.</p>
-            <ProductSummary
-              products={addedProducts}
-              total={total}
-              onClose={() => {
-                setIsDialogOpen((prevState) => ({
-                  ...prevState,
-                  receipt: false,
-                }));
-                endSale();
-              }}
-            />
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => setIsDialogOpen((prevState) => ({ ...prevState, receipt: false }))}
-            >
-              Cerrar
-            </Button>
-          </div>
-        </div>
-      )}
+      <Dialog open={isDialogOpen.receipt} onOpenChange={() => setIsDialogOpen((prevState) => ({ ...prevState, receipt: false }))}>
+        <DialogContent className="max-w-lg w-full bg-white rounded-lg p-6 shadow-md">
+          <DialogHeader>
+            <DialogTitle>Boleta</DialogTitle>
+            <DialogDescription>Detalle de productos y total.</DialogDescription>
+          </DialogHeader>
+          <ProductSummary
+            products={addedProducts}
+            total={total}
+            onClose={() => {
+              setIsDialogOpen((prevState) => ({
+                ...prevState,
+                receipt: false,
+              }));
+              endSale();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </AutoservLayout>
   );
 };
