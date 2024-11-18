@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import {
   Venta,
 } from "@/types/ventas";
@@ -19,6 +19,25 @@ export async function getMonthlySales() {
     return data; 
   } catch (error) {
     console.error("Error al obtener las ventas del mes:", error);
+    return [];
+  }
+}
+
+export async function getWeekSales() {
+
+  const startDate = format(subDays(new Date(),7), "yyyy-MM-dd"); 
+  const endDate = format(new Date(), "yyyy-MM-dd");   
+
+  try {
+    const response = await fetch(`/api/ventas?start=${startDate}&end=${endDate}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener las ventas de la semana");
+    }
+
+    const data = await response.json();
+    return data; 
+  } catch (error) {
+    console.error("Error al obtener las ventas de la semana:", error);
     return [];
   }
 }

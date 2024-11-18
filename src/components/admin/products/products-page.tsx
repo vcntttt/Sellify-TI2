@@ -10,12 +10,17 @@ export default function Products() {
 
   return (
     <AdminSection title="Productos">
-      <div className="grid grid-row-2 size-full gap-4">
+      <div className="grid grid-row-3 size-full gap-4">
          <section className="grid grid-cols-2 gap-2 border-none h-full">
             <ExpirationProducts data={data ?? []}/>
             <CardProductosVendidos />
           </section>
-        <DataTable columns={columns} data={data ?? []} isLoading={isFetching} />
+          <section>
+            
+          </section>
+          <section>
+            <DataTable columns={columns} data={data ?? []} isLoading={isFetching} />
+          </section>
       </div>
     </AdminSection>
   );
