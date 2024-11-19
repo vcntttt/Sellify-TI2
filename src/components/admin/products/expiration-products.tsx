@@ -26,7 +26,7 @@ export function ExpirationProducts({ data }: ExpirationProductsProps) {
                     Productos por vencer <ShoppingCart />
                 </CardTitle>
                 <CardDescription className="sr-only">
-                    Ventas del mes
+                    Productos por vencer
                 </CardDescription>
             </CardHeader>
             <CardContent>
