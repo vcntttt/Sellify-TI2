@@ -11,8 +11,11 @@ export default function Products() {
   return (
     <AdminSection title="Productos">
       <div className="grid grid-row-3 size-full gap-4">
-         <section className="grid grid-cols-2 gap-2 border-none h-full">
+         <section className="grid grid-cols-3 gap-2 border-none h-full">
             <ExpirationProducts data={data ?? []}/>
+            <div>
+              acuerdate del grafiquito juanma
+            </div>
             <CardProductosVendidos />
           </section>
           <section>

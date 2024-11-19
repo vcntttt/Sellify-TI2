@@ -2,12 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import AdminSection from "../section-template";
 
 type Notification = {
   id: string;
@@ -44,14 +39,8 @@ export default function TablaRegistro() {
   }, [user]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Registros</CardTitle>
-      </CardHeader>
-
-      <CardContent>
+        <AdminSection title="Registros">
         <DataTable columns={columns} data={notifications} isLoading={false} />
-      </CardContent>
-    </Card>
+      </AdminSection>
   );
 }

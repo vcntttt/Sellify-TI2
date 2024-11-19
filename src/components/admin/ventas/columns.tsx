@@ -1,9 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"; 
-import { Venta } from "@/types/ventas";
-import { CircleUserRound, FileDown } from "lucide-react";
+import {  FileDown } from "lucide-react";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { format, isSameDay, isWithinInterval, startOfDay } from "date-fns";
+import { isWithinInterval } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
 export const columns: ColumnDef<any>[] = [
@@ -23,7 +22,7 @@ export const columns: ColumnDef<any>[] = [
       <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => {
-      return formatDate(row.getValue("fecha_venta") as string);
+      return formatDate(new Date(row.getValue("fecha_venta") as string));
     },
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue || !filterValue.from || !filterValue.to) {
@@ -58,14 +57,14 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "forma_pago",
     header: "Forma de Pago",
     cell: ({ row }) => {
-      return <span>{row.getValue("forma_pago")}</span>;
+      return <span className="capitalize">{row.getValue("forma_pago")}</span>;
     },
   },
   {
     accessorKey: "tipo_documento",
     header: "Boleta/Factura",
     cell: ({ row }) => {
-      return <span>{row.getValue("tipo_documento")}</span>;
+      return <span className="capitalize">{row.getValue("tipo_documento")}</span>;
     },
   },
   {

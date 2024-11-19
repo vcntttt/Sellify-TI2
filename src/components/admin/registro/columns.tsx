@@ -27,16 +27,10 @@ export const columns: ColumnDef<Notification>[] = [
       const type = getValue() as string;
       return (
         <div className="flex justify-center items-center mx-auto">
-          {/* Mostramos solo el texto sin el Badge */}
           <span className="capitalize">{type}</span>
         </div>
       );
     },
-  },
-  {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ getValue }) => getValue() || "-", // Si no tiene descripción, mostrar '-'
   },
   {
     accessorKey: "user",
