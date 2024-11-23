@@ -1,8 +1,8 @@
 import Chart from "@/components/admin/dashboard/chart";
-import CardProductosVendidos from "./dashboard/productos-mes";
-import CardIngresos from "./dashboard/ingresos-mes";
-import CardVentasMes from "./dashboard/ventas-mes";
-import Top5ProductsCard from "./dashboard/top5-productos";
+import CardProductosVendidos from "./productos-mes";
+import CardIngresos from "./ingresos-mes";
+import CardVentasMes from "./ventas-mes";
+import Top5ProductsCard from "./top5-productos";
 
 export default function Dashboard() {
   return (

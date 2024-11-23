@@ -4,7 +4,7 @@ import AdminRoute from "@/components/routes/admin-route";
 import CashierRoute from "@/components/routes/cashier-route";
 import AutoservRoute from "@/components/routes/autoserv-route"; 
 import Auto from "@/components/Autoserv/autoserv"
-import DashboardHome from "@/components/admin/dashboard";
+import DashboardHome from "@/components/admin/dashboard/dashboard";
 import { ThemeProvider } from "@/components/theme-provider";
 import LogInPage from "@/components/auth/login-page";
 import CashierPage from "@/components/cajero/cashier-page";
@@ -14,6 +14,7 @@ import { sections } from "./data/sections";
 import NotFound from "@/components/routes/not-found";
 import NonAuthorized from "@/components/routes/non-authorized";
 import { NotificationProvider } from "@/components/NotificationProvider";
+import BarcodeDisplayPage from "./barcde";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,8 @@ function DashboardLayout() {
 }
 
 export default function App() {
+  // return <BarcodeDisplayPage />;
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>

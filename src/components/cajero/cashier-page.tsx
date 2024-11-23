@@ -14,9 +14,10 @@ import ProductSummary from "@/components/cajero/buttons/summary";
 import useCarrito from "@/hooks/cajero/use-carrito";
 import ProductTable from "@/components/cajero/data-table";
 import PaymentDialog from "@/components/cajero/Payment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CashierLayout from "../layouts/cashier-layout";
 import { columns } from '@/components/cajero/columns';
+import { MetodoPago } from "@/types/ventas";
 
 const CashierPage = () => {
   const { user, logOut } = useAuthStore();
@@ -42,15 +43,22 @@ const CashierPage = () => {
       receipt: dialogName === "receipt",
     });
   };
+  const [payMethod, setPayMethod] = useState<MetodoPago>('efectivo');
+  const [clientRut, setClientRut] = useState<string>('');
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
+    setPayMethod(method as MetodoPago);
     handleOpenDialog("receipt"); 
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
   const [isPaymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const dynamicTotalCost = total;
+
+  useEffect(() => {
+    console.log(addedProducts);
+  }, [addedProducts]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -127,6 +135,7 @@ const CashierPage = () => {
         onClose={() => setPaymentDialogOpen(false)}
         onSelectPaymentMethod={handlePaymentMethodSelect}
         totalCost={dynamicTotalCost}
+        setClientRUT={setClientRut}
       />
 
       {/* Receipt Dialog */}
@@ -142,8 +151,10 @@ const CashierPage = () => {
             <DialogDescription>Detalle de productos y total.</DialogDescription>
           </DialogHeader>
           <ProductSummary
+            clientRut={clientRut}
             products={addedProducts}
             total={total}
+            payMethod={payMethod}
             onClose={() => {
               setIsDialogOpen((prevState) => ({
                 ...prevState,

@@ -25,3 +25,21 @@ export type MetodoPago = "efectivo" | "debito" | "credito" | "Puntos";
 
 // Tipo de Registro (Boleta o Factura)
 export type TipoRegistro = "boleta" | "factura";
+
+export interface DetalleProducto{
+  id_producto: number;
+  cantidad: number;
+}
+
+export interface ToSaveVenta {
+  id_cliente?: number;
+  id_cajero: number;
+  total_sin_iva: number;
+  total_con_iva: number;
+  fecha_venta: string;
+  numero_documento: string;
+  porcentaje?: number;
+  id_forma_pago: number
+  id_tipodocumento: number;
+  productos: DetalleProducto[];
+}

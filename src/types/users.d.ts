@@ -6,6 +6,7 @@ export interface CurrentUser {
   name: string;
   role: Role;
   access_token: string;
+  id_usuario: number;
 }
 
 export interface UserResponse {

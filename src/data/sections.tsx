@@ -1,5 +1,5 @@
 import { Home, Package, ShoppingCart, UserIcon, Bell } from "lucide-react";
-import DashboardHome from "@/components/admin/dashboard";
+import DashboardHome from "@/components/admin/dashboard/dashboard";
 import Ventas from "@/components/admin/ventas/ventas-page";
 import Productos from "@/components/admin/products/products-page";
 import UsersPage from "@/components/admin/users/users-page";

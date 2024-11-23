@@ -16,10 +16,11 @@ export const useAuthStore = create<Store>()(
           name: "",
           role: "",
           access_token: "",
+          id_usuario: 0,
         },
         setUser: (user: CurrentUser) => set({ user }, false, "setUser"),
         logOut: () => {
-          set({ user: { name: "", role: "", access_token: "" } }, false, "logOut")
+          set({ user: { name: "", role: "", access_token: "" , id_usuario: 0 } }, false, "logOut")
         },
       }),
       {

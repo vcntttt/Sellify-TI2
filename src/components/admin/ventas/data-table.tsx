@@ -21,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import VentasActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
-import { getAllSales } from "@/api/ventas"; 
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,19 +28,12 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+  data,
   columns,
 }: DataTableProps<TData, TValue>) {
-  const [data, setData] = useState<TData[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const salesData = await getAllSales();
-      setData(salesData); 
-    }
-    fetchData();
-  }, []);
 
   const table = useReactTable({
     data,

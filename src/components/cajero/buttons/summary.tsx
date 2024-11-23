@@ -1,31 +1,84 @@
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils"; 
+import { formatPrice } from "@/lib/utils";
 import { Boleta } from "./boleta";
 import { useAuthStore } from "@/store/auth";
 import { ToSellProduct } from "@/types/products";
+import { format } from "date-fns";
+import { MetodoPago, ToSaveVenta } from "@/types/ventas";
+import { UserResponse } from "@/types/users";
+import axios from "@/api/axios";
 
 interface Props {
   products: ToSellProduct[];
-  total: number; 
+  total: number;
   onClose: () => void;
+  payMethod: MetodoPago;
+  clientRut: string
 }
 
-const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
+const ProductSummary: React.FC<Props> = ({ products, total, onClose, payMethod, clientRut }) => {
   const { user } = useAuthStore();
   const totalIVA = products.reduce((acc, product) => {
     const priceToUse = product.discountedPrice || product.unitPrice;
-    const iva = priceToUse * 0.19; 
-    return acc + (iva * product.quantity); 
+    const iva = priceToUse * 0.19;
+    return acc + iva * product.quantity;
   }, 0);
 
-  const handleFinalizePurchase = () => {
+  const handleFinalizePurchase = async () => {
     const iva = total * 0.19;
     Boleta({
-      cajero: user.name, 
-      products,          
-      total,             
-      iva                
+      cajero: user.name,
+      products,
+      total,
+      iva,
     });
+
+    async function getClientID(rut: string) {
+      const { data: info } = await axios.get<UserResponse>(
+        `/users/${rut}`
+      );
+      return info.id_usuario;
+    }
+    // const tipoDocumento = {
+    //   boleta: 1,
+    //   factura: 2,
+    // }
+    const formaPago = {
+      credito: 1,
+      efectivo: 2,
+      debito: 3,
+      Puntos: 4
+    }
+
+    const venta: ToSaveVenta = {
+      id_cajero: user.id_usuario,
+      total_sin_iva: total,
+      total_con_iva: total + iva,
+      fecha_venta: format(new Date(), "yyyy-MM-dd"),
+      numero_documento: format(new Date(), "yyyyMMddHHmmss"),
+      porcentaje: 0,
+      id_forma_pago: formaPago[payMethod],
+      id_tipodocumento: 1,
+      productos: products.map((product) => ({
+        id_producto: product.id,
+        cantidad: product.quantity,
+      })),
+    };
+
+    const clientID = await getClientID(clientRut);
+    
+    if (clientID) {
+      venta.id_cliente = clientID;
+    }
+
+    console.log(venta);
+    try{
+      const response = await axios.post("/ventas-detalle", venta);
+      console.log(response);
+    }
+    catch(error){
+      console.log(error);
+    }
     onClose();
   };
 
@@ -35,13 +88,17 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
         {products.map((product, index) => {
           const formattedOriginalPrice = formatPrice(product.originalPrice);
           const formattedTotalPrice = formatPrice(product.totalPrice);
-          const formattedDiscountedPrice = formatPrice(product.discountedPrice || product.totalPrice);
+          const formattedDiscountedPrice = formatPrice(
+            product.discountedPrice || product.totalPrice
+          );
 
           return (
             <div
               key={index}
               className={`flex justify-between items-center py-3 px-4 rounded-md transition-colors 
-                          ${index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"} hover:bg-gray-200`}
+                          ${
+                            index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                          } hover:bg-gray-200`}
             >
               <div className="text-gray-700 font-medium">
                 {String(product.id).padStart(3, "0")} - {product.name}{" "}
@@ -50,9 +107,15 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose }) => {
               <div className="ml-8 text-right text-gray-700 font-semibold">
                 {product.discountedPrice && product.discountValue > 0 ? (
                   <div className="flex items-end gap-x-2">
-                    <span className="line-through text-gray-500">{formattedOriginalPrice}</span>
-                    <span className="text-red-500">{formattedDiscountedPrice}</span>
-                    <span className="text-gray-500">(-{Math.round(product.discountValue)}%)</span>
+                    <span className="line-through text-gray-500">
+                      {formattedOriginalPrice}
+                    </span>
+                    <span className="text-red-500">
+                      {formattedDiscountedPrice}
+                    </span>
+                    <span className="text-gray-500">
+                      (-{Math.round(product.discountValue)}%)
+                    </span>
                   </div>
                 ) : (
                   formattedTotalPrice

@@ -17,6 +17,7 @@ interface PaymentDialogProps {
   onClose: () => void;
   onSelectPaymentMethod: (method: MetodoPago, rut: string) => void;
   totalCost: number;
+  setClientRUT: (rut: string) => void;
 }
 
 const PaymentDialog = ({
@@ -24,6 +25,7 @@ const PaymentDialog = ({
   onClose,
   onSelectPaymentMethod,
   totalCost,
+  setClientRUT
 }: PaymentDialogProps) => {
   const {
     selectedMethod,
@@ -52,7 +54,7 @@ const PaymentDialog = ({
     ? 33
     : 0;
 
-    const dialogTitle = isPaymentConfirmed
+  const dialogTitle = isPaymentConfirmed
     ? "Pago Confirmado"
     : selectedMethod === "debito" || selectedMethod === "credito"
     ? "Pagar con Tarjeta (Débito / Crédito)"
@@ -86,8 +88,8 @@ const PaymentDialog = ({
           <div className="flex flex-col gap-4">
             <p className="text-base">
               Su pago con el método:{" "}
-              <strong className="font-semibold">{selectedMethod}</strong> ha sido
-              confirmado.
+              <strong className="font-semibold">{selectedMethod}</strong> ha
+              sido confirmado.
             </p>
             <Button
               onClick={() => completePayment(onSelectPaymentMethod, onClose)}
@@ -107,7 +109,10 @@ const PaymentDialog = ({
                   id="customer-rut"
                   type="text"
                   value={customerRUT}
-                  onChange={(e) => setCustomerRUT(e.target.value)}
+                  onChange={(e) => {
+                    setCustomerRUT(e.target.value);
+                    setClientRUT(e.target.value);
+                  }}
                   placeholder="Ej: 12.345.678-9"
                   className="border border-gray-300 rounded-lg p-2 mt-1"
                 />
@@ -193,28 +198,30 @@ const PaymentDialog = ({
               </div>
             ) : null}
 
-            {selectedMethod && selectedMethod !== "debito" && selectedMethod !== "credito" && (
-              <div className="flex flex-col gap-4">
-                <p className="text-base">
-                  ¿Está seguro que desea realizar el pago con el método:{" "}
-                  <strong className="font-semibold">{selectedMethod}</strong>?
-                </p>
-                <div className="flex justify-between">
-                  <Button
-                    onClick={resetPaymentState}
-                    className="rounded-lg shadow-md transition duration-200"
-                  >
-                    Volver
-                  </Button>
-                  <Button
-                    onClick={confirmPayment}
-                    className="rounded-lg shadow-md transition duration-200"
-                  >
-                    Confirmar Pago
-                  </Button>
+            {selectedMethod &&
+              selectedMethod !== "debito" &&
+              selectedMethod !== "credito" && (
+                <div className="flex flex-col gap-4">
+                  <p className="text-base">
+                    ¿Está seguro que desea realizar el pago con el método:{" "}
+                    <strong className="font-semibold">{selectedMethod}</strong>?
+                  </p>
+                  <div className="flex justify-between">
+                    <Button
+                      onClick={resetPaymentState}
+                      className="rounded-lg shadow-md transition duration-200"
+                    >
+                      Volver
+                    </Button>
+                    <Button
+                      onClick={confirmPayment}
+                      className="rounded-lg shadow-md transition duration-200"
+                    >
+                      Confirmar Pago
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         )}
       </DialogContent>
