@@ -43,6 +43,6 @@ export function ExpirationProducts({ data }: ExpirationProductsProps) {
             </CardContent>
             <CardFooter></CardFooter>
         </Card>
-        
+
     );
 };

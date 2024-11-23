@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { isWithinInterval } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
+import { TipoRegistro, MetodoPago } from "@/types/ventas";
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "numero_documento",
@@ -100,12 +101,12 @@ export const columns: ColumnDef<any>[] = [
   header: "Descargar",
   cell: ({ row }) => {
     const venta = {
-      numero_documento: row.getValue("numero_documento"),
+      numero_documento: row.getValue("numero_documento") as string,
       fecha: new Date(row.getValue("fecha_venta") as string),
-      cliente: row.getValue("cliente"),
-      formaPago: row.getValue("forma_pago"),
-      tipoRegistro: row.getValue("tipo_documento"),
-      total: row.getValue("total_con_iva"),
+      cliente: row.getValue("cliente") as string,
+      formaPago: row.getValue("forma_pago") as MetodoPago,
+      tipoRegistro: row.getValue("tipo_documento") as TipoRegistro,
+      total: row.getValue("total_con_iva") as number,
       productos: row.getValue("productos") as {
         nombre: string;
         cantidad: number;
