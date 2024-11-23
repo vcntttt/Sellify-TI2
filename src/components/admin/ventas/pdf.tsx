@@ -40,8 +40,8 @@ export function PDF(venta: {
 
 
   venta.productos.forEach((producto) => {
-    doc.text(producto.nombre, 10, y); 
-    doc.text(`${producto.cantidad}`, 80, y); 
+    doc.text(producto.nombre, 10, y);
+    doc.text(`${producto.cantidad}`, 80, y);
     y += 5;
 
 
@@ -57,9 +57,9 @@ export function PDF(venta: {
   doc.text(`Total: $${Math.round(venta.total)}`, 150, y);
 
 
-  doc.setDrawColor(0); 
+  doc.setDrawColor(0);
   doc.setLineWidth(0.5);
-  doc.rect(50, 260, 110, 20); 
+  doc.rect(50, 260, 110, 20);
   doc.setFontSize(8);
   doc.text("Código de Barras", 105, 270, { align: "center" });
 

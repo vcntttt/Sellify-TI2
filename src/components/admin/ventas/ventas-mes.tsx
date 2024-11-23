@@ -21,7 +21,7 @@ export default function CardVentasMes() {
         if (!sales || sales.length === 0) {
           setSalesCount(0);
         } else {
-          setSalesCount(sales.length); 
+          setSalesCount(sales.length);
         }
       } catch (err) {
         console.error(err);
@@ -46,7 +46,7 @@ export default function CardVentasMes() {
           <p className="text-red-500">{error}</p>
         ) : (
           <>
-            <p className="text-4xl">{salesCount}</p>  
+            <p className="text-4xl">{salesCount}</p>
             <p className="text-muted-foreground">Ventas realizadas este mes</p>
           </>
         )}

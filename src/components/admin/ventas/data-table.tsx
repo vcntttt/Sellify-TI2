@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import VentasActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
-import { getAllSales } from "@/api/ventas"; 
+import { getAllSales } from "@/api/ventas";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,7 +38,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     async function fetchData() {
       const salesData = await getAllSales();
-      setData(salesData); 
+      setData(salesData);
     }
     fetchData();
   }, []);
@@ -84,9 +84,9 @@ export function DataTable<TData, TValue>({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </TableHead>
               ))}
             </TableRow>
