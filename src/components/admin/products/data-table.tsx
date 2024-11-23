@@ -1,3 +1,19 @@
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useProducts } from "@/hooks/query/use-products";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { ShowNotification } from "@/components/NotificationProvider";
+import { format } from "date-fns";
+import ProductActions from "./actions";
+import { DataTableViewOptions } from "@/components/tables/column-options";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,20 +26,6 @@ import {
   getSortedRowModel,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import ProductActions from "./actions";
-import { DataTableViewOptions } from "@/components/tables/column-options";
-import { useProducts } from "@/hooks/query/use-products";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,7 +43,16 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     createdAt: false,
   });
+
   const { refetch } = useProducts();
+  const handleRefetch = async () => {
+    try {
+      await refetch(); 
+      const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      ShowNotification("Productos cargados con éxito.", "success", loadTime); 
+    } catch (error) {
+    }
+  };
 
   const table = useReactTable({
     data,
@@ -74,7 +85,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
           <ProductActions />
-          <DataTableViewOptions table={table} refetchFn={refetch}/>
+          <DataTableViewOptions table={table} refetchFn={handleRefetch} />
         </div>
       </div>
       <div className="rounded-md border">
@@ -82,57 +93,49 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="bg-primary text-white"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="bg-primary text-white"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-          {isLoading ? (
-            Array.from({ length: 10 }).map((_, i) => (
-              <TableRow key={i}>
-                <TableCell colSpan={columns.length}>
-                  <Skeleton className="rounded-md h-6 w-full" />
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={columns.length}>
+                    <Skeleton className="rounded-md h-6 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No se encontraron resultados.
                 </TableCell>
               </TableRow>
-            ))
-          ) : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    // className="animate-fade animate-delay-100"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No se encontraron resultados.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
         </Table>
       </div>
     </div>

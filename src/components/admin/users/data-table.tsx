@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import UsersActions from "./actions";
 import { useUsers } from "@/hooks/query/use-users";
+import { ShowNotification } from "@/components/NotificationProvider";
+import { format } from "date-fns"; 
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +40,16 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const { refetch } = useUsers();
+
+  const handleRefetch = async () => {
+    try {
+      await refetch();
+      const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      ShowNotification("Usuarios cargados con éxito.", "success", loadTime);
+      return;
+    } catch (error) {; 
+    }
+  };
 
   const table = useReactTable({
     data,
@@ -67,8 +79,8 @@ export function DataTable<TData, TValue>({
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2">
-          <UsersActions tableRef={table}/>
-          <DataTableViewOptions table={table} refetchFn={refetch}/>
+          <UsersActions tableRef={table} />
+          <DataTableViewOptions table={table} refetchFn={handleRefetch} />
         </div>
       </div>
 
@@ -105,10 +117,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    // className="animate-fade animate-delay-100"
-                  >
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
