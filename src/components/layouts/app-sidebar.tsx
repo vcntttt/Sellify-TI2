@@ -64,6 +64,11 @@ const items: SidebarItem[] = [
     url: "/dashboard/registro",
     icon: Bell,
   },
+  {
+    title: "Compras",
+    url: "/dashboard/compras",
+    icon: ShoppingCart,
+  },
 ];
 
 export function AppSidebar() {

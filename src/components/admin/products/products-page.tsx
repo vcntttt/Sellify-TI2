@@ -5,7 +5,7 @@ import { useProducts } from "@/hooks/query/use-products";
 import { ExpirationProducts } from "./expiration-products";
 import CardProductosVendidos from "../dashboard/productos-mes";
 import { ChartProductos } from "./chart";
-import { useVentasStore } from "@/hooks/use-ventas";
+/* import { useVentasStore } from "/hooks/use-ventas"; */
 
 export default function Products() {
   const { data, isFetching } = useProducts();
