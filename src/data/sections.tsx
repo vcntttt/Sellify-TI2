@@ -5,6 +5,7 @@ import Productos from "@/components/admin/products/products-page";
 import UsersPage from "@/components/admin/users/users-page";
 import Registro from "@/components/admin/registro/tabla-registro";
 import { getUsers } from "@/api/users";
+import ComprasPage from "@/components/admin/compras/compras-page";
 
 export interface Section {
   name: string;
@@ -51,5 +52,11 @@ export const sections: Section[] = [
     href: "/dashboard/registro",
     icon: <Bell className="size-4"/>,
     component: Registro,
+  },
+  {
+    name: "Compra",
+    href: "/dashboard/compras",
+    icon: <ShoppingCart className="size-4"/>,
+    component: ComprasPage,
   },
 ];

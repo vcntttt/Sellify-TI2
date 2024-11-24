@@ -64,12 +64,8 @@ function productToResponse(product: Producto): NewProductBody {
 export const getProducts = async (): Promise<Producto[]> => {
   try {
     const { data } = await axios.get<ProductResponse[]>("/products");
-    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    ShowNotification("Productos cargados con éxito.", "success", loadTime); 
     return data.map(responseToProduct);
   } catch (error) {
-    const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    ShowNotification("Error al cargar los productos.", "error", errorTime); 
     throw error; 
   }
 };

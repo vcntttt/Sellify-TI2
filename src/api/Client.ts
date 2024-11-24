@@ -48,13 +48,10 @@ export const updateUserPoints = async (
 export const getTopPuntos = async (): Promise<UserResponse[]> => {
   try {
     const response = await axios.get("/top-users-by-points"); 
-    const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-    ShowNotification("Clientes con más puntos cargados.", "success", loadTime);
     return response.data;
   } catch (error) {
     const errorTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
     ShowNotification("Error al cargar clientes con más puntos.", "error", errorTime);
     throw error;
   }
-};
-
+};  
