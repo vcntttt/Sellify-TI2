@@ -5,6 +5,7 @@ import {
   type LucideIcon,
   Package,
   PencilRuler,
+  CircleDollarSign,
   ShoppingCart,
   UserIcon,
 } from "lucide-react";
@@ -67,7 +68,7 @@ const items: SidebarItem[] = [
   {
     title: "Compras",
     url: "/dashboard/compras",
-    icon: ShoppingCart,
+    icon: CircleDollarSign,
   },
 ];
 
