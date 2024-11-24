@@ -12,10 +12,15 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
+      '/api/': {
         target: 'http://170.239.85.88:5000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/socket.io': {
+        target: 'http://170.239.85.88:5000',
+        ws: true,
+        changeOrigin: true
       }
     }
   }

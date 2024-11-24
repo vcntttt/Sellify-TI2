@@ -1,42 +1,50 @@
-import { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 
-const BarcodeDisplayPage = () => {
-  const [barcode, setBarcode] = useState(null);
-  const [status, setStatus] = useState('Desconectado');
-  const RUT = '217997607';
+const BarcodeScannerWeb = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [receivedBarcode, setReceivedBarcode] = useState('');
+  const RUT = "217997607";
 
   useEffect(() => {
-    const socket = io('/api');
+    const socketRef = io('http://170.239.85.88:5000');
 
-    console.log('Intentando conectar al servidor WebSocket...');
-
-    // Maneja la conexión
-    socket.on('connect', () => {
-      setStatus('Conectado');
+    // Manejar la conexión
+    socketRef.on('connect', () => {
       console.log('Conectado al servidor WebSocket');
+      setIsConnected(true);
     });
 
-    socket.on(`barcode_update_${RUT}`, (data) => {
-      if (data && data.barcode) {
-        setBarcode(data.barcode);
-        console.log('Código de barras recibido:', data.barcode);
+    // Escuchar el evento 'barcode_scanned'
+    socketRef.on(`barcode_update_${RUT}`, (data) => {
+      console.log('Código de barras recibido:', data);
+      setReceivedBarcode(data.barcode); // Actualiza el estado con el código recibido
+    });
+
+    // Manejar errores de conexión
+    socketRef.on('connect_error', (error) => {
+      console.error('Error de conexión:', error);
+    });
+
+    // Limpieza al desmontar el componente
+    return () => {
+      if (socketRef) {
+        socketRef.disconnect();
       }
-    });
-
+    };
   }, []);
 
   return (
     <div>
-      <h1>Código de Barras Escaneado</h1>
-      <p>Estado de conexión: {status}</p>
-      {barcode ? (
-        <p>Código de barras: {barcode}</p>
+      <h1>Escáner de Códigos de Barras</h1>
+      <p>Estado de la conexión: {isConnected ? 'Conectado' : 'Desconectado'}</p>
+      {receivedBarcode ? (
+        <p><strong>Código de barras recibido:</strong> {receivedBarcode}</p>
       ) : (
-        <p>Esperando escaneo de código de barras...</p>
+        <p>No se ha recibido ningún código de barras.</p>
       )}
     </div>
   );
 };
 
-export default BarcodeDisplayPage;
+export default BarcodeScannerWeb;

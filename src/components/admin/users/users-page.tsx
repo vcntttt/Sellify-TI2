@@ -4,7 +4,7 @@ import { DataTable } from "./data-table";
 import { useUsers } from "@/hooks/query/use-users";
 import ClientPoints from "./MasPuntos";
 import ClientFrecu from "./MasFrecuentes";
-
+import VentasCajeros from "./CajeroMasVentas";
 
 export default function UsersPage() {
   const { isFetching, data, error } = useUsers();
@@ -16,6 +16,7 @@ export default function UsersPage() {
       <div className="flex space-x-4 mb-8">
         <ClientPoints />
         <ClientFrecu />
+        <VentasCajeros />
       </div>
       <DataTable columns={columns} data={data ?? []} isLoading={isFetching} />
     </AdminSection>

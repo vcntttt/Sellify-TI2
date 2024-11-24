@@ -1,11 +1,11 @@
-import { ColumnDef } from "@tanstack/react-table"; 
-import {  FileDown } from "lucide-react";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
+import { FileDown } from "lucide-react";
+import { formatDate, formatDatesFromResponse, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { isWithinInterval } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
-import { TipoRegistro, MetodoPago } from "@/types/ventas";
+
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "numero_documento",
@@ -23,7 +23,7 @@ export const columns: ColumnDef<any>[] = [
       <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => {
-      return formatDate(new Date(row.getValue("fecha_venta") as string));
+      return formatDate(formatDatesFromResponse((row.getValue("fecha_venta") as string)));
     },
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue || !filterValue.from || !filterValue.to) {
@@ -40,9 +40,6 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "cliente",
     header: "Cliente",
-    cell: ({ row }) => {
-      return <span>{row.getValue("cliente")}</span>;
-    },
   },
   {
     accessorKey: "total_con_iva",
@@ -50,23 +47,22 @@ export const columns: ColumnDef<any>[] = [
       <DataTableColumnHeader column={column} title="Total" />
     ),
     cell: ({ row }) => {
-      const total = row.getValue("total_con_iva") as number;
-      return <div className="text-center">{formatPrice(total)}</div>;
+      const total = row.original.total_con_iva;
+      return (
+        <div className="text-center">
+        {formatPrice(total)}
+      </div>
+      )
     },
   },
   {
     accessorKey: "forma_pago",
     header: "Forma de Pago",
-    cell: ({ row }) => {
-      return <span className="capitalize">{row.getValue("forma_pago")}</span>;
-    },
   },
   {
     accessorKey: "tipo_documento",
     header: "Boleta/Factura",
-    cell: ({ row }) => {
-      return <span className="capitalize">{row.getValue("tipo_documento")}</span>;
-    },
+    cell: ({ row }) => <span className="capitalize">{row.original.tipo_documento}</span>,
   },
   {
     accessorKey: "productos",
@@ -77,11 +73,11 @@ export const columns: ColumnDef<any>[] = [
         cantidad: number;
         descripcion: string;
       }[];
-  
+
       if (!productos || productos.length === 0) {
         return <span>No hay productos</span>;
       }
-  
+
       return (
         <ul>
           {productos.map((producto, index) => (
@@ -93,32 +89,30 @@ export const columns: ColumnDef<any>[] = [
         </ul>
       );
     },
-  }
-  
-,  
-{
-  accessorKey: "detalleVentas",
-  header: "Descargar",
-  cell: ({ row }) => {
-    const venta = {
-      numero_documento: row.getValue("numero_documento") as string,
-      fecha: new Date(row.getValue("fecha_venta") as string),
-      cliente: row.getValue("cliente") as string,
-      formaPago: row.getValue("forma_pago") as MetodoPago,
-      tipoRegistro: row.getValue("tipo_documento") as TipoRegistro,
-      total: row.getValue("total_con_iva") as number,
-      productos: row.getValue("productos") as {
-        nombre: string;
-        cantidad: number;
-        descripcion?: string;
-      }[], // Agregamos los productos vendidos
-    };
-
-    return (
-      <Button variant="secondary" onClick={() => PDF(venta)}>
-        Descargar <FileDown className="w-4 h-4 ml-2" />
-      </Button>
-    );
   },
-}
+  {
+    accessorKey: "detalleVentas",
+    header: "Descargar",
+    cell: ({ row }) => {
+      const venta = {
+        numero_documento: row.original.numero_documento,
+        fecha: formatDatesFromResponse(row.original.fecha_venta),
+        cliente: row.original.cliente,
+        formaPago: row.original.forma_pago,
+        tipoRegistro: row.original.tipo_documento,
+        total: row.original.total_con_iva,
+        productos: row.getValue("productos") as {
+          nombre: string;
+          cantidad: number;
+          descripcion?: string;
+        }[],
+      };
+
+      return (
+        <Button variant="secondary" onClick={() => PDF(venta)}>
+          Descargar <FileDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+  }
 ];

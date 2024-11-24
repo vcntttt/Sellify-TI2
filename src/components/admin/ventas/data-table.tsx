@@ -18,22 +18,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import VentasActions from "./actions";
 import { DataTableViewOptions } from "@/components/tables/column-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  refetchFn?: () => void;
 }
 
 export function DataTable<TData, TValue>({
   data,
   columns,
+  refetchFn,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
 
   const table = useReactTable({
     data,
@@ -56,15 +57,15 @@ export function DataTable<TData, TValue>({
         <Input
           type="text"
           placeholder="Buscar boleta..."
-          value={(table.getColumn("id")?.getFilterValue() as number) ?? ""}
+          value={(table.getColumn("numero_documento")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
+            table.getColumn("numero_documento")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4">
           <VentasActions tableRef={table} />
-          <DataTableViewOptions table={table} />
+          <DataTableViewOptions table={table} refetchFn={refetchFn} />
         </div>
       </div>
       <Table>
@@ -76,9 +77,9 @@ export function DataTable<TData, TValue>({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>

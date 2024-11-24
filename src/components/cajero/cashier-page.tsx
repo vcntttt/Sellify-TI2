@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { io } from "socket.io-client";
 
 import ProductSummary from "@/components/cajero/buttons/summary";
 import useCarrito from "@/hooks/cajero/use-carrito";
@@ -16,8 +17,9 @@ import ProductTable from "@/components/cajero/data-table";
 import PaymentDialog from "@/components/cajero/Payment";
 import { useEffect, useState } from "react";
 import CashierLayout from "../layouts/cashier-layout";
-import { columns } from '@/components/cajero/columns';
+import { columns } from "@/components/cajero/columns";
 import { MetodoPago } from "@/types/ventas";
+import clsx from "clsx";
 
 const CashierPage = () => {
   const { user, logOut } = useAuthStore();
@@ -43,13 +45,13 @@ const CashierPage = () => {
       receipt: dialogName === "receipt",
     });
   };
-  const [payMethod, setPayMethod] = useState<MetodoPago>('efectivo');
-  const [clientRut, setClientRut] = useState<string>('');
+  const [payMethod, setPayMethod] = useState<MetodoPago>("efectivo");
+  const [clientRut, setClientRut] = useState<string>("");
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
     setPayMethod(method as MetodoPago);
-    handleOpenDialog("receipt"); 
+    handleOpenDialog("receipt");
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
@@ -60,28 +62,64 @@ const CashierPage = () => {
     console.log(addedProducts);
   }, [addedProducts]);
 
+  const [receivedBarcode, setReceivedBarcode] = useState("");
+  const RUT = "217997607";
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    const socketRef = io("http://170.239.85.88:5000");
+
+    // Manejar la conexión
+    socketRef.on("connect", () => {
+      console.log("Conectado al servidor WebSocket");
+      setIsConnected(true);
+    });
+
+    // Escuchar el evento 'barcode_scanned'
+    socketRef.on(`barcode_update_${RUT}`, (data) => {
+      console.log("Código de barras recibido:", data);
+      setReceivedBarcode(data.barcode); // Actualiza el estado con el código recibido
+    });
+
+    // Manejar errores de conexión
+    socketRef.on("connect_error", (error) => {
+      console.error("Error de conexión:", error);
+    });
+
+    // Limpieza al desmontar el componente
+    return () => {
+      if (socketRef) {
+        socketRef.disconnect();
+      }
+    };
+  }, [RUT]);
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="flex flex-1 pt-20">
-        <CashierLayout
-          user={user}
-          logOut={logOut}
-          total={total}
-        />
+        <CashierLayout user={user} logOut={logOut} total={total} />
 
         <main className="flex-1 ml-64 p-6 flex flex-col">
           <section className="shadow-md rounded-lg border mb-7 flex-grow">
-            <ProductTable data={addedProducts} columns={columns}/>
+            <ProductTable data={addedProducts} columns={columns} />
           </section>
           <section
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
             style={{ minHeight: "120px" }}
           >
-            <h3 className="text-lg font-semibold mb-4">Ingresar Producto</h3>
+            <div className="flex justify-between items-center w-full">
+              <h3 className="text-lg font-semibold mb-4">Ingresar Producto</h3>
+              <span
+                className={clsx("size-5 rounded-full", {
+                  "bg-green-500 text-white": isConnected,
+                  "bg-red-500": !isConnected,
+                })}
+              ></span>
+            </div>
             <div className="flex gap-4">
               <div className="flex-col items-center gap-4">
                 <Label htmlFor="code" className="text-right">
-                  Código
+                  Código: {receivedBarcode}
                 </Label>
                 <Input
                   id="code"
@@ -109,7 +147,7 @@ const CashierPage = () => {
               </div>
             </div>
             <div className="flex justify-end gap-4 mt-4">
-            <Button
+              <Button
                 size="lg"
                 variant={"destructive"}
                 className="rounded-lg shadow-md transition duration-200"

@@ -7,22 +7,30 @@ import { format } from "date-fns";
 import { MetodoPago, ToSaveVenta } from "@/types/ventas";
 import { UserResponse } from "@/types/users";
 import axios from "@/api/axios";
+import { useVentaMutation } from "@/hooks/query/use-ventas";
 
 interface Props {
   products: ToSellProduct[];
   total: number;
   onClose: () => void;
   payMethod: MetodoPago;
-  clientRut: string
+  clientRut: string;
 }
 
-const ProductSummary: React.FC<Props> = ({ products, total, onClose, payMethod, clientRut }) => {
+const ProductSummary: React.FC<Props> = ({
+  products,
+  total,
+  onClose,
+  payMethod,
+  clientRut,
+}) => {
   const { user } = useAuthStore();
   const totalIVA = products.reduce((acc, product) => {
     const priceToUse = product.discountedPrice || product.unitPrice;
     const iva = priceToUse * 0.19;
     return acc + iva * product.quantity;
   }, 0);
+  const registerVentaMutation = useVentaMutation();
 
   const handleFinalizePurchase = async () => {
     const iva = total * 0.19;
@@ -34,9 +42,7 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose, payMethod, 
     });
 
     async function getClientID(rut: string) {
-      const { data: info } = await axios.get<UserResponse>(
-        `/users/${rut}`
-      );
+      const { data: info } = await axios.get<UserResponse>(`/users/${rut}`);
       return info.id_usuario;
     }
     // const tipoDocumento = {
@@ -47,8 +53,8 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose, payMethod, 
       credito: 1,
       efectivo: 2,
       debito: 3,
-      Puntos: 4
-    }
+      Puntos: 4,
+    };
 
     const venta: ToSaveVenta = {
       id_cajero: user.id_usuario,
@@ -66,17 +72,15 @@ const ProductSummary: React.FC<Props> = ({ products, total, onClose, payMethod, 
     };
 
     const clientID = await getClientID(clientRut);
-    
+
     if (clientID) {
       venta.id_cliente = clientID;
     }
 
     console.log(venta);
-    try{
-      const response = await axios.post("/ventas-detalle", venta);
-      console.log(response);
-    }
-    catch(error){
+    try {
+      await registerVentaMutation.mutate(venta);
+    } catch (error) {
       console.log(error);
     }
     onClose();

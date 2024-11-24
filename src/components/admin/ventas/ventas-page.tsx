@@ -4,30 +4,19 @@ import { DataTable } from "./data-table";
 import CardVentasMes from "./ventas-mes";
 import CardVentasSemana from "./ventas-semana";
 import CardProductosVendidos from "../dashboard/productos-mes";
-import { getAllSales } from "@/api/ventas";
-import { useEffect, useState } from "react";
-import { Venta } from "@/types/ventas";
+import { useVentas } from "@/hooks/query/use-ventas";
 
-export default function DemoPage() {
-  const [data, setData] = useState<Venta[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const salesData = await getAllSales();
-      setData(salesData); 
-    }
-    fetchData();
-  }, []);
-
+export default function VentasPage() {
+  const { data, refetch } = useVentas();
   return (
     <AdminSection title="Ventas">
-      <div className="grid grid-row-3 size-full gap-4">
-         <section className="grid grid-cols-3 gap-2 border-none h-full">
+      <div className="grid grid-row-3 gap-4">
+         <section className="grid grid-cols-3 gap-2 border-none">
             <CardVentasMes />
             <CardVentasSemana />
             <CardProductosVendidos />
           </section>
-        <DataTable columns={columns} data={data}/>
+        <DataTable columns={columns} data={data ?? [] } refetchFn={refetch}/>
       </div>
     </AdminSection>
   );

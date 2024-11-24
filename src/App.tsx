@@ -14,7 +14,6 @@ import { sections } from "./data/sections";
 import NotFound from "@/components/routes/not-found";
 import NonAuthorized from "@/components/routes/non-authorized";
 import { NotificationProvider } from "@/components/NotificationProvider";
-import BarcodeDisplayPage from "./barcde";
 
 const queryClient = new QueryClient();
 
