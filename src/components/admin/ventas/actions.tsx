@@ -20,9 +20,9 @@ export default function VentasActions({ tableRef }: { tableRef: any }) {
 
   useEffect(() => {
     if (dateRange) {
-      tableRef.getColumn("fecha")?.setFilterValue(dateRange);
+      tableRef.getColumn("fecha_venta")?.setFilterValue(dateRange);
     } else {
-      tableRef.getColumn("fecha")?.setFilterValue(undefined);
+      tableRef.getColumn("fecha_venta")?.setFilterValue(undefined);
     }
   }, [dateRange, tableRef]);
 

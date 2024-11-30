@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { MetodoPago } from "@/types/ventas";
 
 const AutoservPage = () => {
   const { user, logOut } = useAuthStore();
@@ -45,11 +46,14 @@ const AutoservPage = () => {
 
   const handlePaymentMethodSelect = (method: string) => {
     console.log(`Selected payment method: ${method}`);
+    setPayMethod(method as MetodoPago);
     handleOpenDialog("receipt");
     setIsDialogOpen((prevState) => ({ ...prevState, payment: false }));
   };
 
   const [isPaymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [clientRut, setClientRut] = useState<string>("");
+  const [payMethod, setPayMethod] = useState<MetodoPago>("efectivo");
 
   return (
     <AutoservLayout user={user} logOut={logOut} total={total}>
@@ -134,6 +138,7 @@ const AutoservPage = () => {
         onClose={() => setPaymentDialogOpen(false)}
         onSelectPaymentMethod={handlePaymentMethodSelect}
         totalCost={total}
+        setClientRUT={setClientRut}
       />
 
       <Dialog open={isDialogOpen.receipt} onOpenChange={() => setIsDialogOpen((prevState) => ({ ...prevState, receipt: false }))}>
@@ -143,6 +148,8 @@ const AutoservPage = () => {
             <DialogDescription>Detalle de productos y total.</DialogDescription>
           </DialogHeader>
           <ProductSummary
+            clientRut={clientRut}
+            payMethod={payMethod}
             products={addedProducts}
             total={total}
             onClose={() => {

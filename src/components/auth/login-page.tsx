@@ -20,9 +20,40 @@ export default function Login() {
   const setLocation = useLocation()[1];
   const { setUser } = useAuthStore();
 
+  const validateRut = (rut: string) => {
+    const cleanRut = rut.replace(/[^0-9kK]/g, "").toUpperCase();
+  
+    if (cleanRut.length < 2) return false;
+  
+    const body = cleanRut.slice(0, -1);
+    const dv = cleanRut.slice(-1); 
+  
+    if (!/^\d+$/.test(body)) return false;
+  
+    let sum = 0;
+    let multiplier = 2;
+  
+    for (let i = body.length - 1; i >= 0; i--) {
+      sum += parseInt(body[i], 10) * multiplier;
+      multiplier = multiplier === 7 ? 2 : multiplier + 1;
+    }
+  
+    const calculatedDV = 11 - (sum % 11);
+    const expectedDV = calculatedDV === 11 ? "0" : calculatedDV === 10 ? "K" : calculatedDV.toString();
+  
+    return dv === expectedDV;
+  };
+
   const formSchema = z.object({
-    rut: z.string().min(8, {message:"Ingrese rut valido"}).max(9, {message:"Ingrese rut valido"}),
-    password: z.string().min(6, {message:"La contraseña debe tener al menos 6 caracteres"}).max(50, {message:"La contraseña debe tener menos de 50 caracteres"}),
+    rut: z
+      .string()
+      .min(8, { message: "Ingrese un RUT válido" })
+      .max(12, { message: "Ingrese un RUT válido" })
+      .refine(validateRut, { message: "El RUT ingresado no es válido" }),
+    password: z
+      .string()
+      .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+      .max(50, { message: "La contraseña debe tener menos de 50 caracteres" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

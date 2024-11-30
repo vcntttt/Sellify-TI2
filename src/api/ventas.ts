@@ -1,57 +1,22 @@
-import { format, startOfWeek } from "date-fns";
+import { format } from "date-fns";
 import {
   ToSaveVenta,
   Venta,
 } from "@/types/ventas";
 import axios from "@/api/axios";
-
-export async function getMonthlySales() {
-
-  const startDate = format(new Date(), "yyyy-MM-01"); 
-  const endDate = format(new Date(), "yyyy-MM-dd");   
-
-  try {
-    const response = await fetch(`/api/ventas?start=${startDate}&end=${endDate}`);
-    if (!response.ok) {
-      throw new Error("Error al obtener las ventas del mes");
-    }
-
-    const data = await response.json();
-    return data; 
-  } catch (error) {
-    console.error("Error al obtener las ventas del mes:", error);
-    return [];
-  }
-}
-
-export async function getWeekSales() {
-  const startDate = format(startOfWeek(new Date(), { weekStartsOn: 1 }), "yyyy-MM-dd"); 
-  const endDate = format(new Date(), "yyyy-MM-dd"); 
-
-  try {
-    const response = await fetch(`/api/ventas?start=${startDate}&end=${endDate}`);
-    if (!response.ok) {
-      throw new Error("Error al obtener las ventas de la semana");
-    }
-
-    const data = await response.json();
-    console.log(data)
-    return data; 
-  } catch (error) {
-    console.error("Error al obtener las ventas de la semana:", error);
-    return [];
-  }
-}
+import { formatDatesFromResponse } from "@/lib/utils";
 
 export async function getAllSales() {
   try {
     const {data} = await axios(`/boletas`);
-    const ventas = data.map((data : any) => {
+    const ventas : Venta[] = data.map((data : any) => {
       return {
         ...data.venta,
+        fecha_venta: formatDatesFromResponse(new Date(data.venta.fecha_venta)),
         productos: data.productos,
       };
     });
+    console.log("🚀 ~ getAllSales ~ ventas:", ventas);
 
     return ventas
   } catch (error) {

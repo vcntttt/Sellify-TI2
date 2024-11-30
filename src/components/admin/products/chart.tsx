@@ -15,7 +15,7 @@ import {
   ChartTooltipContent
 } from "@/components/ui/chart"
 import { Producto } from "@/types/products"
-import { Venta } from "@/types/ventas"
+import { Venta } from '@/types/ventas';
 const chartConfig = {
   visitors: {
     label: "Visitors",
@@ -42,13 +42,13 @@ export function ChartProductos({ data, ventas }: ChartProductData) {
     .filter((producto) => producto.dueDate && new Date(producto.dueDate) <= now)
     .reduce((total, producto) => total + producto.stock, 0);
 
-  const vendidos = ventas.reduce((totalVentas, venta) => {
-    const totalDetalle = venta.detalleVentas.reduce(
-      (subtotal, detalle) => subtotal + detalle.cantidad,
-      0
-    );
-    return totalVentas + totalDetalle;
-  }, 0);
+    const vendidos = ventas.reduce((totalVentas, venta) => {
+      const totalProductos = venta.productos.reduce(
+        (subtotal, producto) => subtotal + producto.cantidad,
+        0
+      );
+      return totalVentas + totalProductos;
+    }, 0);
 
   const chartData = [
     { name: "Vencidos", value: vencidos, fill: chartConfig.vencidos.color },

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,52 +6,41 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp } from "lucide-react";
-import { getWeekSales } from "@/api/ventas";
+import { useTimeVentas } from "@/hooks/use-time-ventas";
+import { endOfWeek, startOfWeek } from "date-fns";
 
 export default function CardVentasSemana() {
-  const [salesCount, setSalesCount] = useState(0);
-  const [error] = useState(null);
-
-  useEffect(() => {
-    async function fetchSalesData() {
-      try {
-        const sales = await getWeekSales();
-        if (!sales || sales.length === 0) {
-          setSalesCount(0);
-        } else {
-          setSalesCount(sales.length);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    fetchSalesData();
-  }, []);
+  const { sales, isLoading } = useTimeVentas({
+    start: startOfWeek(new Date(), { weekStartsOn: 1 }),
+    end: endOfWeek(new Date(), { weekStartsOn: 1 })
+  });
+  
 
   return (
     <Card className="h-full">
       <CardHeader className="mb-2">
         <CardTitle className="flex justify-between">
-          Ventas de la semana<TrendingUp />
+          Ventas de la semana
+          <TrendingUp />
         </CardTitle>
         <CardDescription className="sr-only">
           Ventas de la semana
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {error ? (
-          <p className="text-red-500">{error}</p>
+        {isLoading ? (
+          <Skeleton className="size-10" />
         ) : (
-          <>
-            <p className="text-4xl">{salesCount}</p>
-            <p className="text-muted-foreground">Ventas realizadas esta semana</p>
-          </>
+          <p className="text-4xl">{sales ?? 0}</p>
         )}
-      </CardContent>
-      <CardFooter>
-      </CardFooter>
+        <>
+          <p className="text-muted-foreground">Ventas realizadas esta semana</p>
+        </>
+      </CardContent><CardFooter>
+          <div className="opacity-0">a</div>
+          </CardFooter>
     </Card>
   );
 }

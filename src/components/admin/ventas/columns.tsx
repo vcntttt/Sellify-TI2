@@ -2,11 +2,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { FileDown } from "lucide-react";
 import { formatDate, formatDatesFromResponse, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { isWithinInterval } from "date-fns";
+import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
 import { DataTableColumnHeader } from "@/components/tables/column-header";
 import { PDF } from "./pdf";
+import { Venta } from "@/types/ventas";
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<Venta>[] = [
   {
     accessorKey: "numero_documento",
     header: ({ column }) => (
@@ -23,17 +24,18 @@ export const columns: ColumnDef<any>[] = [
       <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => {
-      return formatDate(formatDatesFromResponse((row.getValue("fecha_venta") as string)));
+      return formatDate(new Date(row.getValue("fecha_venta") as string));
     },
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue || !filterValue.from || !filterValue.to) {
         return true;
       }
-
+      const start = startOfDay(filterValue.from);
+      const end = endOfDay(filterValue.to);
       const rowDate = new Date(row.getValue(columnId));
       return isWithinInterval(rowDate, {
-        start: filterValue.from,
-        end: filterValue.to,
+        start: start,
+        end: end,
       });
     },
   },

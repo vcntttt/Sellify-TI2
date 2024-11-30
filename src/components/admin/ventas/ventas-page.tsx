@@ -12,8 +12,8 @@ export default function VentasPage() {
     <AdminSection title="Ventas">
       <div className="grid grid-row-3 gap-4">
          <section className="grid grid-cols-3 gap-2 border-none">
-            <CardVentasMes />
             <CardVentasSemana />
+            <CardVentasMes />
             <CardProductosVendidos />
           </section>
         <DataTable columns={columns} data={data ?? [] } refetchFn={refetch}/>
