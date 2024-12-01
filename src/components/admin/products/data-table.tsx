@@ -51,6 +51,7 @@ export function DataTable<TData, TValue>({
       const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
       ShowNotification("Productos cargados con éxito.", "success", loadTime); 
     } catch (error) {
+      console.error("Error al actualizar los productos:", error);
     }
   };
 

@@ -14,17 +14,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import RegisterActions from "./actions";
 import { Input } from "@/components/ui/input";
+import { DataTableViewOptions } from "@/components/tables/column-options";
+import { format } from "date-fns";
+import { ShowNotification } from "@/components/NotificationProvider";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
+  refetchFn: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   isLoading,
   data,
+  refetchFn,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -43,6 +48,15 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+  const handleRefetch = async () => {
+    try {
+      refetchFn(); 
+      const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      ShowNotification("Registros cargados con éxito.", "success", loadTime); 
+    } catch (error) {
+      console.error("Error al actualizar los productos:", error);
+    }
+  };
 
   return (
     <div>
@@ -50,14 +64,16 @@ export function DataTable<TData, TValue>({
         <Input
           type="text"
           placeholder="Buscar usuario..."
-          value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("usuario")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("user")?.setFilterValue(event.target.value)
+            table.getColumn("usuario")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2 border-b">
           <RegisterActions tableRef={table} />
+          <DataTableViewOptions table={table} refetchFn={handleRefetch} />
+
         </div>
       </div>
 

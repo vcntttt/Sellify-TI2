@@ -61,12 +61,12 @@ function productToResponse(product: Producto): NewProductBody {
   return response;
 }
 
-export const getProducts = async (): Promise<Producto[]> => {
+export const getProducts = async () => {
   try {
     const { data } = await axios.get<ProductResponse[]>("/products");
     return data.map(responseToProduct);
   } catch (error) {
-    throw error; 
+    console.error("Error al obtener los productos:", error);
   }
 };
 

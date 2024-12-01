@@ -1,17 +1,14 @@
-import { useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import { CheckCircle, XCircle, Info, AlertTriangle } from "lucide-react";
+import { SaveRegistro } from "@/types/registro";
+import { saveRegistro } from "@/api/registros";
+import { format } from "date-fns";
 
 export const NotificationProvider = () => {
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("notifications");
-    };
-  }, []); 
   return <Toaster position="top-right" />;
 };
 
-export const ShowNotification = (
+export const ShowNotification = async (
   message: string,
   type: "success" | "error" | "info" | "warning" = "info",
   description?: string,
@@ -42,23 +39,44 @@ export const ShowNotification = (
       ? AlertTriangle
       : Info;
 
-
-  const notificationId = new Date().toISOString();
-
-
-  const notification = {
-    id: notificationId,
-    message,
-    type,
-    description,
-    timestamp: new Date().toISOString(),
+  const notification: SaveRegistro = {
+    mensaje: message, 
+    fecha_y_hora: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+    tipo: type,
+    usuario: "admin",
   };
 
+  console.log(notification);
 
-  const existingNotifications = localStorage.getItem("notifications") || "[]";
-  const notifications = JSON.parse(existingNotifications);
-  notifications.push(notification);
-  localStorage.setItem("notifications", JSON.stringify(notifications));
+  try {
+    await saveRegistro(notification);
+  } catch (error) {
+    console.error("Error al guardar la notificación:", error);
+
+    toast.custom(() => (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "3px",
+          padding: "10px",
+          borderRadius: "8px",
+          backgroundColor: "#FFBABA",
+          color: "#F44336",
+          maxWidth: "300px",
+          boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <XCircle size={20} color="#F44336" />
+        <div>
+          <strong>Error al guardar</strong>
+          <p style={{ margin: 0, fontSize: "12px", color: "#F44336" }}>
+            {message}
+          </p>
+        </div>
+      </div>
+    ));
+  }
 
   toast.custom(
     () => (
@@ -72,13 +90,17 @@ export const ShowNotification = (
           backgroundColor,
           color: textColor,
           maxWidth: "300px",
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.1)"
+          boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
         }}
       >
         <Icon size={20} color={textColor} />
         <div>
           <strong>{message}</strong>
-          {description && <p style={{ margin: 0, fontSize: "12px", color: textColor }}>{description}</p>}
+          {description && (
+            <p style={{ margin: 0, fontSize: "12px", color: textColor }}>
+              {description}
+            </p>
+          )}
         </div>
       </div>
     ),

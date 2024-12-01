@@ -14,9 +14,9 @@ export default function RegisterActions({ tableRef }: { tableRef: any }) {
 
   useEffect(() => {
     if (status === null) {
-      tableRef.getColumn("type")?.setFilterValue(undefined);
+      tableRef.getColumn("tipo")?.setFilterValue(undefined);
     } else {
-      tableRef.getColumn("type")?.setFilterValue(status);
+      tableRef.getColumn("tipo")?.setFilterValue(status);
     }
   }, [status, tableRef]);
 

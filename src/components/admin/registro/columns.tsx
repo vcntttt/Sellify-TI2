@@ -1,27 +1,18 @@
+import { Registro } from "@/types/registro";
 import { ColumnDef } from "@tanstack/react-table";
 
-type Notification = {
-  id: string;
-  message: string;
-  type: "success" | "error" | "info" | "warning";
-  description?: string;
-  timestamp: string;
-  user: string;
-};
-
-// Definición de las columnas para la tabla de notificaciones
-export const columns: ColumnDef<Notification>[] = [
+export const columns: ColumnDef<Registro>[] = [
   {
-  accessorKey: "message",
+  accessorKey: "mensaje",
   header: "Mensaje",
   },
   {
-    accessorKey: "timestamp",
+    accessorKey: "fecha_y_hora",
     header: "Fecha y Hora",
-    cell: ({ getValue }) => new Date(getValue() as string).toLocaleString(), // Formato de fecha
+    cell: ({ getValue }) => new Date(getValue() as string).toLocaleString(),
   },
   {
-    accessorKey: "type",
+    accessorKey: "tipo",
     header: "Tipo",
     cell: ({ getValue }) => {
       const type = getValue() as string;
@@ -33,7 +24,7 @@ export const columns: ColumnDef<Notification>[] = [
     },
   },
   {
-    accessorKey: "user",
+    accessorKey: "usuario",
     header: "Usuario",
   },
 ];
