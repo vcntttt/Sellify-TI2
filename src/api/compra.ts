@@ -1,17 +1,5 @@
 import axios from "axios";
-
-interface Compra {
-  numero_documento: string;
-  fecha_compra: string;
-  proveedor: string;
-  total_con_iva: number;
-  total_sin_iva: number;
-  productos: {
-    nombre: string;
-    cantidad: number;
-    descripcion: string;
-  }[];
-}
+import { Compra } from "@/types/compras";
 
 export async function getCompras(): Promise<Compra[]> {
   try {
