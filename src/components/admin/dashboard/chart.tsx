@@ -22,13 +22,13 @@ import {
   CartesianGrid,
   XAxis,
   Line,
-} from "recharts"; 
+} from "recharts";
 
 export const description = "An interactive line chart";
 
 const addOneDay = (date: Date): Date => {
   const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1); 
+  newDate.setDate(newDate.getDate() + 1);
   return newDate;
 };
 
@@ -38,9 +38,9 @@ const getVentasComprasData = async () => {
 
   const dataMap: { [key: string]: { ventas: number; compras: number } } = {};
 
-  // ventas
+  // Procesar ventas
   ventas.forEach((v) => {
-    const fecha = addOneDay(new Date(v.fecha_venta)); 
+    const fecha = addOneDay(new Date(v.fecha_venta));
     const fechaFormateada = formatDatesForResponse(fecha);
     if (!dataMap[fechaFormateada]) {
       dataMap[fechaFormateada] = { ventas: 0, compras: 0 };
@@ -50,7 +50,7 @@ const getVentasComprasData = async () => {
 
   // Procesar compras
   compras.forEach((c) => {
-    const fecha = addOneDay(new Date(c.fecha_compra)); 
+    const fecha = addOneDay(new Date(c.fecha_compra));
     const fechaFormateada = formatDatesForResponse(fecha);
     if (!dataMap[fechaFormateada]) {
       dataMap[fechaFormateada] = { ventas: 0, compras: 0 };
@@ -62,22 +62,26 @@ const getVentasComprasData = async () => {
     .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
     .map((fecha) => ({
       date: fecha,
-      balance: dataMap[fecha].ventas - dataMap[fecha].compras,
+      ingresos: dataMap[fecha].ventas,
+      gastos: dataMap[fecha].compras,
     }));
 
   return chartData;
 };
 
 const chartConfig: ChartConfig = {
-  balance: {
-    label: "Balance",
+  ingresos: {
+    label: "Ingresos",
     color: "hsl(var(--chart-1))",
+  },
+  gastos: {
+    label: "Gastos",
+    color: "hsl(var(--chart-2))",
   },
 };
 
 export default function Component() {
   const [chartData, setChartData] = React.useState<any[]>([]);
-  const [activeChart] = React.useState<keyof typeof chartConfig>("balance");
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -129,7 +133,6 @@ export default function Component() {
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
-                  nameKey="balance"
                   labelFormatter={(value) => {
                     const date = new Date(value);
                     return date.toLocaleDateString("es-CL", {
@@ -142,9 +145,16 @@ export default function Component() {
               }
             />
             <Line
-              dataKey={activeChart}
+              dataKey="ingresos"
               type="monotone"
-              stroke="hsl(var(--chart-1))"
+              stroke={chartConfig.ingresos.color}
+              strokeWidth={2}
+              dot={false}
+            />
+            <Line
+              dataKey="gastos"
+              type="monotone"
+              stroke={chartConfig.gastos.color}
               strokeWidth={2}
               dot={false}
             />
