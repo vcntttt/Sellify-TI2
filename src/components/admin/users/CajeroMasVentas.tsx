@@ -8,7 +8,7 @@ interface Cajero {
 }
 
 export default function TopCajerosEnVentasCard() {
-  const { data : ventas, isFetching } = useVentas();
+  const { data : ventas = [], isFetching } = useVentas();
   const cajeros: Cajero[] = Object.values(
     ventas.reduce((acc: Record<string, Cajero>, venta: any) => {
       const { cajero } = venta;

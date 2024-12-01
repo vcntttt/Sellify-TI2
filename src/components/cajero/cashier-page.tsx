@@ -19,6 +19,7 @@ import CashierLayout from "../layouts/cashier-layout";
 import { columns } from "@/components/cajero/columns";
 import { MetodoPago } from "@/types/ventas";
 import clsx from "clsx";
+import { ShowNotification } from "../NotificationProvider";
 
 const CashierPage = () => {
   const { user, logOut } = useAuthStore();
@@ -30,9 +31,9 @@ const CashierPage = () => {
     setCode,
     setQuantity,
     handleKeyPress,
+    handleAddProductFromSocket,
     endSale,
   } = useCarrito();
-
   const [isDialogOpen, setIsDialogOpen] = useState({
     payment: false,
     receipt: false,
@@ -61,7 +62,6 @@ const CashierPage = () => {
     console.log(addedProducts);
   }, [addedProducts]);
 
-  const [receivedBarcode, setReceivedBarcode] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -74,7 +74,9 @@ const CashierPage = () => {
 
     socketRef.on(`barcode_update_${user.rut}`, (data) => {
       console.log("Código de barras recibido:", data);
-      setReceivedBarcode(data.barcode);
+      console.log(data.barcode)
+      handleAddProductFromSocket(parseInt(data.barcode));
+      ShowNotification("Código de barras recibido: " + data.barcode, "info");
     });
 
     socketRef.on("connect_error", (error) => {
@@ -86,7 +88,7 @@ const CashierPage = () => {
         socketRef.disconnect();
       }
     };
-  }, [user]);
+  }, [user, setCode, handleAddProductFromSocket]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -108,12 +110,13 @@ const CashierPage = () => {
                   "bg-green-500 text-white": isConnected,
                   "bg-red-500": !isConnected,
                 })}
-              ></span>
+              >
+              </span>
             </div>
             <div className="flex gap-4">
               <div className="flex-col items-center gap-4">
                 <Label htmlFor="code" className="text-right">
-                  Código: {receivedBarcode}
+                  Código:
                 </Label>
                 <Input
                   id="code"
