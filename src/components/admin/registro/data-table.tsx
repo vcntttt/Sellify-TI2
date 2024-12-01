@@ -9,7 +9,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import RegisterActions from "./actions";
@@ -31,7 +38,12 @@ export function DataTable<TData, TValue>({
   data,
   refetchFn,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "fecha_y_hora",
+      desc: true,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
@@ -50,9 +62,9 @@ export function DataTable<TData, TValue>({
   });
   const handleRefetch = async () => {
     try {
-      refetchFn(); 
+      refetchFn();
       const loadTime = format(new Date(), "dd/MM/yyyy HH:mm:ss");
-      ShowNotification("Registros cargados con éxito.", "success", loadTime); 
+      ShowNotification("Registros cargados con éxito.", "success", loadTime);
     } catch (error) {
       console.error("Error al actualizar los productos:", error);
     }
@@ -73,7 +85,6 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center justify-end gap-x-4 py-4 mx-2 border-b">
           <RegisterActions tableRef={table} />
           <DataTableViewOptions table={table} refetchFn={handleRefetch} />
-
         </div>
       </div>
 
@@ -84,11 +95,14 @@ export function DataTable<TData, TValue>({
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="bg-primary text-white p-2 text-center" 
+                  className="bg-primary text-white p-2 text-center"
                 >
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -98,19 +112,22 @@ export function DataTable<TData, TValue>({
           {isLoading ? (
             Array.from({ length: 10 }).map((_, i) => (
               <TableRow key={i}>
-                <TableCell colSpan={columns.length} className="text-center border-b border-gray-300">
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center border-b border-gray-300"
+                >
                   <Skeleton className="rounded-md h-6 w-full" />
                 </TableCell>
               </TableRow>
             ))
           ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="hover:bg-gray-100 border-b border-gray-300">
+              <TableRow
+                key={row.id}
+                className="hover:bg-gray-100 border-b border-gray-300"
+              >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="p-2 text-center" 
-                  >
+                  <TableCell key={cell.id} className="p-2 text-center">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -118,7 +135,10 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center text-gray-500 border-b border-gray-300">
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-gray-500 border-b border-gray-300"
+              >
                 No se encontraron resultados.
               </TableCell>
             </TableRow>

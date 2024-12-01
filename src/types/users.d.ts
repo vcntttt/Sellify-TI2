@@ -4,9 +4,11 @@ export type Role = typeof roles[number];
 
 export interface CurrentUser {
   name: string;
+  apellido: string;
   role: Role;
   access_token: string;
   id_usuario: number;
+  rut: string;
 }
 
 export interface UserResponse {

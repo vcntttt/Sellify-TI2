@@ -1,5 +1,6 @@
 import { Registro } from "@/types/registro";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
 export const columns: ColumnDef<Registro>[] = [
   {
@@ -9,7 +10,7 @@ export const columns: ColumnDef<Registro>[] = [
   {
     accessorKey: "fecha_y_hora",
     header: "Fecha y Hora",
-    cell: ({ getValue }) => new Date(getValue() as string).toLocaleString(),
+    cell: ({ getValue }) => format(new Date(getValue() as string), "HH:mm:ss dd/MM/yyyy"),
   },
   {
     accessorKey: "tipo",

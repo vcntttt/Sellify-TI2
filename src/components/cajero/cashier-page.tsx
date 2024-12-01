@@ -10,7 +10,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { io } from "socket.io-client";
-
 import ProductSummary from "@/components/cajero/buttons/summary";
 import useCarrito from "@/hooks/cajero/use-carrito";
 import ProductTable from "@/components/cajero/data-table";
@@ -63,36 +62,31 @@ const CashierPage = () => {
   }, [addedProducts]);
 
   const [receivedBarcode, setReceivedBarcode] = useState("");
-  const RUT = "217997607";
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const socketRef = io("http://170.239.85.88:5000");
 
-    // Manejar la conexión
     socketRef.on("connect", () => {
       console.log("Conectado al servidor WebSocket");
       setIsConnected(true);
     });
 
-    // Escuchar el evento 'barcode_scanned'
-    socketRef.on(`barcode_update_${RUT}`, (data) => {
+    socketRef.on(`barcode_update_${user.rut}`, (data) => {
       console.log("Código de barras recibido:", data);
-      setReceivedBarcode(data.barcode); // Actualiza el estado con el código recibido
+      setReceivedBarcode(data.barcode);
     });
 
-    // Manejar errores de conexión
     socketRef.on("connect_error", (error) => {
       console.error("Error de conexión:", error);
     });
 
-    // Limpieza al desmontar el componente
     return () => {
       if (socketRef) {
         socketRef.disconnect();
       }
     };
-  }, [RUT]);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">

@@ -3,6 +3,7 @@ import { CheckCircle, XCircle, Info, AlertTriangle } from "lucide-react";
 import { SaveRegistro } from "@/types/registro";
 import { saveRegistro } from "@/api/registros";
 import { format } from "date-fns";
+import { useAuthStore } from "@/store/auth";
 
 export const NotificationProvider = () => {
   return <Toaster position="top-right" />;
@@ -14,6 +15,7 @@ export const ShowNotification = async (
   description?: string,
   richColor?: string
 ) => {
+  const { name, apellido } = useAuthStore.getState().user;
   const backgroundColor =
     type === "error"
       ? "#FFBABA"
@@ -40,10 +42,10 @@ export const ShowNotification = async (
       : Info;
 
   const notification: SaveRegistro = {
-    mensaje: message, 
+    mensaje: message,
     fecha_y_hora: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
     tipo: type,
-    usuario: "admin",
+    usuario: name + " " + apellido,
   };
 
   console.log(notification);

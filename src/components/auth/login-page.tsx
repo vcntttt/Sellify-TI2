@@ -71,7 +71,7 @@ export default function Login() {
       contrasena: values.password,
     });
 
-    setUser({ name: info.nombre, role: info.tipo_usuario, access_token: token, id_usuario: info.id_usuario});
+    setUser({ name: info.nombre, role: info.tipo_usuario, access_token: token, id_usuario: info.id_usuario, rut: values.rut, apellido: info.apellido});
 
     if (!token) {
       setLocation("/non-authorized");
