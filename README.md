@@ -48,6 +48,20 @@ export default tseslint.config({
   },
 })
 ``` -->
+
+# Sellify
+
+Es una plataforma de gestión de inventario orientado a empresas pequeñas o pymes. Este cuenta con diferentes apartados tales como cajero, administrador y cajero automático donde cada uno incluye diferentes funcionalidades concentrandose la mayor parte en el apartado del administrador.
+
+Este proyecto fue realizado en el 4 semestre de universidad en el ramo denominado Taller de integración.
+
+## Tech Stack
+
+**Client:** React, TypeScript + Vite
+, TailwindCSS
+
+**Server:** Flask, MariaDB
+
 # Guia de desarrollo
 
 ## Requisitos
@@ -96,3 +110,11 @@ git checkout develop
 git merge <nombre-tarea>
 git push origin develop
 ```
+
+## Authors
+
+- [@vcntttt](https://github.com/vcntttt)
+- [@TsuKenzo](https://github.com/TsuKenZo)
+- [@MrGhost](https://github.com/NelsonNeculhueque)
+- [@megu](https://github.com/Megusek001)
+- [@patitojavi](https://github.com/patitojavi)
