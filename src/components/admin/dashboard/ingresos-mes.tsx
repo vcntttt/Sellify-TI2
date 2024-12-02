@@ -1,28 +1,20 @@
-import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { formatPrice } from "@/lib/utils";
 import { DollarSign, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { getMonthlyRevenue } from "@/api/ingresos-mes";
+import { useTimeVentas } from "@/hooks/use-time-ventas";
+import { startOfMonth } from "date-fns";
 
 export default function CardIngresos() {
-  const [revenue, setRevenue] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { filteredSales } = useTimeVentas({
+    start: startOfMonth(new Date()),
+    end: new Date(),
+  });
 
-  useEffect(() => {
-    async function fetchRevenue() {
-      try {
-        const total = await getMonthlyRevenue();
-        setRevenue(total);
-      } catch (err) {
-        setError("Error al obtener los ingresos del mes.");
-        console.error(err);
-      }
-    }
-
-    fetchRevenue();
-  }, []);
+  const totalRevenue = filteredSales.reduce((acc, sale) => {
+    return acc + sale.total_con_iva;
+  }, 0);
 
   return (
     <Card className="h-full">
@@ -33,16 +25,11 @@ export default function CardIngresos() {
         <CardDescription className="sr-only">Ingresos del mes</CardDescription>
       </CardHeader>
       <CardContent>
-        {error ? (
-          <p className="text-red-500">{error}</p>
-        ) : revenue !== null ? (
           <>
-            <p className="text-4xl">{formatPrice(revenue)}</p>
+            <p className="text-4xl">{formatPrice(totalRevenue)}</p>
             <p className="text-muted-foreground">Total ventas </p>
           </>
-        ) : (
-          <p>Cargando ingresos...</p>
-        )}
+        
       </CardContent>
       <CardFooter>
         <Button variant={"link"} asChild className={"hover:underline"}>

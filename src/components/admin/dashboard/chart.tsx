@@ -95,9 +95,9 @@ export default function Component() {
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Balance Mensual de Ingresos/Gastos</CardTitle>
+          <CardTitle>Balance de Ingresos/Gastos</CardTitle>
           <CardDescription className="sr-only">
-            Balance Mensual de Ingresos/Gastos
+            Balance de Ingresos/Gastos
           </CardDescription>
         </div>
       </CardHeader>

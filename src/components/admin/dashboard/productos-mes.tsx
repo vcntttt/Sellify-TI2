@@ -1,26 +1,21 @@
-import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { ShoppingCart, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { getMonthlyProducts } from "@/api/productos-mes";
+import { startOfMonth } from "date-fns";
+import { useTimeVentas } from "@/hooks/use-time-ventas";
 
 export default function CardProductosVendidos() {
-  const [productsCount, setProductsCount] = useState<number | null>(null);
-  const [error] = useState(null);
+  const { filteredSales } = useTimeVentas({
+    start: startOfMonth(new Date()),
+    end: new Date(),
+  });
 
-  useEffect(() => {
-    async function fetchProductsData() {
-      try {
-        const totalProductos = await getMonthlyProducts();
-        setProductsCount(totalProductos);
-      } catch (err) {
-        console.error("Error al obtener la cantidad de productos vendidos:", err);
-      }
-    }
-
-    fetchProductsData();
-  }, []);
+  const productsCount = filteredSales.reduce((acc, sale) => {
+    return acc + sale.productos.reduce((productAcc, producto) => {
+      return productAcc + producto.cantidad;
+    }, 0);
+  }, 0);
 
   return (
     <Card className="h-full">
@@ -31,11 +26,7 @@ export default function CardProductosVendidos() {
         <CardDescription className="sr-only">Productos vendidos este mes</CardDescription>
       </CardHeader>
       <CardContent>
-        {error ? (
-          <p className="text-red-500">Error al cargar datos</p>
-        ) : (
           <p className="text-4xl">{productsCount}</p>
-        )}
         <p className="text-muted-foreground">Productos vendidos este mes</p>
       </CardContent>
       <CardFooter>
