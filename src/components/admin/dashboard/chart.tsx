@@ -72,11 +72,11 @@ const getVentasComprasData = async () => {
 const chartConfig: ChartConfig = {
   ingresos: {
     label: "Ingresos",
-    color: "hsl(var(--chart-1))",
+    color: "Green",
   },
   gastos: {
     label: "Gastos",
-    color: "hsl(var(--chart-2))",
+    color: "Red",
   },
 };
 
