@@ -1,59 +1,8 @@
-<!-- # React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-``` -->
-
 # Sellify
+![demo](demo.jpg)
+Sellify es un sistema privado de ventas diseñado para pequeñas y medianas empresas, específicamente para aquellos que necesitan gestionar sus productos y ventas de manera eficiente. Nuestro sistema se compone de dos partes fundamentales. La primera es el panel de administración, que es donde el jefe o el dueño va a gestionar su negocio. La segunda es la parte del cajero, diseñada específicamente para las operaciones diarias en el punto de venta. En este panel se ingresaran los productos, se procesaran las ventas y posteriormente se emitirán las boletas.
 
-Es una plataforma de gestión de inventario orientado a empresas pequeñas o pymes. Este cuenta con diferentes apartados tales como cajero, administrador y cajero automático donde cada uno incluye diferentes funcionalidades concentrandose la mayor parte en el apartado del administrador.
-
-Este proyecto fue realizado en el 4 semestre de universidad en el ramo denominado Taller de integración.
+Este proyecto fue realizado durante el cuarto semestre de Ingeniería Civil en Informática de la Universidad Catolica de Temuco para la asignatura "Taller de Integración II".
 
 ## Tech Stack
 
@@ -77,7 +26,7 @@ cd <carpeta-de-proyecto>
 pnpm i
 ```
 
-## Desarrollo
+<!-- ## Desarrollo
 
 ```bash
 pnpm dev
@@ -109,12 +58,11 @@ Volver a develop
 git checkout develop
 git merge <nombre-tarea>
 git push origin develop
-```
+``` -->
 
-## Authors
+## Desarrolladores
 
-- [@vcntttt](https://github.com/vcntttt)
+- [@vcntttt](https://github.com/vcntttt) - Scrum Master
 - [@TsuKenzo](https://github.com/TsuKenZo)
 - [@MrGhost](https://github.com/NelsonNeculhueque)
-- [@megu](https://github.com/Megusek001)
 - [@patitojavi](https://github.com/patitojavi)
